@@ -1,0 +1,112 @@
+<?php
+$params = current($this->layout()->getChildren())->params;
+$module = $params['module'];
+$controller = $params['__CONTROLLER__'];
+$action = $params['action'];
+?>
+<header class="header white-bg">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+
+        <!--logo start-->
+        <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'index', 'action' => 'index')); ?>" class="logo" >Ngáođá<span>.net</span></a>
+        <!--logo end-->
+        <div class="horizontal-menu navbar-collapse collapse ">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="javascript:;"><i class="icon-list-ul"></i> <b>Quản lý Danh mục </b><b class="icon-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?php echo ($module=='backend' && $controller=='category' &&  $action=='index') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'index'));?>">
+                                Danh sách danh mục
+                            </a>
+                        </li>
+                        <li class="<?php echo ($module=='backend' && $controller=='category' &&  $action=='add') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'add'));?>">
+                                Thêm danh mục
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt"></i> <b>Quản lý bài đăng </b><b class="icon-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?php echo ($module=='backend' && $controller=='content' &&  $action=='index') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'index'));?>">
+                                Danh sách bài đăng
+                            </a>
+                        </li>
+                        <li class="<?php echo ($module=='backend' && $controller=='content' &&  $action=='add') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'add'));?>">
+                                Thêm bài đăng
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <li class="dropdown">
+                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-group"></i> <b>Quản lý Nhóm người dùng </b><b class="icon-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?php echo ($module=='backend' && $controller=='group' &&  $action=='index') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'index'));?>">
+                                Danh sách nhóm người dùng
+                            </a>
+                        </li>
+                        <li class="<?php echo ($module=='backend' && $controller=='group' &&  $action=='add') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'add'));?>">
+                                Thêm nhóm người dùng
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <li class="dropdown">
+                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i> <b>Quản lý người dùng </b><b class="icon-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?php echo ($module=='backend' && $controller=='user' &&  $action=='index') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'index'));?>">
+                                Danh sách người dùng
+                            </a>
+                        </li>
+                        <li class="<?php echo ($module=='backend' && $controller=='user' &&  $action=='add') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'add'));?>">
+                                Thêm người dùng
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="top-nav ">
+            <ul class="nav pull-right top-menu">
+                <li>
+                    <input type="text" class="form-control search" placeholder=" Search">
+                </li>
+                <!-- user login dropdown start-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <img alt="" src="<?php echo STATIC_URL; ?>/f/img/avatar1_small.jpg">
+                        <span class="username"><?php echo FULLNAME;?></span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu extended logout">
+                        <div class="log-arrow-up"></div>
+                        <li><a href="#"><i class=" icon-suitcase"></i>Tài khoản</a></li>
+                        <li><a href="#"><i class="icon-cog"></i> Cài đặt</a></li>
+                        <li><a href="#"><i class="icon-bell-alt"></i> Thông báo</a></li>
+                        <li><a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'auth', 'action' => 'logout'));?>"><i class="icon-key"></i> Đăng xuất</a></li>
+                    </ul>
+                </li>
+                <!-- user login dropdown end -->
+            </ul>
+        </div>
+
+    </div>
+
+</header>
+<!--header end-->

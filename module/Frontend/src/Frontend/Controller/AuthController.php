@@ -1,0 +1,502 @@
+<?php
+
+namespace Frontend\Controller;
+
+use My\Controller\MyController,
+    My\General,
+    My\Validator\Validate;
+
+class AuthController extends MyController {
+    /* @var $serviceUser \My\Models\User */
+    /* @var $serviceProduct \My\Models\Product */
+
+    public function __construct() {
+        $this->externalJS = [
+            STATIC_URL . '/f/v1/js/my/??auth.js',
+        ];
+    }
+
+    public function indexAction() {
+        $this->getAuthService()->clearIdentity();
+        return $this->redirect()->toRoute('auth', array('action' => 'login'));
+    }
+
+    public function registerAction() {
+        $params = $this->params()->fromRoute();
+        if (CUSTOMER_ID > 0) {
+            return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'detail'));
+        }
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            $validator = new Validate();
+
+            if (empty($params)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Vui lòng nhập đầy đủ thông tin đăng ký !</center>')));
+            }
+
+            if (empty($params['user_fullname'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Họ tên không được để trống !</center>')));
+            }
+
+            $strUserFullname = trim($params['user_fullname']);
+            if (strlen($strUserFullname) < 4 || strlen($strUserFullname) > 50) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Nhập họ và tên chưa đầy đủ !</center>')));
+            }
+
+            if (empty($params['user_email'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email không được để trống !</center>')));
+            }
+
+            $strUserEmail = trim($params['user_email']);
+            if (!$validator->emailAddress($strUserEmail)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Địa chỉ email không hợp lệ !</center>')));
+            }
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $intTotalEmail = $serviceUser->getTotal(array('user_email' => $strUserEmail, 'not_user_status' => -1));
+            if ($intTotalEmail > 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email này đã tồn tại trong hệ thống! Vui lòng chọn email khác !<br/> Hoặc thực hiện chức năng lấy lại mật khẩu !</center>')));
+            }
+
+            if (empty($params['user_password'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Chưa nhập mật khẩu !</center>')));
+            }
+
+            if ($params['user_password'] != $params['re_user_password']) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Hai mật khẩu chưa giống nhau !</center>')));
+            }
+
+            $strUserPasword = trim($params['user_password']);
+            if (strlen($strUserPasword) < 6) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Mật khẩu phải từ 6 ký tự trở  lên !</center>')));
+            }
+
+            if (empty($params['user_phone'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không được để trống !</center>')));
+            }
+
+            $strUserPhone = trim($params['user_phone']);
+            if (!$validator->Digits($strUserPhone)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không hợp lệ !</center>')));
+            }
+
+            if (!$validator->Between(strlen($strUserPhone), 8, 12)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại phải từ 8 -> 11 số !</center>')));
+            }
+
+            $intTotalPhone = $serviceUser->getTotal(array('user_phone' => $strUserPhone, 'not_user_status' => -1));
+            if ($intTotalPhone > 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại này đã tồn tại trong hệ thống! Vui lòng chọn số điện thoại khác !</center>')));
+            }
+
+            $arrData = array(
+                'user_password' => md5($strUserPasword),
+                'user_fullname' => $strUserFullname,
+                'user_email' => $strUserEmail,
+                'user_phone' => $strUserPhone,
+                'created_date' => time(),
+                'user_status' => 1,
+                'user_last_login' => time(),
+                'user_login_ip' => $this->getRequest()->getServer('REMOTE_ADDR'),
+                'group_id' => General::MEMBER
+            );
+
+            $intResutl = $serviceUser->add($arrData);
+            if ($intResutl > 0) {
+                $arrUser = $serviceUser->getDetail(array('user_name' => $strUsername, 'not_user_status' => -1));
+                $this->getAuthService()->clearIdentity();
+                $this->getAuthService()->getStorage()->write($arrUser);
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<b class="color-success">Chúc mừng bạn đã đăng ký tài khoản thành công!</b>')));
+            }
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại!</center>')));
+        }
+        return false;
+    }
+
+    public function loginAction() {
+        $params = $this->params()->fromRoute();
+        if (CUSTOMER_ID) {
+            return $this->redirect()->toRoute('frontend', array('controller' => 'profile', 'action' => 'index'));
+        }
+        if ($this->request->isPost()) {
+            if (CUSTOMER_ID) {
+                return $this->redirect()->toRoute('frontend', array('controller' => 'profile', 'action' => 'index'));
+            }
+            $params = $this->params()->fromPost();
+            $validator = new Validate();
+            $str = strip_tags(trim($params['strUsername']));
+            $strPassword = strip_tags(trim($params['strPassWord']));
+            $strRemember = $params['remember'];
+            $arrReturn = array('params' => $params);
+
+            if (empty($str) || empty($strPassword)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Vui lòng nhập đầy đủ thông tin !</center>')));
+            }
+
+            if (substr_count($str, '@') == 1) {
+                if (!$validator->emailAddress($str)) {
+                    return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email không hợp lệ ... vui lòng điền lại email hoặc tên tài khoản !</center>')));
+                }
+                $arrCondition = array('user_email' => $str, 'not_user_status' => -1);
+            } else {
+                if ($validator->Regex($str, '/(.*)[^a-zA-Z0-9](.*)/')) {
+                    return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tên tài khoản không hợp lệ ... vui lòng điền lại email hoặc tên tài khoản !</center>')));
+                }
+                $arrCondition = array('user_name' => $str, 'not_user_status' => -1);
+            }
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUser = $serviceUser->getDetail($arrCondition);
+
+            if (empty($arrUser)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center> Tài khoản hoặc mật khẩu không chính xác! Vui lòng thử lại !</center>')));
+            }
+
+            if ($arrUser["user_status"] == 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tài khoản tạm khóa.<br/>Vui lòng liên hệ quản trị !</center>')));
+            }
+
+            if (md5($strPassword) != $arrUser['user_password'] && $strPassword != $arrUser['user_password']) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tài khoản hoặc mật khẩu không đúng! Vui lòng thử lại !</center>')));
+            }
+
+            $login = $serviceUser->edit(array("user_last_login" => time(), "user_login_ip" => $this->getRequest()->getServer('REMOTE_ADDR')), $arrUser["user_id"]);
+//            p($strRemember);die;
+            if ($login) {
+                if ($strRemember == 'true') {
+                    $arrCookieUser = array(
+                        'Username' => $str,
+                        'Password' => $arrUser['user_password']
+                    );
+                    setcookie('cookieUser', serialize($arrCookieUser), time() + (604800 * 4), "/");
+                }
+                if ($strRemember == 'false') {
+                    setcookie('cookieUser', '', time() - 3600, '/');
+                }
+                $this->getAuthService()->clearIdentity();
+                unset($arrUser['user_password']);
+                $this->getAuthService()->getStorage()->write($arrUser);
+
+                return $this->getResponse()->setContent(json_encode(array('st' => 1)));
+            }
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại !')));
+        }
+    }
+
+    public function logoutAction() {
+        $this->getAuthService()->clearIdentity();
+        return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+    }
+
+    public function detailAction() {
+        $params = $this->params()->fromRoute();
+        if (UID <= 0) {
+            return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'login'));
+        }
+        $serviceUser = $this->serviceLocator->get('My\Models\User');
+        $arrDetailUser = $serviceUser->getDetail(array('user_id' => UID));
+
+        //get totalProduct
+        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
+        $intTotalProduct = $serviceProduct->getTotal(array('user_id' => $arrDetailUser['user_id'], 'not_prod_actived' => -1));
+
+        $intPage = is_numeric($this->params()->fromQuery('page', 1)) ? $this->params()->fromQuery('page', 1) : 1;
+        $intLimit = 15;
+        $arrCondition = array(
+            'user_id' => $arrDetailUser['user_id'],
+            'not_prod_actived' => -1
+        );
+        $arrProductList = $serviceProduct->getListLimit($arrCondition, $intPage, $intLimit, 'prod_id DESC');
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'auth', $params);
+
+//        $intTotalProdPrimum = $serviceProduct->
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Thông tin tài khoản') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Thông tin, Thông tin tài khoản, Thông tin tài khoản chototquynhon.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Thông tin tài khoản tại' . General::TITLE_META));
+//        $this->renderer->headMeta()->appendName('social', $metaSocial);
+//        p($arrDetailUser);die;
+
+        return array(
+            'params' => $params,
+            'arrDetailUser' => $arrDetailUser,
+            'intTotalProduct' => $intTotalProduct,
+            'arrProductList' => $arrProductList,
+            'paging' => $paging
+        );
+    }
+
+    public function resetPasswordAction() {
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            if (empty($params['user_email'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Chưa nhập địa chỉ email!</center>')));
+            }
+
+            if (empty($params['captcha'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Chưa nhập mã xác nhận!</center>')));
+            }
+
+            $validator = new Validate();
+            if (!$validator->emailAddress($params['user_email'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Địa chỉ email không hợp lệ !</center>')));
+            }
+
+            if ($params['captcha'] != $_SESSION['captcha']) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Nhập mã xác nhận chưa chính xác!</center>')));
+            }
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrDetailUser = $serviceUser->getDetail(array('user_email' => $params['user_email'], 'not_status' => -1));
+
+            if (empty($arrDetailUser)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email này không tồn tại trong hệ thống !</center>')));
+            }
+
+            if ($arrDetailUser['user_status'] == -1) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tài khoản của bạn hiện đang bị tạm khóa! Vui lòng liên hệ quản trị viên !</center>')));
+            }
+
+            $random_key = md5(rand(5, 1000)) . time();
+            $expried = time() + 60 * 60 * 72; //3 ngay
+            $intResult = $serviceUser->edit(array('random_key' => $random_key, 'random_key_expried' => $expried), $arrDetailUser['user_id']);
+
+            if ($intResult) {
+                $general = new General();
+                //tiêu đề Email
+                $strTitle = '[dev.raovat.vn] - Reset Mật khẩu !';
+                //Nội dung email
+                $strMessage = '<h3>Chúng tôi nhận được yêu cầu lấy lại mật khẩu từ bạn!</h3><br/>'
+                        . 'Nếu đúng là yêu cầu của bạn! Xin vui lòng click vào link bên dưới để tiến hành reset mật khẩu:<br/>'
+                        . '<a href="' . BASE_URL . '"/xac-nhan-lay-lai-mat-khau-' . $random_key . '">Kích vào đây </a><br/><br/>'
+                        . 'Nếu không phải là yêu cầu của bạn! Xin vui lòng bỏ qua!<br/><br/>'
+                        . '<h2><b>Chototquynhon.com - Mạng mua bán - rao vặt Quy Nhơn - Bình Định </b></h2>';
+                $result = $general->sendMail($params['user_email'], $strTitle, $strMessage);
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<center><br/> <b>Reset mật khẩu thành công !</b><br/> <br/><b>Mời bạn kiểm tra email để lấy lại mật khẩu!</b><br/><br/></center>')));
+            }
+        }
+        return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại !')));
+    }
+
+    public function comfirmResetPasswordAction() {
+        $params = $this->params()->fromQuery();
+        if (UID > 0) {
+            return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'detail'));
+        }
+        if (empty($params['randomkey'])) {
+            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+        }
+
+        $strRandomkey = $params['randomkey'];
+        $serviceUser = $this->serviceLocator->get('My\Models\User');
+        $arrDetailUser = $serviceUser->getDetail(array('user_randomkey' => $params['randomkey']));
+
+        if (!$arrDetailUser) {
+            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+        }
+
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            $errors = array();
+            if (empty($params['strPassword']) || empty($params['strRePassword'])) {
+                $errors[] = 'Vui lòng nhập đầy đủ các thông tin !';
+            }
+
+            $strPassword = trim($params['strPassword']);
+
+            if (strlen($strPassword) < 6) {
+                $errors['Password'] = 'Mật khẩu phải từ 6 ký tự trở lên !';
+            }
+
+            if ($strPassword != trim($params['strRePassword'])) {
+                $errors['Password'] = 'Hai mật khẩu chưa giống nhau !';
+            }
+
+            if (empty($errors)) {
+                $arrData = array(
+                    'user_password' => md5($strPassword),
+                    'user_randomkey' => NULL,
+                    'user_updated' => time()
+                );
+                $intResult = $serviceUser->edit($arrData, $arrDetailUser['user_id']);
+                if ($intResult) {
+                    return array(
+                        'success' => 'Đổi mật khẩu thành công! Mời bạn đăng nhập !',
+                    );
+                }
+                $errors[] = 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại';
+            }
+        }
+        return array(
+            'errors' => $errors,
+            'params' => $params,
+        );
+    }
+
+    public function changePasswordAction() {
+        if (UID < 1) {
+            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+        }
+        $params = $this->params()->fromRoute();
+        $errors = array();
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            if (empty($params)) {
+                $errors[] = 'Vui lòng nhập đầy đủ thông tin !';
+            }
+            if (empty($params['oldPass'])) {
+                $errors['oldPass'] = 'Vui lòng nhập mật khẩu hiện tại !';
+            }
+            $strOldPassword = trim($params['oldPass']);
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUserDetail = $serviceUser->getDetail(array('user_id' => UID));
+            if (md5($strOldPassword) != $arrUserDetail['user_password']) {
+                $errors['oldPass'] = 'Nhập mật khẩu hiện tại chưa chính xác !';
+            }
+            if (empty($params['newPass'])) {
+                $errors['newPass'] = 'Vui lòng nhập mật khẩu mới !';
+            }
+            $strNewPassword = trim($params['newPass']);
+            if (strlen($strNewPassword) < 6) {
+                $errors['newPass'] = 'Mật khẩu phải từ 6 ký tự trở lên !';
+            }
+            if (strlen($strNewPassword) > 6 && trim($params['renewPass']) != $strNewPassword) {
+                $errors['newPass'] = 'Hai mật khẩu chưa giống nhau !';
+            }
+            if (empty($errors)) {
+                $arrData = array(
+                    'user_password' => md5($strNewPassword),
+                    'user_updated' => time(),
+                );
+                $inResult = $serviceUser->edit($arrData, UID);
+                if ($inResult) {
+//                    $arrData['grou_id'] = $getDetailtUser["grou_id"];
+//                    $arrData['user_id'] = UID;
+//                    unset($arrData['user_password']);
+//                    $this->getAuthService()->getStorage()->write($arrData); //write lại auth
+                    $this->flashMessenger()->setNamespace('success-detail-auth')->addMessage('Cập nhật mật khẩu thành công !');
+                    return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'detail'));
+                }
+                $error[] = 'Xảy ra lỗi trong quá trình xử lý ! Vui lòng thử lại !';
+            }
+        }
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Đổi mật khẩu tài khoản ') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Chototquynhon.Com - Đổi mật khẩu tài khoản !'));
+        return array(
+            'params' => $params,
+            'errors' => $errors
+        );
+    }
+
+    public function editAction() {
+        $params = $this->params()->fromRoute();
+        $errors = array();
+        if (UID <= 0) {
+            return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'login'));
+        }
+        $serviceUser = $this->serviceLocator->get('My\Models\User');
+        $arrDetailUser = $serviceUser->getDetail(array('user_id' => UID));
+        //get totalProduct
+        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
+        $intTotalProduct = $serviceProduct->getTotal(array('user_id' => $arrDetailUser['user_id'], 'not_prod_actived' => -1));
+
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            $validator = new Validate();
+
+            //Validate user_fullname
+            if (empty($params['user_fullname'])) {
+                $errors['user_fullname'] = 'Họ tên không được bỏ trống !';
+            }
+            if (strlen($params['user_fullname']) < 6) {
+                $errors['user_fullname'] = 'Nhập họ tên chưa hợp lệ! 6 ký tự trở lên !';
+            }
+
+            //validate user_email
+            if (empty($params['email'])) {
+                $errors['email'] = 'Địa chỉ email không được bỏ trống !';
+            }
+
+            if (!$validator->emailAddress($params['email'])) {
+                $errors['email'] = 'Địa chỉ email không hợp lệ  !';
+            }
+            $intTotalPhone = $serviceUser->getTotal(array('user_email' => trim($params['email']), 'not_user_status' => -1, 'not_user_id' => UID));
+            if ($intTotalPhone > 0) {
+                $errors['email'] = 'Địa chỉ email này đã có người đăng ký, vui lòng chọn email khác !';
+            }
+
+            if (empty($params['user_phone'])) {
+                $errors['user_phone'] = 'Số điện thoại không được bỏ trống !';
+            }
+
+            if (empty($params['user_phone'])) {
+                $errors['user_phone'] = 'Số điện thoại không được bỏ trống !';
+            }
+
+            if (!$validator->Digits($params['user_phone'])) {
+                $errors['user_phone'] = 'Số điện thoại không hợp lệ !';
+            }
+            if (!$validator->Between(strlen($params['user_phone']), 8, 11)) {
+                $errors['user_phone'] = 'Số điện thoại phải từ 8 -> 11 số !';
+            }
+            $intTotalPhone = $serviceUser->getTotal(array('user_phone' => trim($params['user_phone']), 'not_user_status' => -1, 'not_user_id' => UID));
+            if ($intTotalPhone > 0) {
+                $errors['user_phone'] = 'Số điện thoại này đã tồn tại trong hệ thống! Vui lòng chọn số điện thoại khác !';
+            }
+//            p($errors);
+            if (empty($errors)) {
+                $arrDataUpdate = array(
+                    'user_fullname' => trim($params['user_fullname']),
+                    'user_gender' => (int) $params['user_gender'],
+                    'user_phone' => trim($params['user_phone']),
+                    'user_email' => trim($params['email']),
+                    'user_description' => strip_tags(trim($params['user_description'])),
+                    'user_address' => strip_tags(trim($params['location'])),
+                    'user_updated' => time()
+                );
+                $inResult = $serviceUser->edit($arrDataUpdate, $arrDetailUser['user_id']);
+                if ($inResult) {
+                    $arrDetailUser = $serviceUser->getDetail(array('user_id' => UID));
+                    return array(
+                        'arrDetailUser' => $arrDetailUser,
+                        'success' => 'Cập nhật thông tin tài khoản thành công'
+                    );
+                }
+                $errors[] = 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại!';
+            }
+        }
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Cập nhật thông tin tài khoản') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Cập nhật, Cập nhật thông tin tài khoản, Cập nhật thông tin tài khoản tại chototquynhon.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Cập nhật thông tin tài khoản tại' . General::TITLE_META));
+//        $this->renderer->headMeta()->appendName('social', $metaSocial);
+        return array(
+            'params' => $params,
+            'errors' => $errors,
+            'arrDetailUser' => $arrDetailUser,
+            'intTotalProduct' => $intTotalProduct
+        );
+    }
+
+    public function changeAvatarAction() {
+        if (UID <= 0) {
+            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+        }
+        $params = $this->params()->fromPost();
+        $files = $this->params()->fromFiles();
+        $serviceUser = $this->serviceLocator->get('My\Models\User');
+        $user_avatar = General::ImageUpload($files['file-0'], 'auth', $resize = 1);   //xem phần profile.js - phần upload dưới cùng
+        $arrData = array(
+            'user_avatar' => json_encode($user_avatar),
+            'user_updated' => time(),
+        );
+        $intResult = $serviceUser->edit($arrData, UID);
+        if ($intResult) {
+            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'images' => $user_avatar[0]['thumbImage']['120x120'])));
+        }
+    }
+
+}

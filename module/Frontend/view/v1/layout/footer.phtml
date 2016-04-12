@@ -1,0 +1,229 @@
+<section id="footer">
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="widget">
+                        <h4>HỖ TRỢ NGƯỜI DÙNG</h4>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Câu hỏi thường gặp</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Hướng dẫn đăng tin</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Điều khoản sử dụng</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Thông báo</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Liên hệ</a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="widget">
+                        <h4>QUẢN LÝ TÀI KHOẢN</h4>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Đăng nhập / Đăng ký</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Quên mật khẩu</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Thông tin tài khoản</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Chính sách bảo mật</a><br/>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="widget">
+                        <h4>VỀ CHOTOTQUYNHON.COM</h4>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Giới thiệu về Chototquynhon.com</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Hotline : 0979 57 57 93</a> (Tâm đẹp trai)<br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Hợp tác & liên kết</a><br/>
+                        <a href="#"><i class="fa fa-arrow-right"></i> Chính sách bảo mật</a><br/>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="widget">
+                        <h4>THÔNG TIN LIÊN HỆ</h4>
+                        <a href="#"><i class="fa fa-envelope-o"></i> Chototquynhon.com@gmail.com</a><br/>
+                        <a rel="nofollow" href="ymsgr:sendIM?chototquynhon&amp;m=Xin chào Chototquynhon :"><image src="<?php echo STATIC_URL; ?>/f/v1/images/Yahoo-Messenger-alt-icon.png" style="width: 20px;margin-left: -3px;"/> Chototquynhon.com</a><br/>
+                        <a rel="nofollow" href="skype:ngocchien01?chat"><i class="fa fa-skype"></i> Chototquynhon.com</a><br/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright text-center">
+                        <p>@ All Copyrights Reseverd 2015 - Design & Development by <a class="col" href="<?php echo $this->serverUrl(); ?>">Chotoquynhon.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright text-center">
+                        <?php
+                        foreach (unserialize(ALL_CATEGORY) as $value):
+                            ?>
+                            <a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?> </a> - 
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="back-to-top"><i class="fa fa-angle-up"></i></a>
+    </footer>
+</section>
+<?php if (empty(CUSTOMER_ID)): ?>
+    <div id="loginForm" method="post" class="form-horizontal" style="display: none;">
+        <div class="form-group text-center error-login" style="display: none">
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Email hoặc số điện thoại</b></label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control userlogin" name="user_name" <?php if (isset($_COOKIE['cookieUser'])) { ?> value="<?php echo unserialize($_COOKIE['cookieUser'])['Username']; ?>"<?php } ?> />
+                <span class="color-red error-login-email" style="display: none"><b>Chưa nhập thông tin đăng nhập</b></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Mật khẩu</b></label>
+            <div class="col-xs-7">
+                <input type="password" class="form-control passwordlogin" name="user_password"  <?php if (isset($_COOKIE['cookieUser'])) { ?> value="<?php echo unserialize($_COOKIE['cookieUser'])['Password']; ?>"<?php } ?>/>
+                <span class="color-red error-login-password" style="display: none"><b>Chưa nhập mật khẩu</b></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label"></label>
+            <div class="col-xs-4">
+                <input type="checkbox" class="remember" name="user_remember"> <label> Ghi nhớ cho lần sau</label>
+            </div>
+            <div class="col-xs-4">
+                <label><a href="javascript:;" class="reset-password">Quên mật khẩu ?</a></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-5 col-xs-offset-4 text-center">
+                <button type="submit" class="btn btn-default btnlogin">Đăng Nhập</button>
+            </div>
+        </div>
+
+        <div class="form-group social-accounts text-center">
+            <label class="col-xs-2 control-label"></label>
+            <div class="col-xs-7">
+                <b>Hoặc với</b> 
+                <a href="<?php echo FACEBOOK_AUTH_URL; ?>">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a href="<?php echo GOOGLE_AUTH_URL; ?>">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                <a href="javascript:;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="resetpassForm" method="post" class="form-horizontal" style="display: none;">
+        <div class="form-group error-forgot text-center" hidden></div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b> Email đã đăng ký</b></label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control userlogin" name="user_name" placeholder="Nhập email đã đăng ký" />
+                <b class="color-red error-forgot-email" style="display: none">Chưa nhập Email</b>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label"></label>
+            <div class="col-xs-3 control-label">
+                <img class="img-captcha form-control" src=""/>
+            </div>
+            <div class="col-xs-3" style="margin-top: 6px">
+                <input type="text" class="form-control col-xs-3 captcha" name="captcha" placeholder=" Nhập mã xác nhận " />
+            </div>
+            <div class="col-xs-2">
+                <i class="fa fa-refresh" data-toggle="tooltip" title="Lấy mã mới" style=" cursor: pointer; margin-top: 15px"></i>
+            </div>
+        </div>
+        <div class="form-group error-forgot-captcha text-center" hidden><b class="color-red">Chưa nhập mã xác nhận</b></div>
+
+        <div class="form-group">
+            <div class="col-xs-5 col-xs-offset-3 text-center">
+                <button type="submit" class="btn btn-default btnrspass">Lấy lại mật khẩu</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="formRegister" method="post" class="form-horizontal" style="display: none;">
+        <div class="form-group error-register text-center" hidden></div>
+
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Họ và tên</b></label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control fullname" name="user_fullname"/>
+                <b class="color-red error-register-fullname" style="display: none">Nhập họ tên không đúng</b>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Email</b></label>
+            <div class="col-xs-7">
+                <input type="email" class="form-control email" name="user_email"/>
+                <b class="color-red error-register-email" style="display: none">Địa chỉ email không hợp lệ</b>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Mật khẩu</b></label>
+            <div class="col-xs-7">
+                <input type="password" class="form-control password" name="user_password"/>
+                <b class="color-red error-register-password" style="display: none">Mật khẩu phải từ 6 ký tự trở lên</b>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Nhập lại mật khẩu</b></label>
+            <div class="col-xs-7">
+                <input type="password" class="form-control repassword" name="re_user_password"/>
+                <b class="color-red error-register-repassword" style="display: none">Nhập lại mật khẩu chưa chính xác</b>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-3 control-label"><b>Số điện thoại</b></label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control userphone" name="user_phone"/>
+                <b class="color-red error-register-phone" style="display: none">Số điện thoại không hợp lệ</b>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-5 col-xs-offset-3 text-center">
+                <button type="submit" class="btn btn-default btnRegister">Đăng ký</button>
+            </div>
+        </div>
+
+        <div class="form-group social-accounts text-center">
+            <label class="col-xs-2 control-label"></label>
+            <div class="col-xs-7">
+                <b>Đăng ký bằng</b> 
+                <a href="<?php echo FACEBOOK_AUTH_URL; ?>">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a href="<?php echo GOOGLE_AUTH_URL; ?>">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                <a href="javascript:;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<script type="application/ld+json">
+    { "@context" : "http://schema.org",
+    "@type" : "Organization",
+    "url" : "<?php echo $this->serverUrl(); ?>",
+    "contactPoint" : [
+    { "@type" : "ContactPoint",
+    "telephone" : "097 353 1618",
+    "contactType" : "Admin Chotoquynhon.com"
+    } ] }
+</script>
+<script>
+    loginURL = '<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'login')); ?>';
+    resetpassURL = '<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'reset-password')); ?>';
+    registerURL = '<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'register')); ?>';
+    detailURL = '<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'detail')); ?>';
+</script>
