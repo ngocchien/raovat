@@ -30,9 +30,8 @@ var Content = {
         });
         Content.add();
     },
-    
-    add : function(){
-        $(document).ready(function(){
+    add: function () {
+        $(document).ready(function () {
             $('.wysihtml5').wysihtml5();
         })
     },

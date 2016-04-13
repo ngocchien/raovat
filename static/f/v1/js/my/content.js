@@ -1,7 +1,7 @@
-var Product = {
+var Content = {
     index: function () {
         $(document).ready(function () {
-            Product.add();
+            Content.add();
             $(".list-image .delete-images").on("click",function(){
                 $('.list-image').attr('hidden','hidden');
                 $('.img-prod .main-images').val('');
@@ -12,7 +12,8 @@ var Product = {
     
     add: function(){
         $(document).ready(function () {
-            cateID = $('#detail .category').val();
+            var cateID = $('#detail .category').val();
+            console.log(cateID);
             if(cateID!=''){
                 $.ajax({
                     type: "POST",
