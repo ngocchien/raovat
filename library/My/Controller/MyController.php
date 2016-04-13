@@ -172,10 +172,10 @@ class MyController extends AbstractActionController {
 
             $serviceCategory = $this->serviceLocator->get('My\Models\Category');
 
-            $arrConditionCategory = array(
-                'not_cate_status' => -1
+            $arrCondition = array(
+                'cate_status' => 1
             );
-            $arrCategoryList = $serviceCategory->getList($arrConditionCategory);
+            $arrCategoryList = $serviceCategory->getList($arrCondition);
             define('ARR_CATEGORY', serialize($arrCategoryList));
         }
     }

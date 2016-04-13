@@ -1,141 +1,72 @@
 <?php
 $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
-$arrLocation = unserialize(ARR_LOCATION);
-//p($arrLocation);die;
 ?>
-<!--<section id="slider">
-    <div id="full-slider-wrapper">
-        <div id="layerslider" style="width:100%;height:500px;">
-            <div class="ls-slide" data-ls="transition2d:1;timeshift:-1000;">
-                <img style="margin: 0 !important;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/bg2.png" class="ls-bg" alt="Slide background"/>
-                <img class="ls-l" style="margin-top:0px !important;top:30px;left:70%;white-space: nowrap;" data-ls="offsetxin:0;offsetyin:30;delayin:1720;scalexin:0.9;scaleyin:0.9;offsetxout:0;offsetyout:300;durationout:1000;scalexout:0.5;scaleyout:0.5;transformoriginout:50% bottom 0;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/layer1.png" alt="">
-                <h1 class="ls-l" style="font-family: 'Roboto Slab', serif; color: #3f3d59; top:100px; width:500px;font-weight: 700; left:116px; top:170px;" data-ls="offsetxin:0;durationin:2000;delayin:2000;easingin:easeOutElastic;rotatexin:90;transformoriginin:50% top 0;offsetxout:-400;">
-                    WORLD # 1 PLATFORM FOR CLASSIFIED
-                </h1>
-                <h2 class="ls-l" style="font-family:'Raleway', sans-serif;top:280px;left:116px;font-weight: 300;height:40px;padding:5px 22px;font-size:32px;line-height:37px;color:#ffffff;background:#a0ce4e;border-radius:3px;white-space: nowrap;" data-ls="offsetxin:0;durationin:2000;delayin:1500;easingin:easeOutElastic;rotatexin:-90;transformoriginin:50% top 0;offsetxout:-200;durationout:1000;">
-                    WITH MAXIMUM POSSIBILITIES
-                </h2>
-                <img class="ls-l ls-linkto-2" style="top:460px;left:610px;white-space: nowrap;" data-ls="offsetxin:-50;delayin:1000;rotatein:-40;offsetxout:-50;rotateout:-40;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/left.png" alt="left arrow">
-                <img class="ls-l ls-linkto-2" style="top:460px;left:650px;white-space: nowrap;" data-ls="offsetxin:50;delayin:1000;offsetxout:50;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/right.png" alt="right arrow">
+<section id="premium">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="main-heading text-center">
+                    <h2 class="mg-30">NỔI BẬT</h2>
+                </div>
             </div>
-
-            <div class="ls-slide" data-ls="transition2d:1;timeshift:-1000;">
-                <img src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/bg2.png" class="ls-bg" alt="Slide background"/>
-                <h1 data-ls="offsetxin:0;durationin:2000;delayin:1500;easingin:easeOutElastic;rotatexin:-90;transformoriginin:50% top 0;offsetxout:-400;durationout:1000;" style="top: 305px; left:420px;; font-weight: 300; width: auto; padding: 0px 20px; font-family: Raleway; font-size: 32px; line-height: 56px; color: rgb(255, 255, 255); background: none repeat scroll 0% 0% rgb(160, 206, 78); white-space: nowrap; filter: none; height: auto; border-width: 0px; margin-left: 0px; margin-top: 0px; transform-origin: 50% top 0px; transform: translate3d(0px, 0px, 0px); opacity: 1; visibility: visible;" class="ls-l">UNLIMITED COLORS OPTIONS</h1>                    <p data-ls="offsetxin:0;durationin:2000;delayin:2000;easingin:easeOutElastic;rotatexin:90;transformoriginin:50% top 0;offsetxout:-600;" style="top: 188px; left: 400px; font-weight: 900; font-family: Roboto Slab; font-size: 48px; color: rgb(63, 61, 89); white-space: nowrap; filter: none; width: 100px; height: auto; line-height: 64px; padding: 0px; border-width: 0px; margin-left: 0px; margin-top: 0px; transform-origin: 50% 50% 0px; transform: translate3d(-600px, 0px, 0px); opacity: 1; visibility: hidden;" class="ls-l">GROW YOUR BUSINESS</p>
-                <p data-ls="offsetxin:0;durationin:2000;delayin:3000;easingin:easeOutElastic;rotatexin:90;transformoriginin:50% top 0;offsetxout:-600;" style="top: 376px; left: 470px; font-family: Raleway; font-size: 18px; color: rgb(102, 102, 102); white-space: nowrap; filter: none; width: 100px; height: auto; line-height: 21px; padding: 0px; border-width: 0px; margin-left: 0px; margin-top: 0px; transform-origin: 50% top 0px; transform: matrix3d(1, 0, 0, 0, 0, 0, 1, -0.002, 0, -1, 0, 0, 0, 0, 0, 1); opacity: 0; visibility: visible;" class="ls-l">Morbi accumsan ipsum velit. Nam nec tellus a odio tincidunt</p>
-                <p data-ls="offsetxin:0;durationin:2000;delayin:2500;easingin:easeOutElastic;rotatexin:90;transformoriginin:50% top 0;offsetxout:-600;" style="top: 248px; left: 490px; font-weight: 900; font-family: Roboto Slab; font-size: 32px; color: rgb(63, 61, 89); white-space: nowrap; filter: none; width: 100px; height: auto; line-height: 43px; padding: 0px; border-width: 0px; margin-left: 0px; margin-top: 0px; transform-origin: 50% 50% 0px; transform: translate3d(-600px, 0px, 0px); opacity: 1; visibility: hidden;" class="ls-l">CLASSIFY WILL HELP</p>
-                <p style="top: 390px; left: 570px; font-family: Raleway; font-size: 18px; color: rgb(102, 102, 102); white-space: nowrap; filter: none; width: 100px; height: auto; line-height: 21px; padding: 0px; border-width: 0px; margin-left: 0px; margin-top: 0px; transform-origin: 50% 50% 0px; transform: translate3d(0.8603px, 0px, 0px); opacity: 0.989246; visibility: visible;" class="ls-l">auctor a ornare odio.</p>
-                <img class="ls-l ls-linkto-1" style="top:460px;left:610px;white-space: nowrap;" data-ls="offsetxin:-50;delayin:1000;rotatein:-40;offsetxout:-50;rotateout:-40;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/left.png" alt="left arrow">
-                <img class="ls-l ls-linkto-1" style="top:460px;left:650px;white-space: nowrap;" data-ls="offsetxin:50;delayin:1000;offsetxout:50;" src="<?php //echo STATIC_URL;          ?>/f/v1/images/slider/right.png" alt="right arrow">
-            </div>
+        </div>
+        <div class="row">
+            <div class="owl-carousel">
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Old Car</a></div>
+                    <a href="#" class="item-hover"><span>$199</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou2_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Expensive Car</a></div>
+                    <a href="#" class="item-hover"><span>$299</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou3_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Antique things for sale</a></div>
+                    <a href="#" class="item-hover"><span>$499</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou4_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Creative Tattos</a></div>
+                    <a href="#" class="item-hover"><span>$99</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Old Car</a></div>
+                    <a href="#" class="item-hover"><p>$199</p></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Old Car</a></div>
+                    <a href="#" class="item-hover"><span>$199</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou2_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Expensive Car</a></div>
+                    <a href="#" class="item-hover"><span>$299</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou3_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Antique things for sale</a></div>
+                    <a href="#" class="item-hover"><span>$499</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou4_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Creative Tattos</a></div>
+                    <a href="#" class="item-hover"><span>$99</span></a>
+                </div>
+                <div class="item">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
+                    <div class="item-title"><a href="#">Old Car</a></div>
+                    <a href="#" class="item-hover"><span>$199</span></a>
+                </div>
+            </div> <!--end carousel?-->
         </div>
     </div>
-</section>-->
-<!--end layer slider section-->
 
-
-
-<!--Premium Advertisement-->
-<?php if (!empty($this->arrProductVipList)): ?>
-    <section id="premium">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="main-heading text-center">
-                        <h2 class="mg-30">RAO VẶT SIÊU VÍP</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <section class="panel">
-                        <table class="table table-striped table-advance table-hover">
-                            <thead>
-                                <tr>
-                                    <th style=" color: #005fcc" class=" col-lg-7"><i class="fa fa-list-alt"></i> Tiêu đề</th>
-                                    <th class="text-center"  class="hidden-phone" class=" col-lg-2 text-center" style=" color: #005fcc"><i class="fa fa-map-marker"></i> Nơi đăng</th>
-                                    <th class="text-center"  style=" color: #005fcc" class=" col-lg-2"><i class="fa fa-list"></i> Danh mục</th>
-                                    <th class="text-center"  style=" color: #005fcc" class=" col-lg-1"><i class="fa fa-eye"></i> Xem</th>
-                                    <th class="text-center" style=" color: #005fcc"><i class="fa fa-user"></i> Người đăng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($this->arrProductVipList as $value): ?>
-                                    <tr>
-                                        <td>
-                                            <a href="<?php echo $this->serverUrl() . $this->Url('product', array('controller' => 'product', 'action' => 'detail', 'productslug' => $value["prod_slug"], 'productId' => $value["prod_id"])) ?>" style=" text-decoration: none"><i class="fa fa-hand-o-right"></i> <?php echo $value['prod_name']; ?> <image style="width:35px" src="<?php echo STATIC_URL?>/f/v1/images/s-vip.gif"/></a>
-                                        </td>
-                                        <td class="text-center"><?php echo empty($value['prod_location']) ? 'Toàn tỉnh' : $arrLocation[$value['prod_location']]['dist_name'];?></td>
-                                        <td class="text-center" ><a href="<?php echo $this->serverUrl() . $this->Url('category', array('categorySlug' => $this->arrCategory[$value['cate_id']]['cate_slug'], 'categoryID' => $this->arrCategory[$value['cate_id']]['cate_id'])) ?>"><?php echo $this->arrCategory[$value['cate_id']]['cate_name'];?></a></td>
-                                        <td class="text-center"><span><?php echo $value['prod_viewer']; ?></span></td>
-                                        <td class="text-center">
-                                            <span><?php echo $this->arrUserList[$value['user_created']]['user_name']; ?></span>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </section>
-                </div>
-            </div>
-            <!--        <div class="row">
-                        <div class="owl-carousel">
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Old Car</a></div>
-                                <a href="#" class="item-hover"><span>$199</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou2_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Expensive Car</a></div>
-                                <a href="#" class="item-hover"><span>$299</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou3_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Antique things for sale</a></div>
-                                <a href="#" class="item-hover"><span>$499</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou4_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Creative Tattos</a></div>
-                                <a href="#" class="item-hover"><span>$99</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Old Car</a></div>
-                                <a href="#" class="item-hover"><p>$199</p></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Old Car</a></div>
-                                <a href="#" class="item-hover"><span>$199</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou2_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Expensive Car</a></div>
-                                <a href="#" class="item-hover"><span>$299</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou3_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Antique things for sale</a></div>
-                                <a href="#" class="item-hover"><span>$499</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou4_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Creative Tattos</a></div>
-                                <a href="#" class="item-hover"><span>$99</span></a>
-                            </div>
-                            <div class="item">
-                                <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/carou1_03.png" alt="carousel"></a>
-                                <div class="item-title"><a href="#">Old Car</a></div>
-                                <a href="#" class="item-hover"><span>$199</span></a>
-                            </div>
-                        </div>end carousel
-                    </div>-->
-        </div>
-    </section><!--End Premium Advertisement-->
-<?php endif; ?>
+</section><!--End Premium Advertisement
 
 <!--Category-->
 <section id="categories">
@@ -143,7 +74,7 @@ $arrLocation = unserialize(ARR_LOCATION);
         <div class="row">
             <div class="col-sm-12">
                 <div class="main-heading text-center">
-                    <h2>DANH MỤC RAO VẶT</h2>
+                    <h2>DANH MỤC</h2>
                 </div>
             </div>
         </div>
@@ -155,10 +86,10 @@ $arrLocation = unserialize(ARR_LOCATION);
                             <div class="category-icon">
                                 <i class="fa <?php echo str_replace('icon', 'fa', $value['cate_icon']); ?> fa-2x"></i>
                             </div>
-                            <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo strtoupper($value['cate_name']); ?></a></h4>
+                            <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo mb_strtoupper($value['cate_name']); ?></a></h4>
                             <?php
-                            if (!empty($arrCategoryListChildrenFormat[$value['cate_id']])):
-                                foreach ($arrCategoryListChildrenFormat[$value['cate_id']] as $valueChildren):
+                            if (!empty($arrCategoryByParent[$value['cate_id']])):
+                                foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
                                     ?>
                                     <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $valueChildren["cate_slug"], 'categoryID' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo $valueChildren['cate_total_product']; ?> )</a></p>
                                     <?php
@@ -170,18 +101,18 @@ $arrLocation = unserialize(ARR_LOCATION);
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <!--        <div class="row">
-                    <div class="col-md-12">
-                        <div class="advertise">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ad_03.png" alt="ad"> </a>
-                        </div>
-                    </div>
-                </div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="advertise">
+                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ad_03.png" alt="ad"> </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section><!--End Category-->
 
 <!--Classify Advertisement-->
-<!--<section id="advertisement">
+<section id="advertisement">
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -204,7 +135,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                 <div class="row">
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads1_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads1_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$4,000</span>
@@ -214,7 +145,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads2_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads2_03.png"></a>
                             <div class="ads-title"><p><a href="#">Writter Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -224,7 +155,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads3_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads3_03.png"></a>
                             <div class="ads-title"><p><a href="#">Creative Tattos</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -234,7 +165,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads4_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads4_03.png"></a>
                             <div class="ads-title"><p><a href="#">Branding on demand</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$3,000</span>
@@ -244,7 +175,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads5_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads5_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$15,000</span>
@@ -254,7 +185,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads6_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads6_03.png"></a>
                             <div class="ads-title"><p><a href="#">Bike for kids</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -264,7 +195,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads7_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads7_03.png"></a>
                             <div class="ads-title"><p><a href="#">Expensive Red Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -274,7 +205,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads8_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads8_03.png"></a>
                             <div class="ads-title"><p><a href="#">Black Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,000</span>
@@ -284,7 +215,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads9_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads9_03.png"></a>
                             <div class="ads-title"><p><a href="#">Food Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -294,7 +225,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads10_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads10_03.png"></a>
                             <div class="ads-title"><p><a href="#">Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$7,000</span>
@@ -304,7 +235,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads11_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads11_03.png"></a>
                             <div class="ads-title"><p><a href="#">Iphone 10 month warranteed</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,200</span>
@@ -314,7 +245,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads12_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads12_03.png"></a>
                             <div class="ads-title"><p><a href="#">Dogie for sale urgent</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -328,7 +259,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                 <div class="row">
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads1_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads1_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$4,000</span>
@@ -338,7 +269,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads2_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads2_03.png"></a>
                             <div class="ads-title"><p><a href="#">Writter Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -348,7 +279,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads3_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads3_03.png"></a>
                             <div class="ads-title"><p><a href="#">Creative Tattos</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -358,7 +289,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads4_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads4_03.png"></a>
                             <div class="ads-title"><p><a href="#">Branding on demand</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$3,000</span>
@@ -368,7 +299,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads5_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads5_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$15,000</span>
@@ -378,7 +309,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads6_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads6_03.png"></a>
                             <div class="ads-title"><p><a href="#">Bike for kids</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -388,7 +319,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads7_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads7_03.png"></a>
                             <div class="ads-title"><p><a href="#">Expensive Red Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -398,7 +329,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads8_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads8_03.png"></a>
                             <div class="ads-title"><p><a href="#">Black Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,000</span>
@@ -408,7 +339,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads9_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads9_03.png"></a>
                             <div class="ads-title"><p><a href="#">Food Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -418,7 +349,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads10_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads10_03.png"></a>
                             <div class="ads-title"><p><a href="#">Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$7,000</span>
@@ -428,7 +359,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads11_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads11_03.png"></a>
                             <div class="ads-title"><p><a href="#">Iphone 10 month warranteed</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,200</span>
@@ -438,7 +369,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads12_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads12_03.png"></a>
                             <div class="ads-title"><p><a href="#">Dogie for sale urgent</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -452,7 +383,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                 <div class="row">
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads1_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads1_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$4,000</span>
@@ -462,7 +393,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php ///echo STATIC_URL;          ?>/f/v1/images/images/ads2_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads2_03.png"></a>
                             <div class="ads-title"><p><a href="#">Writter Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -472,7 +403,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads3_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads3_03.png"></a>
                             <div class="ads-title"><p><a href="#">Creative Tattos</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -482,7 +413,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads4_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads4_03.png"></a>
                             <div class="ads-title"><p><a href="#">Branding on demand</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$3,000</span>
@@ -492,7 +423,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads5_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads5_03.png"></a>
                             <div class="ads-title"><p><a href="#">Classic Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$15,000</span>
@@ -502,7 +433,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads6_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads6_03.png"></a>
                             <div class="ads-title"><p><a href="#">Bike for kids</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -512,7 +443,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads7_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads7_03.png"></a>
                             <div class="ads-title"><p><a href="#">Expensive Red Car</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$5,000</span>
@@ -522,7 +453,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads8_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads8_03.png"></a>
                             <div class="ads-title"><p><a href="#">Black Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,000</span>
@@ -532,7 +463,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads9_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads9_03.png"></a>
                             <div class="ads-title"><p><a href="#">Food Available 24/7</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$500</span>
@@ -542,7 +473,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads10_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads10_03.png"></a>
                             <div class="ads-title"><p><a href="#">Sun Glasses</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$7,000</span>
@@ -552,7 +483,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads11_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads11_03.png"></a>
                             <div class="ads-title"><p><a href="#">Iphone 10 month warranteed</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$1,200</span>
@@ -562,7 +493,7 @@ $arrLocation = unserialize(ARR_LOCATION);
                     </div>
                     <div class="col-md-3 col-sm-6 adp">
                         <div class="ads">
-                            <a href="#"><img src="<?php //echo STATIC_URL;          ?>/f/v1/images/images/ads12_03.png"></a>
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/ads12_03.png"></a>
                             <div class="ads-title"><p><a href="#">Dogie for sale urgent</a></p></div>
                             <a href="#" class="ads-hover">
                                 <span>$2,000</span>
@@ -573,18 +504,5 @@ $arrLocation = unserialize(ARR_LOCATION);
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="pagi">
-                <ul class="pagination">
-                    <li class="disabled"><a href="#">Prev</a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">Next</a></li>
-                </ul>
-            </div>
-        </div>
     </div>
-</section>-->
+</section>

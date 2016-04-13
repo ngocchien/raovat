@@ -26,7 +26,7 @@ class CategoryController extends MyController {
         $serviceCategory = $this->serviceLocator->get('My\Models\Category');
         $arrCategoryList = $serviceCategory->getListLimit($arrCondition, $intPage, $intLimit, 'cate_grade ASC');
 
-        $route = 'backend-user-search';
+//        $route = 'backend-user-search';
 
         $intTotal = $serviceCategory->getTotal($arrConditions);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
