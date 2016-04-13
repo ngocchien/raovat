@@ -1,7 +1,6 @@
 <?php
-$arrCategoryParent = unserialize(ARR_CATEGORY);
-$arrLocation = unserialize(ARR_LOCATION);
-$arrGeneral = unserialize(ARR_GENERAL);
+$arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
+//$arrGeneral = unserialize(ARR_GENERAL);
 ?>
 <section id="header">
     <header>
@@ -21,7 +20,7 @@ $arrGeneral = unserialize(ARR_GENERAL);
                     </div>
                     <div class="col-sm-6 responsive-width-top">
                         <div class="links text-right">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('addproduct', array('controller' => 'product', 'action' => 'add')) ?>"> <i class="fa fa-pencil-square-o"></i> Đăng rao vặt</a>
+                            <a href="<?php echo $this->serverUrl() . $this->Url('addcontent', array('controller' => 'content', 'action' => 'add')) ?>"> <i class="fa fa-pencil-square-o"></i> Đăng rao vặt</a>
                             <?php if (CUSTOMER_ID == 0): ?>
                                 <a id="loginRegister" href="javascript:;"><i class="fa fa-user-plus"></i> Đăng ký</a>
                                 <a id="loginButton" href="javascript:;"><i class="fa fa-sign-in"></i> Login</a>

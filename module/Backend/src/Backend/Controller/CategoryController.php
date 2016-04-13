@@ -17,7 +17,7 @@ class CategoryController extends MyController {
 
     public function indexAction() {
         $params = array_merge($this->params()->fromQuery(), $this->params()->fromRoute());
-        $intPage = $this->params()->fromQuery('page', 1);
+        $intPage = $this->params()->fromRoute('page', 1);
         $intLimit = 15;
         $arrCondition = array(
             'not_cate_status' => -1
@@ -26,7 +26,7 @@ class CategoryController extends MyController {
         $serviceCategory = $this->serviceLocator->get('My\Models\Category');
         $arrCategoryList = $serviceCategory->getListLimit($arrCondition, $intPage, $intLimit, 'cate_grade ASC');
 
-//        $route = 'backend-user-search';
+        $route = 'backend';
 
         $intTotal = $serviceCategory->getTotal($arrConditions);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
@@ -107,9 +107,10 @@ class CategoryController extends MyController {
                 $arrCondition = array(
                     'cate_slug' => General::getSlug($cateName),
                     'not_cate_status' => -1,
-                    'not_parent_id' => $parentId
+                    'parent_id' => $parentId
                 );
                 $arrResult = $serviceCategory->getList($arrCondition);
+
                 if ($arrResult) {
                     $errors[] = 'Danh mục này đã tồn tại trong hệ thống!';
                 }

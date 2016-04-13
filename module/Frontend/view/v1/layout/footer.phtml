@@ -51,7 +51,7 @@
                 <div class="col-md-12">
                     <div class="copyright text-center">
                         <?php
-                        foreach (unserialize(ALL_CATEGORY) as $value):
+                        foreach (unserialize(ARR_CATEGORY) as $value):
                             ?>
                             <a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?> </a> - 
                         <?php endforeach; ?>

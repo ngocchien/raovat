@@ -681,7 +681,7 @@ h5,h6{
     right: 40px;
     text-decoration: none;
     color: #000000;
-    background: transparent;
+    background: #3f3d59;
     border: 1px solid #fff;
     font-size: 14px;
     width: 30px;
@@ -1763,4 +1763,8 @@ input[type="radio"]{
 }
 .color-red {
     color: red
+}
+
+.mg-bt-15 {
+    margin-bottom: 15px
 }

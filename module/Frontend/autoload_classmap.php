@@ -10,4 +10,5 @@ return array(
     'Frontend\Controller\CaptchaController' => __DIR__ . '/src/Frontend/Controller/CaptchaController.php',
     'Frontend\Controller\GeneralController' => __DIR__ . '/src/Frontend/Controller/GeneralController.php',
     'Frontend\Controller\CommentController' => __DIR__ . '/src/Frontend/Controller/CommentController.php',
+    'Frontend\Controller\ContentController' => __DIR__ . '/src/Frontend/Controller/ContentController.php',
 );

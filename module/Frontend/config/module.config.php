@@ -191,18 +191,18 @@ return array(
                 ),
             ),
             
-            'addproduct' => array(
+            'addcontent' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/rao-vat/dang-rao-vat[.html]',
+                    'route' => '/dang-tin-rao-vat[.html]',
                     'constraints' => array(
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'add',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'add',
                     ),
                 ),

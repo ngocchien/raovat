@@ -193,6 +193,8 @@ class storageCategory extends AbstractTableGateway {
         if (isset($arrCondition['parent_id'])) {
             $strWhere .= " AND parent_id =" . $arrCondition['parent_id'];
         }
+        
+        
 
         return $strWhere;
     }

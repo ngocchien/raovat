@@ -14,26 +14,21 @@ class IndexController extends MyController {
             STATIC_URL . '/f/v1/css/??owl.theme.default.css',
             STATIC_URL . '/f/v1/css/??layerslider.css',
         ];
+        $this->externalJS = [
+            STATIC_URL . '/f/v1/js/library/??owl.carousel.js',
+            STATIC_URL . '/f/v1/js/library/??default.js',
+            STATIC_URL . '/f/v1/js/library/??greensock.js',
+            STATIC_URL . '/f/v1/js/library/??layerslider.kreaturamedia.jquery.js'
+        ];
     }
 
     public function indexAction() {
         $params = $this->params()->fromRoute();
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $arrCategoryList = unserialize(ARR_CATEGORY);
 
-        $arrCategoryParentList = [];
-        $arrCategoryByParent = [];
-        $arrCategoryFormat = [];
-        if (!empty($arrCategoryList)) {
-            foreach ($arrCategoryList as $arrCategory) {
-                if ($arrCategory['parent_id'] == 0) {
-                    $arrCategoryParentList[$arrCategory['cate_id']] = $arrCategory;
-                } else {
-                    $arrCategoryByParent[$arrCategory['parent_id']][] = $arrCategory;
-                }
-                $arrCategoryFormat[$arrCategory['cate_id']] = $arrCategory;
-            }
-        }
+        $arrCategoryParentList = unserialize(ARR_CATEGORY_PARENT);
+        $arrCategoryByParent = unserialize(ARR_CATEGORY_BY_PARENT);
+        $arrCategoryFormat = unserialize(ARR_CATEGORY);
+
         return array(
             'param' => $params,
             'arrCategoryParentList' => $arrCategoryParentList,

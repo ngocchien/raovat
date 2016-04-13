@@ -7,7 +7,7 @@ use My\Controller\MyController,
     My\Validator\Validate,
     Zend\Validator\File\Size;
 
-class ProductController extends MyController {
+class ContentController extends MyController {
     /* @var $serviceCategory \My\Models\Category */
     /* @var $serviceProduct \My\Models\Product */
     /* @var $serviceProperties \My\Models\Properties */
@@ -15,19 +15,10 @@ class ProductController extends MyController {
     /* @var $serviceComment \My\Models\Comment */
 
     public function __construct() {
+
         $this->externalJS = [
-            'frontend:product:add' => array(
-                STATIC_URL . '/f/v1/js/my/??product.js',
-                STATIC_URL . '/tinymce/tinymce.min.js',
-            ),
-            'frontend:product:edit' => array(
-                STATIC_URL . '/f/v1/js/my/??product.js',
-                STATIC_URL . '/tinymce/tinymce.min.js',
-            ),
-            'frontend:product:detail' => array(
-                STATIC_URL . '/f/v1/js/my/??comment.js',
-                STATIC_URL . '/tinymce/tinymce.min.js',
-            )
+            STATIC_URL . '/f/v1/js/my/??product.js',
+            STATIC_URL . '/f/v1/js/library/tinymce/tinymce.min.js'
         ];
     }
 
@@ -95,7 +86,7 @@ class ProductController extends MyController {
         $arrParentCommentList = $serviceComment->getListLimitInProduct($arrCondition, $intPage, $intLimit, 'comm_id ASC');
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Pagingajax');   //phân trang ajax
         $pagingComment = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotalComment, $intPage, $intLimit, 'product', array('controller' => 'product', 'action' => 'detail', 'page' => $intPage));
-        
+
         //get list userComment
         $totalComment = 0;
         $arrListCommentChildren = array();
@@ -159,39 +150,20 @@ class ProductController extends MyController {
             'arrProductInCate' => $arrProductInCate,
             'arrCategoryParent' => $arrCategoryParent,
             'arrUserDetail' => $arrUserDetail,
-            'intTotalComment'=>$intTotalComment,
-            'arrParentCommentList'=>$arrParentCommentList,
-            'pagingComment'=>$pagingComment,
-            'arrListCommentChildren'=>$arrListCommentChildren,
-            'arrListUserComment'=>$arrListUserComment
+            'intTotalComment' => $intTotalComment,
+            'arrParentCommentList' => $arrParentCommentList,
+            'pagingComment' => $pagingComment,
+            'arrListCommentChildren' => $arrListCommentChildren,
+            'arrListUserComment' => $arrListUserComment
         );
     }
 
     public function addAction() {
-        if (UID < 1) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
-        }
         $params = $this->params()->fromRoute();
-        //category
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $serviceDistrict = $this->serviceLocator->get('My\Models\District');
-        $arrCategoryList = $serviceCategory->getList(array('not_cate_parent' => 0, 'cate_status' => 1));
-        $arrCategory = unserialize(ARR_CATEGORY);
-//        p($arrCategory);die;
-        foreach ($arrCategory as $key => $value) {
-            foreach ($arrCategoryList as $val) {
-                if ($val['cate_parent'] == $value['cate_id']) {
-                    $arrCategory[$key]['cate_children'][] = $val;
-                }
-            }
-        }
         $errors = array();
-        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
-        $arrDistrictList = $serviceDistrict->getList(array('city_id' => 9, 'dist_status' => 0));
 
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
-//            p($params);die;
             if (empty($params['category'])) {
                 $errors['category'] = 'Chưa chọn danh mục cho tin rao vặt !';
             }
@@ -202,12 +174,10 @@ class ProductController extends MyController {
                     $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
                 }
             }
-//            p('a');die;
             if (empty($params['properties'])) {
                 $errors['properties'] = 'Chưa chọn Nhu cầu cho tin rao vặt !';
             }
             $intProperties = (int) $params['properties'];
-//            p($intProperties);die;
             if ($params['properties']) {
                 $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
                 $intTotalProperties = $serviceProperties->getTotal(array('prop_id' => $intProperties, 'prop_status' => 1));
@@ -262,8 +232,6 @@ class ProductController extends MyController {
         return array(
             'params' => $params,
             'errors' => $errors,
-            'arrCategory' => $arrCategory,
-            'arrDistrictList' => $arrDistrictList
         );
     }
 
