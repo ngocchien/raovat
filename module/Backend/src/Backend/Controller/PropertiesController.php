@@ -11,7 +11,7 @@ class PropertiesController extends MyController {
 
     public function __construct() {
         $this->externalJS = [
-            STATIC_URL . '/b/js/my/??category.js'
+            STATIC_URL . '/b/js/my/??properties.js'
         ];
     }
 
@@ -22,7 +22,7 @@ class PropertiesController extends MyController {
         $arrCondition = array(
             'not_prop_status' => -1
         );
-        
+
         $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
         $arrPropertiesList = $serviceProperties->getListLimit($arrCondition, $intPage, $intLimit, 'prop_grade ASC');
 
@@ -188,7 +188,7 @@ class PropertiesController extends MyController {
                     'not_prop_sort' => $propSort
                 );
                 $arrResult = $serviceProperties->getDetail($arrCondition);
-                
+
                 if ($arrResult) {
                     $errors[] = 'Nhu cầu rao vặt này đã tồn tại trong hệ thống!';
                 }
@@ -261,49 +261,50 @@ class PropertiesController extends MyController {
         $arrParamsRoute = $this->params()->fromRoute();
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
-            if (empty($params['categoryId'])) {
+            if (empty($params['id'])) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi ! Vui lòng thử lại!')));
             }
-            $intCategoryId = (int) $params['categoryId'];
+            $id = (int) $params['id'];
             //find Category in system
-            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-            $arrConditionCategory = array(
-                'cate_id' => $intCategoryId
+            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+            $arrCondition = array(
+                'prop_id' => $id,
+                'not_prop_status' => -1
             );
-            $arrCategory = $serviceCategory->getDetail($arrConditionCategory);
+            $arrProperties = $serviceProperties->getDetail($arrCondition);
 
-            if (empty($arrCategory)) {
-                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Find not found Category in DB!')));
+            if (empty($arrProperties)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Find not found Properties in DB!')));
             }
 
             /**/
-            $arrCategoryChild = [];
-            if ($arrCategory['parent_id'] == 0) {
+            $arrPropertiesChild = [];
+            if ($arrProperties['parent_id'] == 0) {
                 $arrConditionChild = [
-                    'parent_id' => $intCategoryId,
+                    'parent_id' => $id,
                     'not_cate_status' => -1
                 ];
-                $arrCategoryChild = $serviceCategory->getDetail($arrConditionChild);
+                $arrPropertiesChild = $serviceProperties->getDetail($arrConditionChild);
             }
 
-            if (!empty($arrCategoryChild)) {
-                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Danh mục này có nhiều danh mục con! Vui lòng xóa các danh mục con trước!')));
+            if (!empty($arrPropertiesChild)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Nhóm nhu cầu này có nhiều nhu cầu con! Vui lòng xóa các nhu cầu con trước!')));
             }
 
             $arrParams = array(
-                'cate_status' => -1,
+                'prop_status' => -1,
                 'user_updated' => UID,
                 'updated_date' => time()
             );
 
-            $result = $serviceCategory->edit($arrParams, $intCategoryId);
+            $result = $serviceProperties->edit($arrParams, $id);
 
             if ($result) {
                 $serviceLogs = $this->serviceLocator->get('My\Models\Logs');
-                $arrLog = General::createLogs($arrParamsRoute, $arrParams, $intCategoryId);
+                $arrLog = General::createLogs($arrParamsRoute, $arrParams, $id);
                 $serviceLogs->add($arrLog);
 
-                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Deleted Category Success!')));
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Deleted Properties Success!')));
             }
 
             return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý ! Vui lòng thử lại!')));

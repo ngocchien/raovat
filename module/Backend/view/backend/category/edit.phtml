@@ -65,6 +65,25 @@ $arrCategory = $this->arrCategory;
                         <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'change-icon')); ?>" target="_blank"> <b> <i class=" icon-hand-right"></i> Kích vào đây để Chọn Icon <i class="icon-hand-left"></i></b></a>
                     </div>
                 </div>
+
+                <div class="form-group select-prop">
+                    <label class="col-lg-2 col-sm-2 control-label" for="cate_icon">Chọn nhóm nhu cầu cho danh mục</label>
+                    <div class="col-lg-5">
+                        <select name="prop_id" class="form-control prop_id">
+                            <option value="0" <?php if (empty($this->params['prop_id'])): ?> selected="selected"<?php endif; ?>>Vui lòng chọn nhu cầu</option>
+                            <?php
+                            if (!empty($arrPropertiesList)):
+                                foreach ($arrPropertiesList as $arrProperties):
+                                    ?>
+                                    <option value="<?php echo $arrProperties['prop_id']; ?>" <?php echo (!empty($this->params['prop_id']) && $this->params['prop_id'] == $arrProperties['prop_id']) ? 'selected' : ($arrCategory['prop_id'] == $arrProperties['prop_id'] ? 'selected' : ''); ?>><?php echo $arrProperties['prop_name']; ?></option>
+                                    <?php
+                                endforeach;
+                            endif;
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-lg-2 col-sm-2 control-label" for="cate_sort">Sắp xếp</label>
                     <div class="col-lg-5">
@@ -111,9 +130,9 @@ $arrCategory = $this->arrCategory;
 
             </form>
         </div>
-
     </section>
+    <input type="hidden" class="parent" value="<?php echo $arrCategory['parent_id']; ?>">
 </section>
 <script type="text/javascript">
-    Category.add();
+    Category.edit();
 </script>

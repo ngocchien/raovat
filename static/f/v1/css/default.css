@@ -1097,7 +1097,7 @@ label.cabinet input.file {
     cursor: pointer;
 }
 label.cabinet::before{
-    content: "Chọn hình đại diện";
+    content: "Chọn hình đại diện cho tin rao vặt";
     position: absolute !important;
     top: 12px !important;
     left: 50px !important;

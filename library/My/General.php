@@ -186,7 +186,6 @@ class General {
         }
 
         $arrFile = $arrFile[0] ? $arrFile : array($arrFile);
-//        p($arrFile);die;
         $adapter = new \Zend\File\Transfer\Adapter\Http();
         $is_image = new \Zend\Validator\File\IsImage();
         $size = new \Zend\Validator\File\Size(array('max' => 2097152)); //2MB
@@ -203,30 +202,28 @@ class General {
                 ));
                 if ($adapter->receive($file['name'])) {
                     $arrSourceImage = UPLOAD_URL . $strControllerName . '/' . $strTime . $newFileName;
-                    if ($resize != 1) {
-                        $arrSourceImagePath = UPLOAD_PATH . $strControllerName . '/' . $strTime . $newFileName;
-                        $img = new \My\SimpleImage\SimpleImage();
-                        $img->load($arrSourceImagePath)->overlay(STATIC_PATH . '/logo_insert.png', 'bottom right', .30)->save($arrSourceImagePath);
-                    }
                 }
-//                p('abc');die;
-                $options = array('resizeUp' => true, 'jpegQuality' => 60);
+
                 $arrThumb = self::getThumbSize($strControllerName);
+                $serviceImage = new \Intervention\Image\ImageManager();
                 $arrThumbUploaded = array();
-                if ($arrThumb) {
-                    require_once VENDOR_DIR . 'phpThumb/ThumbLib.inc.php';
-                    foreach ($arrThumb as $i => $thumbSize) {
-                        list($width, $height) = explode('x', $thumbSize);
-                        $thumbFileDir = $strFolderThumb . $thumbSize . '_' . $newFileName;
-                        $tmp = \PhpThumbFactory::create($strFolderByDate . $newFileName, $options);
-                        $tmp->fixedresize((int) $width, (int) $height)->save($thumbFileDir);
-                        if (is_file($thumbFileDir)) {
-                            $thumbFileURL = UPLOAD_URL . $strControllerName . '/' . $strTime . 'thumbs/' . $thumbSize . '_' . $newFileName;
-                            $arrThumbUploaded[$thumbSize] = $thumbFileURL;
-                        }
+
+                foreach ($arrThumb as $thumbSize) {
+                    list($width, $height) = explode('x', $thumbSize);
+                    $thumbFileDir = $strFolderThumb . $thumbSize . '/';
+
+                    if (!is_dir($thumbFileDir)) {
+                        mkdir($thumbFileDir, 0777, true);
+                        chmod($thumbFileDir, 0777);
+                    }
+                    $image = $serviceImage->make($strFolderByDate . $newFileName)->resize($width, $height);
+                    $resultThumb = $image->save($thumbFileDir . $newFileName);
+
+                    if ($resultThumb) {
+                        $arrThumbImage[$thumbSize] = UPLOAD_URL . $strControllerName . '/' . $strTime . 'thumbs/' . $thumbSize . '/' . $newFileName;
                     }
                 }
-                array_push($arrResult, array('sourceImage' => $arrSourceImage, 'thumbImage' => $arrThumbUploaded));
+                array_push($arrResult, array('sourceImage' => $arrSourceImage, 'thumbImage' => $arrThumbImage));
             }
         }
         return $arrResult;
@@ -314,17 +311,7 @@ class General {
                 case 'cate':
                     return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
                 case 'content':
-                    return array('150x100', '170x170', '600x300', '224x224', '291250', '116x116', '200x200');
-                    return array(
-                        '83x83',
-                        '150x100',
-                        '175x125',
-                        '600x300',
-                        '224x224',
-                        '330x330',
-                        '220x220',
-                        '50x50',
-                    );
+                    return array('150x100', '224x224', '291x250');
                 default:
                     return array();
             }

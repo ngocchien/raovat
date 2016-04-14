@@ -2,64 +2,32 @@ var Content = {
     index: function () {
         $(document).ready(function () {
             Content.add();
-            $(".list-image .delete-images").on("click",function(){
-                $('.list-image').attr('hidden','hidden');
+            $(".list-image .delete-images").on("click", function () {
+                $('.list-image').attr('hidden', 'hidden');
                 $('.img-prod .main-images').val('');
                 $('.upload_file').removeAttr('hidden');
             });
         });
     },
-    
-    add: function(){
+    add: function () {
         $(document).ready(function () {
-            var cateID = $('#detail .category').val();
-            console.log(cateID);
-            if(cateID!=''){
-                $.ajax({
-                    type: "POST",
-                    url: propURL,
-                    dataType: "json",
-                    data: {
-                        'cateID': cateID,
-                    },
-                    success: function (result) {
-                        if(result.st==1){
-                            $('#detail .properties').html(result.data);
-                        }else{
-                            return fales;
-                        }
-                    }
-                });
-            }
-            $('#detail .category').on('change',function(){
-                cateID = $(this).val();
-                if(cateID!=''){
-                    $.ajax({
-                        type: "POST",
-                        url: propURL,
-                        dataType: "json",
-                        data: {
-                            'cateID': cateID,
-                        },
-                        success: function (result) {
-                            if(result.st==1){
-                                $('#detail .properties').html(result.data);
-                            }else{
-                                return fales;
-                            }
-                        }
-                    });
-                }
+            __changeCategory();
+            $('#detail .category').on('change', function () {
+                __changeCategory();
             })
-            
+
             $(".file").change(function (e) {
+                var total = 0;
+                $('.list-image .img-prod').each(function () {
+                    total += 1;
+                })
+                if (total >= 5) {
+                    bootbox.alert('Max file upload is 5!');
+                    return false;
+                }
                 if (this.disabled)
                     return bootbox.alert('File upload not supported!');
                 var F = this.files;
-//                console.log(F);
-//                if (F && F[0])
-//                    for (var i = 0; i < F.length; i++)
-//                        readImage(F[i]);
                 var data = new FormData();
                 jQuery.each(jQuery('.file')[0].files, function (i, file) {
                     data.append('file-' + i, file);
@@ -72,29 +40,67 @@ var Content = {
                         contentType: false, // The content type used when sending data to the server.
                         cache: false, // To unable request pages to be cached
                         processData: false, // To send DOMDocument or non processed data file it is set to false
-                        dataType:'json',
+                        dataType: 'json',
                         success: function (result)   // A function to be called if request succeeds
                         {
-                            if(result.st==1){
-                                $('.upload_file').attr('hidden','hidden');
-                                $('.list-image').removeAttr('hidden');
-                                $(".list-image .view-images").attr("href",result.sourceImage);
-                                $('.img-prod .prod-images').attr('src',result.images);
-                                $('.img-prod .main-images').val(result.data);
-                                $(".list-image .delete-images").on("click",function(){
-                                    $('.list-image').attr('hidden','hidden');
-                                    $('.img-prod .main-images').val('');
-                                    $('.upload_file').removeAttr('hidden');
-                                });
-                            }else{
-//                                bootbox.alert(result.ms);
+                            if (result.st == 1) {
+                                $('.list-image').show();
+                                $('.list-image').append(result.html);
+                                $('.list-image .delete-images').on('click', function () {
+                                    $(this).closest('.img-prod').remove();
+                                })
+
+                            } else {
+                                bootbox.alert(result.ms);
                             }
-                           
+
                         }
                     });
                 }
             });
-            
+
         });
     },
 };
+
+function __changeCategory() {
+    var cateID = $('#detail .category').val();
+    if (cateID != '') {
+        $.ajax({
+            type: "POST",
+            url: propURL,
+            dataType: "json",
+            data: {
+                'cateID': cateID,
+            },
+            success: function (result) {
+                if (result.st == -1) {
+                    bootbox.alert(result.ms, function () {
+                        return false;
+                    });
+                } else {
+                    var html = '<option value="0">Chọn nhu cầu</option>';
+                    if (result.st == 1) {
+                        $.each(result.data, function (k, v) {
+                            html += '<option value="' + v.prop_id + '">' + v.prop_name + '</option>'
+                        });
+                        $('div.select-properties').show();
+                        $('select.properties').html(html);
+                    } else {
+                        $('select.properties').html(html);
+                        $('div.select-properties').hide();
+                    }
+                }
+            }
+        });
+    }
+}
+;
+
+function __valid(els) {
+    var count = 1;
+    els.each(function () {
+        $(this).html(count);
+        count++;
+    });
+}

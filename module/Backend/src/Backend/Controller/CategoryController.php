@@ -68,6 +68,15 @@ class CategoryController extends MyController {
             'not_cate_status' => -1
         ];
         $arrParentList = $serviceCategory->getList($arrConditionParent);
+
+        //Nhóm nhu cầu
+        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+        $arrConditionProperties = [
+            'not_prop_status' => -1,
+            'parent_id' => 0
+        ];
+        $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
+
         $errors = array();
 
         if ($this->request->isPost()) {
@@ -80,6 +89,7 @@ class CategoryController extends MyController {
             $cateMetaKeyword = trim($params['cate_meta_keyword']);
             $cateStatus = $params['cate_status'];
             $parentId = $params['parent_id'];
+            $propId = empty($params['prop_id']) ? null : (int) $params['prop_id'];
 
             if (empty($cateName)) {
                 $errors['cate_name'] = 'Tên danh mục không được bỏ trống!';
@@ -127,7 +137,8 @@ class CategoryController extends MyController {
                         'cate_status' => $cateStatus,
                         'created_date' => time(),
                         'user_created' => UID,
-                        'parent_id' => $parentId
+                        'parent_id' => $parentId,
+                        'prop_id' => $propId
                     ];
                     $intResult = $serviceCategory->add($arrParams);
                     if ($intResult) {
@@ -140,7 +151,7 @@ class CategoryController extends MyController {
                             }
                             $dataUpdate = array(
                                 'cate_grade' => $detailParent['cate_grade'] . sprintf("%04d", $cateSort) . ':' . sprintf("%04d", $intResult) . ':',
-                                'cate_status' => $detailParent['cate_status']
+                                'cate_status' => $detailParent['cate_status'],
                             );
                         } else {
                             $dataUpdate = array(
@@ -163,7 +174,8 @@ class CategoryController extends MyController {
         return array(
             'params' => $params,
             'errors' => $errors,
-            'arrParentList' => $arrParentList
+            'arrParentList' => $arrParentList,
+            'arrPropertiesList' => $arrPropertiesList
         );
     }
 
@@ -191,6 +203,14 @@ class CategoryController extends MyController {
             $arrParentList = $serviceCategory->getList($arrConditionParent);
         }
 
+        //Nhóm nhu cầu
+        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+        $arrConditionProperties = [
+            'not_prop_status' => -1,
+            'parent_id' => 0
+        ];
+        $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
+
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
 
@@ -202,6 +222,7 @@ class CategoryController extends MyController {
             $cateMetaKeyword = trim($params['cate_meta_keyword']);
             $cateStatus = $params['cate_status'];
             $parentId = (int) $params['parent_id'];
+            $propId = empty($params['prop_id']) ? null : (int) $params['prop_id'];
 
             if (empty($cateName)) {
                 $errors['cate_name'] = 'Tên danh mục không được bỏ trống!';
@@ -250,7 +271,8 @@ class CategoryController extends MyController {
                         'cate_status' => $cateStatus,
                         'updated_date' => time(),
                         'user_updated' => UID,
-                        'parent_id' => $parentId
+                        'parent_id' => $parentId,
+                        'prop_id' => $propId
                     );
 
                     $intResult = $serviceCategory->edit($arrParams, $intCategoryId);
@@ -302,7 +324,8 @@ class CategoryController extends MyController {
             'params' => $params,
             'arrCategory' => $arrCategory,
             'errors' => $errors,
-            'arrParentList' => $arrParentList
+            'arrParentList' => $arrParentList,
+            'arrPropertiesList' => $arrPropertiesList
         );
     }
 
@@ -335,7 +358,7 @@ class CategoryController extends MyController {
                 $arrCategoryChild = $serviceCategory->getDetail($arrConditionChild);
             }
 
-            if(!empty($arrCategoryChild)){
+            if (!empty($arrCategoryChild)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Danh mục này có nhiều danh mục con! Vui lòng xóa các danh mục con trước!')));
             }
 

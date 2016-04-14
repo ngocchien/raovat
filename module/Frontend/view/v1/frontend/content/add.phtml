@@ -65,42 +65,35 @@
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-6 padding-control">
+                                                <div class="col-sm-6 padding-control select-properties" style="display: none">
                                                     <b>Chọn Nhu cầu</b>
                                                     <select class="form-control properties" name="properties">
+                                                        <option value="0"> Chọn nhu cầu</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-12 padding-control">
                                                     <b>Nhập tiêu đề cho tin rao vặt</b>
-                                                    <input type="text" class="form-control" name="prod_title" />
+                                                    <input type="text" class="form-control" name="content_title" />
                                                 </div>
 
                                                 <div class="col-sm-5 padding-control upload_file">
                                                     <span class="fa fa-image form-control-feedback"></span>
                                                     <label class="cabinet">
-                                                        <input type="file" class="file" name="manifest_file_import" placeholder="Chọn hình đại diện cho tin rao vặt">
+                                                        <input type="file" class="file" placeholder="Chọn hình đại diện cho tin rao vặt">
                                                     </label>
                                                 </div>
-                                                <div class="col-sm-3 list-image" hidden>
-                                                    <b>Hình ảnh đại diện</b>
-                                                    <div class="img-prod">
-                                                        <img class="prod-images" src=""><br/>
-                                                        <div class="pull-right">
-                                                            <a target="_bank" class="tooltips view-images" data-placement="top" data-original-title="Xem"><i class="fa fa-search"></i></a>
-                                                            <a class="tooltips delete-images" data-placement="top" data-original-title="Xóa"><i class="fa fa-trash-o"></i></a>
-                                                        </div>
-                                                        <input type="hidden" class="main-images" name="image_prod" value=""/>
-                                                    </div>
+
+                                                <div class="col-sm-12 padding-control list-image">
                                                 </div>
 
                                                 <div class="col-sm-12 padding-control">
                                                     <b>Nội dung tin rao vặt</b>
-                                                    <textarea class="form-control editor" name="prod_content"></textarea>
+                                                    <textarea class="form-control editor" cols="10" rows="50" name="content_content"></textarea>
                                                 </div>
 
                                                 <div class="col-sm-12 padding-control">
                                                     <b>Nhập tags cho tin rao vặt</b>
-                                                    <input type="text" class="form-control" name="prod_tags" />
+                                                    <input type="text" class="form-control" name="content_tags" />
                                                 </div>
 
                                                 <input type="submit" value="ĐĂNG RAO VẶT">
@@ -157,7 +150,9 @@
     UploadURL = '<?php echo $this->serverUrl() . $this->Url('upload', array('controller' => 'product', 'action' => 'upload')); ?>';
     tinymce.init({
         selector: 'textarea',
-        plugins: 'example'
+        plugins: 'example',
+        width: "300",
+        height: "200"
                 //        toolbar: 'example'
     });
 </script>

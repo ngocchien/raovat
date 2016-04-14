@@ -5,7 +5,8 @@ namespace Frontend\Controller;
 use My\Controller\MyController,
     My\General,
     My\Validator\Validate,
-    Zend\Validator\File\Size;
+    Zend\Validator\File\Size,
+    Zend\View\Model\ViewModel;
 
 class ContentController extends MyController {
     /* @var $serviceCategory \My\Models\Category */
@@ -164,53 +165,54 @@ class ContentController extends MyController {
 
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
+
             if (empty($params['category'])) {
                 $errors['category'] = 'Chưa chọn danh mục cho tin rao vặt !';
             }
-            $intCateID = (int) ($params['category']);
-            if ($params['category'] != '') {
-                $arrCategoryDetail = $serviceCategory->getDetail(array('cate_id' => $intCateID, 'cate_status' => 1));
-                if (empty($arrCategoryDetail)) {
-                    $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
-                }
+            $intCategoryId = (int) ($params['category']);
+            $arrCategoryList = unserialize(ARR_CATEGORY);
+
+            if (empty($arrCategoryList[$intCategoryId]) || empty($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']])) {
+                $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
             }
-            if (empty($params['properties'])) {
-                $errors['properties'] = 'Chưa chọn Nhu cầu cho tin rao vặt !';
-            }
+
             $intProperties = (int) $params['properties'];
-            if ($params['properties']) {
+            if ($intProperties) {
                 $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-                $intTotalProperties = $serviceProperties->getTotal(array('prop_id' => $intProperties, 'prop_status' => 1));
-                if ($intTotalProperties <= 0) {
-                    $errors['properties'] = 'Nhu cầu rao vặt này không tồn tại trong hệ thống !';
+                $arrProperties = $serviceProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
+
+                if (empty($arrProperties)) {
+                    $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
+                } else {
+                    if ($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']]['prop_id'] != $arrProperties['parent_id']) {
+                        $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
+                    }
                 }
             }
 
-            if (empty($params['prod_title'])) {
-                $errors['prod_title'] = 'Chưa nhập tiêu đề cho tin rao vặt !';
+            if (empty($params['content_title'])) {
+                $errors['content_title'] = 'Chưa nhập tiêu đề cho tin rao vặt !';
             }
-            $strProdTitle = htmlentities($params['prod_title']);
-            if (empty($params['prod_content'])) {
-                $errors['prod_content'] = 'Chưa nhập nội dung cho tin rao vặt !';
-            }
-            $strContent = \My\Minifier\HtmlMin::minify($params['prod_content']);
 
-            if (empty($params['prod_tags'])) {
-                $errors['prod_tags'] = 'Chưa chọn tags cho tin rao vặt !';
+            if (empty($params['content_content'])) {
+                $errors['content_content'] = 'Chưa nhập nội dung cho tin rao vặt !';
+            }
+
+            if (empty($params['content_tags'])) {
+                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
             }
 
             if (empty($errors)) {
                 $arrDataProd = array(
-                    'prod_name' => $strProdTitle,
-                    'prod_slug' => General::getSlug(trim($params['prod_title'])),
-                    'prod_detail' => $strContent,
-                    'cate_id' => $intCateID,
-                    'prod_created' => time(),
+                    'cont_title' => htmlentities($params['content_title']),
+                    'cont_slug' => General::getSlug(trim($params['content_title'])),
+                    'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
+                    'cate_id' => $intCategoryId,
                     'user_created' => UID,
-                    'prod_image' => trim($params['image_prod']),
-                    'prop_id' => $intTotalProperties,
-                    'user_id' => UID,
-                    'prod_location' => (int) $params['location']
+                    'cont_image' => trim($params['image_prod']),
+                    'prop_id' => $intProperties,
+                    'created_date' => time()
+//                    'ip_address' => (int) $params['location']
                 );
                 $intResult = $serviceProduct->add($arrDataProd);
                 if ($intResult > 0) {
@@ -236,42 +238,92 @@ class ContentController extends MyController {
     }
 
     public function getPropertiesAction() {
-        $params = $this->params()->fromPost();
-        if (empty($params)) {
-            return $this->getResponse()->setContent(json_encode(array('st' => -1)));
-        }
-        if (empty($params['cateID'])) {
-            return $this->getResponse()->setContent(json_encode(array('st' => -1)));
-        }
-        $validator = new Validate();
-        if (!$validator->Digits($params['cateID'])) {
-            return $this->getResponse()->setContent(json_encode(array('st' => -1)));
-        }
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $arrCategoryDetail = $serviceCategory->getDetail(array('cate_id' => (int) $params['cateID']));
+        $arrResult = [
+            'st' => -1,
+            'ms' => 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát'
+        ];
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
 
-        $strCateID = $arrCategoryDetail['cate_parent'];
-        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-        $arrPropertiesList = $serviceProperties->getList(array('cate_id' => $strCateID, 'prop_status' => 1));
-        if (empty($arrPropertiesList)) {
-            return $this->getResponse()->setContent(json_encode(array('st' => -1)));
+            if (empty($params['cateID'])) {
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+
+            $validator = new Validate();
+            if (!$validator->Digits($params['cateID'])) {
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+            $categoryId = $params['cateID'];
+
+            $arrCategoryList = unserialize(ARR_CATEGORY);
+            if (empty($arrCategoryList[$categoryId])) {
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+
+            $arrCategory = $arrCategoryList[$categoryId];
+
+            if (empty($arrCategoryList[$arrCategory['parent_id']])) {
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+
+            $propertiesId = $arrCategoryList[$arrCategory['parent_id']]['prop_id'];
+
+            if (!$propertiesId) {
+                $arrResult = [
+                    'st' => 0,
+                    'data' => []
+                ];
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+
+            $arrConditionProperties = [
+                'parent_id' => $propertiesId,
+                'prop_status' => 1
+            ];
+
+            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+            $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
+
+            if (empty($propertiesId)) {
+                $arrResult = [
+                    'st' => 0,
+                    'data' => []
+                ];
+                return $this->getResponse()->setContent(json_encode($arrResult));
+            }
+
+            $arrResult = [
+                'st' => 1,
+                'data' => $arrPropertiesList
+            ];
+            return $this->getResponse()->setContent(json_encode($arrResult));
         }
-//        $data = '<option > --- Chọn nhu cầu ---</option>';
-        foreach ($arrPropertiesList as $value) {
-            $data .= '<option value="' . $value['prop_id'] . '" style="color: #0063DC">' . $value['prop_name'] . '</option>';
-        }
-        return $this->getResponse()->setContent(json_encode(array('st' => 1, 'data' => $data)));
-        die();
+        return $this->getResponse()->setContent(json_encode($arrResult));
     }
 
     public function uploadAction() {
         $params = $this->params()->fromPost();
         $files = $this->params()->fromFiles();
-        $return = General::ImageUpload($files['file-0'], 'product', $resize = 1);   //xem phần profile.js - phần upload dưới cùng
-        if (empty($return)) {
-            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<br>Hình up lên phải là định dạng hình ảnh (.jpg, .png , ...) ! Và dung lượng không được quá 1MB !</br>')));
+
+        if (empty($files)) {
+            return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => 'Bạn vui lòng chọn hình!']));
         }
-        return $this->getResponse()->setContent(json_encode(array('st' => 1, 'data' => json_encode($return[0]), 'images' => $return[0]['thumbImage']['116x116'], 'sourceImage' => $return[0]['sourceImage'])));
+        $return = General::ImageUpload($files['file-0'], 'content');   //xem phần profile.js - phần upload dưới cùng
+
+        if (empty($return)) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<br>Hình up lên phải là định dạng hình ảnh (.jpg, .png , ...) ! Và dung lượng không được quá 2MB !</br>')));
+        }
+
+        $template = 'frontend/content/upload';
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        $viewModel->setTemplate($template);
+        $viewModel->setVariables(
+                ['arrImage' => $return]
+        );
+        $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
+        return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html)));
     }
 
     public function editAction() {

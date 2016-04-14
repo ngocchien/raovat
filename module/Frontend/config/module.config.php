@@ -226,14 +226,14 @@ return array(
                 'options' => array(
                     'route' => '/hinh-anh[.html]',
                     'constraints' => array(
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'upload',
 //                        'filename'=>'[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'upload',
                     ),
                 ),
@@ -601,6 +601,7 @@ return array(
             'frontend/classify' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/classify.phtml',
             'frontend/footer' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/footer.phtml',
             'frontend/template_email' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/template_email.phtml',
+            'frontend/content/upload' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/upload.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,
