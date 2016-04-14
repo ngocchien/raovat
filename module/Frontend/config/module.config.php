@@ -205,6 +205,24 @@ return array(
                     ),
                 ),
             ),
+            
+            'add-content-complete' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/dang-rao-vat-thanh-cong[.html]',
+                    'constraints' => array(
+                        'controller' => 'content',
+                        'action' => 'complete',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'complete',
+                    ),
+                ),
+            ),
+            
             'getproperties' => array(
                 'type' => 'Segment',
                 'options' => array(

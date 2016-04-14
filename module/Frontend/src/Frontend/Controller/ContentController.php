@@ -6,7 +6,8 @@ use My\Controller\MyController,
     My\General,
     My\Validator\Validate,
     Zend\Validator\File\Size,
-    Zend\View\Model\ViewModel;
+    Zend\View\Model\ViewModel,
+    Zend\Session\Container;
 
 class ContentController extends MyController {
     /* @var $serviceCategory \My\Models\Category */
@@ -160,20 +161,20 @@ class ContentController extends MyController {
     }
 
     public function addAction() {
+
         $params = $this->params()->fromRoute();
         $errors = array();
 
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
-
             if (empty($params['category'])) {
                 $errors['category'] = 'Chưa chọn danh mục cho tin rao vặt !';
-            }
-            $intCategoryId = (int) ($params['category']);
-            $arrCategoryList = unserialize(ARR_CATEGORY);
-
-            if (empty($arrCategoryList[$intCategoryId]) || empty($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']])) {
-                $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
+            } else {
+                $intCategoryId = (int) ($params['category']);
+                $arrCategoryList = unserialize(ARR_CATEGORY);
+                if (empty($arrCategoryList[$intCategoryId]) || empty($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']])) {
+                    $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
+                }
             }
 
             $intProperties = (int) $params['properties'];
@@ -202,27 +203,106 @@ class ContentController extends MyController {
                 $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
             }
 
-            if (empty($errors)) {
-                $arrDataProd = array(
-                    'cont_title' => htmlentities($params['content_title']),
-                    'cont_slug' => General::getSlug(trim($params['content_title'])),
-                    'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
-                    'cate_id' => $intCategoryId,
-                    'user_created' => UID,
-                    'cont_image' => trim($params['image_prod']),
-                    'prop_id' => $intProperties,
-                    'created_date' => time()
-//                    'ip_address' => (int) $params['location']
-                );
-                $intResult = $serviceProduct->add($arrDataProd);
-                if ($intResult > 0) {
-                    //update tổng số rao vặt trong danhmục
-                    $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
-                    //update tổng số rao vặt danh mục cha
-                    $serviceCategory->edit(array('cate_total_product' => $arrCategory[$arrCategoryDetail['cate_parent']]['cate_total_product'] + 1), $arrCategoryDetail['cate_parent']);
-                    return $this->redirect()->toRoute('product', array('productslug' => General::getSlug(trim($params['prod_title'])), 'productId' => $intResult));
+            if (empty(CUSTOMER_ID)) {
+
+                if (empty($params['name'])) {
+                    $errors['userInfo']['name'] = 'Vui lòng nhập họ và tên để liên lạc !';
                 }
-                $errors[] = 'Xảy ra lỗi trong quá trình xử lý !';
+
+                if (empty($params['email'])) {
+                    $errors['userInfo']['email'] = 'Vui lòng nhập email liên lạc';
+                } else {
+                    $validatorEmail = new Zend\Validator\EmailAddress();
+                    if (!$validatorEmail->isValid($params['email'])) {
+                        $errors['userInfo']['email'] = 'Địa chỉ email không hợp lệ!';
+                    }
+                }
+
+                if (empty($params['phone'])) {
+                    $errors['userInfo']['phone'] = 'Vui lòng nhập số điện thoại liên lạc';
+                } else {
+                    $validationPhone = new Zend\I18n\Validator\IsInt;
+                    if (!$validationPhone->isValid($params['phone'])) {
+                        $errors['userInfo']['phone'] = 'Số điện thoại không hợp lệ';
+                    } else {
+                        $validBetween = new Zend\Validator\Between(array('min' => 8, 'max' => 12));
+                        if (!$validBetween->isValid($params['phone'])) {
+                            $errors['userInfo']['phone'] = 'Số điện thoại phải từ 8 đến 12 số';
+                        }
+                    }
+                }
+
+                if (empty($params['password'])) {
+                    $errors['userInfo']['password'] = 'Vui lòng nhập mật khẩu để sửa tin';
+                } else {
+                    if (strlen($params['password']) < 6) {
+                        $errors['userInfo']['password'] = 'Mật khẩu phải từ 6 ký tự trở lên!';
+                    }
+                }
+            }
+            if (empty($errors)) {
+
+                /*
+                 * Kiểm tra spam và trùng lặp tin
+                 */
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                if (empty(CUSTOMER_ID)) {
+                    $arrCondition = [
+                        'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR'),
+                        'created_date_today' => 1
+                    ];
+                    $intTotal = $serviceContent->getTotal($arrCondition);
+                    if ($intTotal >= 3) {
+                        $errors['total'] = 'Bạn chưa đăng ký thành viên nên chỉ được đăng tối đa 3 tin 1 ngày! Mời bạn đăng ký để sử dụng đầu đủ tính năng!';
+                    }
+                } else {
+                    $arrCondition = [
+                        'cont_slug' => General::getSlug(trim($params['content_title'])),
+                        'user_created' => CUSTOMER_ID,
+                        'cate_id' => $intCategoryId
+                    ];
+
+                    $arrContent = $serviceContent->getDetail($arrCondition);
+                    if ($arrContent) {
+                        $errors['total'] = 'Bạn đã đăng tin này trong, danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
+                    }
+                }
+
+                if (empty($errors)) {
+                    $arrData = array(
+                        'cont_title' => htmlentities($params['content_title']),
+                        'cont_slug' => General::getSlug(trim($params['content_title'])),
+                        'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
+                        'cate_id' => $intCategoryId,
+                        'user_created' => UID,
+                        'cont_image' => trim($params['image_prod']),
+                        'prop_id' => $intProperties,
+                        'created_date' => time(),
+                        'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR')
+                    );
+                    if (empty(CUSTOMER_ID)) {
+                        $arrData['user_info'] = [
+                            'name' => $params['name'],
+                            'email' => $params['email'],
+                            'phone' => $params['phone'],
+                            'password' => $params['password']
+                        ];
+                    }
+                    $intResult = $serviceContent->add($arrData);
+
+                    if ($intResult > 0) {
+                        //update tổng số rao vặt trong danhmục
+//                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
+                        //update tổng số rao vặt danh mục cha
+//                        $serviceCategory->edit(array('cate_total_product' => $arrCategory[$arrCategoryDetail['cate_parent']]['cate_total_product'] + 1), $arrCategoryDetail['cate_parent']);
+
+                        $completeSession = new Container('contentComplete');
+                        $completeSession->complete = true;
+
+                        return $this->redirect()->toRoute('add-content-complete');
+                    }
+                    $errors['total'] = 'Xảy ra lỗi trong quá trình xử lý !';
+                }
             }
         }
 
@@ -231,10 +311,31 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, rao vặt, đăng tin rao vặt, rao vat, dang tin mua bán, dang tin rao vat quy nhon, tuyen dung - viec lam quy nhon, dang tin rao vat mien phi, dang rao vat chototquynhon.com'));
         $this->renderer->headMeta()->appendName('description', html_entity_decode('chototquynhon.com  - sRao vặt - Đăng tin rao vặt, đăng tin rao vặt , mua bán, tuyển dụng , tìm việc tại miễn phí quy nhơn - bình định , rao vặt quy nhơn bình định nhanh chóng , chototquynhon.com - đăng tin rao vặt nhanh chóng, miễn phí !' . General::TITLE_META));
 
+        $arrPropertiesList = [];
+        if ($params['category']) {
+            $arrCategoryList = unserialize(ARR_CATEGORY);
+            $propertiesId = $arrCategoryList[$arrCategoryList[$params['category']]['parent_id']]['prop_id'];
+            if ($propertiesId) {
+                $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+            }
+        }
+
         return array(
             'params' => $params,
             'errors' => $errors,
+            'arrPropertiesList' => $arrPropertiesList
         );
+    }
+
+    public function completeAction() {
+        $completeSession = new Container('contentComplete');
+
+        if ($completeSession->complete != true) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        $completeSession->getManager()->getStorage()->clear('contentComplete');
     }
 
     public function getPropertiesAction() {
@@ -244,7 +345,6 @@ class ContentController extends MyController {
         ];
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
-
             if (empty($params['cateID'])) {
                 return $this->getResponse()->setContent(json_encode($arrResult));
             }

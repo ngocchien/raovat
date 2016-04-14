@@ -1,19 +1,12 @@
 var Content = {
-    index: function () {
-        $(document).ready(function () {
-            Content.add();
-            $(".list-image .delete-images").on("click", function () {
-                $('.list-image').attr('hidden', 'hidden');
-                $('.img-prod .main-images').val('');
-                $('.upload_file').removeAttr('hidden');
-            });
-        });
-    },
     add: function () {
         $(document).ready(function () {
-            __changeCategory();
             $('#detail .category').on('change', function () {
                 __changeCategory();
+            })
+
+            $('.list-image .delete-images').on('click', function () {
+                $(this).closest('.img-prod').remove();
             })
 
             $(".file").change(function (e) {
@@ -47,6 +40,7 @@ var Content = {
                                 $('.list-image').show();
                                 $('.list-image').append(result.html);
                                 $('.list-image .delete-images').on('click', function () {
+                                    console.log('xxxxx');
                                     $(this).closest('.img-prod').remove();
                                 })
 
@@ -65,7 +59,7 @@ var Content = {
 
 function __changeCategory() {
     var cateID = $('#detail .category').val();
-    if (cateID != '') {
+    if (cateID != 0) {
         $.ajax({
             type: "POST",
             url: propURL,
@@ -93,6 +87,10 @@ function __changeCategory() {
                 }
             }
         });
+    } else {
+        var html = '<option value="0">Chọn nhu cầu</option>';
+        $('select.properties').html(html);
+        $('div.select-properties').hide();
     }
 }
 ;

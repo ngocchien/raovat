@@ -103,9 +103,9 @@ class AuthController extends MyController {
 
             $intResutl = $serviceUser->add($arrData);
             if ($intResutl > 0) {
-                $arrUser = $serviceUser->getDetail(array('user_name' => $strUsername, 'not_user_status' => -1));
+                $arrData['user_id'] = $intResutl;
                 $this->getAuthService()->clearIdentity();
-                $this->getAuthService()->getStorage()->write($arrUser);
+                $this->getAuthService()->getStorage()->write($arrData);
                 return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<b class="color-success">Chúc mừng bạn đã đăng ký tài khoản thành công!</b>')));
             }
             return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại!</center>')));
