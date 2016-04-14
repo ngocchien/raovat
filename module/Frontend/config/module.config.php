@@ -166,7 +166,6 @@ return array(
                     ),
                 ),
             ),
-            
             'edit_product' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -190,7 +189,6 @@ return array(
                     ),
                 ),
             ),
-            
             'addcontent' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -207,24 +205,22 @@ return array(
                     ),
                 ),
             ),
-            
             'getproperties' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/rao-vat/get-properties[.html]',
+                    'route' => '/lay-danh-sach-thuoc-tinh[.html]',
                     'constraints' => array(
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'get-properties',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'get-properties',
                     ),
                 ),
             ),
-            
             'upload' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -242,7 +238,6 @@ return array(
                     ),
                 ),
             ),
-            
             'tags' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -501,7 +496,6 @@ return array(
                     ),
                 ),
             ),
-
             'ordertracking' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -520,7 +514,6 @@ return array(
                     ),
                 ),
             ),
-            
             '404' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -537,7 +530,6 @@ return array(
                     ),
                 ),
             ),
-            
             'notfound' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -559,7 +551,6 @@ return array(
                     ),
                 ),
             ),
-            
             'menu' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -576,7 +567,6 @@ return array(
                     ),
                 ),
             ),
-            
         ),
     ),
     'module_layouts' => array(
@@ -601,7 +591,6 @@ return array(
 //            'frontend/main-left-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-left-banner.phtml',
 //            'frontend/main-right-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-right-banner.phtml',
 //            'frontend/main-bottom-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-bottom-banner.phtml',
-            
 //            'frontend/layout/viewQuotation' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/view-quotation.phtml',
 //            'error/production' => __DIR__ . '/../view/error/production.phtml',
             'frontend/header' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/header.phtml',

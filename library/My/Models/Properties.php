@@ -15,6 +15,21 @@ class Properties extends ModelAbstract {
     }
 
     public function getList($arrCondition = array()) {
+
+        $keyCaching = 'getListProperties' . $this->cache->read($this->tmpKeyCache);
+        if (count($arrCondition) > 0) {
+            foreach ($arrCondition as $k => $val) {
+                $keyCaching .= $k . ':' . $val . ':';
+            }
+        }
+        $keyCaching = crc32($keyCaching);
+        $arrResult = $this->cache->read($keyCaching);
+
+        if (empty($arrResult)) {
+            $arrResult = $this->getParentTable()->getList($arrCondition);
+            $this->cache->add($keyCaching, $arrResult, 60 * 60 * 24 * 7);
+        }
+
         return $this->getParentTable()->getList($arrCondition);
     }
 
@@ -70,13 +85,13 @@ class Properties extends ModelAbstract {
         }
         return $arrResult;
     }
-    
-    public function getListUnlike($arrCondition = array()) {
-        return $this->getParentTable()->getListUnlike($arrCondition);
-    }
-    
-    public function updateTree($dataUpdate){
+
+    public function updateTree($dataUpdate) {
         return $this->getParentTable()->updateTree($dataUpdate);
+    }
+
+    public function updateStatusTree($dataUpdate) {
+        return $this->getParentTable()->updateStatusTree($dataUpdate);
     }
 
 }

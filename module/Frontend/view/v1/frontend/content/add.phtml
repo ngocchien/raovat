@@ -50,9 +50,10 @@
                                                 <div class="col-sm-6 input-pad">
                                                     <b>Chọn Danh mục</b>
                                                     <select class="form-control category" name="category">
-                                                        <?php 
-                                                        $arrCategoryByParent= unserialize(ARR_CATEGORY_BY_PARENT);
-                                                        foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
+                                                        <?php
+                                                        $arrCategoryByParent = unserialize(ARR_CATEGORY_BY_PARENT);
+                                                        foreach (unserialize(ARR_CATEGORY_PARENT) as $value):
+                                                            ?>
                                                             <option value="<?php echo $value['cate_id']; ?>" disabled><?php echo $value['cate_name']; ?></option>
                                                             <?php
                                                             foreach ($arrCategoryByParent[$value['cate_id']] as $val):
@@ -148,13 +149,15 @@
                 </div>
             </div>
         </section><!--end details-->
-        <script>
-            Content.index();
-            propURL = '<?php echo $this->serverUrl() . $this->Url('getproperties', array('controller' => 'product', 'action' => 'get-properties')); ?>';
-            UploadURL = '<?php echo $this->serverUrl() . $this->Url('upload', array('controller' => 'product', 'action' => 'upload')); ?>';
-            tinymce.init({
-                selector: 'textarea',
-                plugins: 'example',
+    </div>
+</section>
+<script>
+    Content.index();
+    propURL = '<?php echo $this->serverUrl() . $this->Url('getproperties'); ?>';
+    UploadURL = '<?php echo $this->serverUrl() . $this->Url('upload', array('controller' => 'product', 'action' => 'upload')); ?>';
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'example'
                 //        toolbar: 'example'
-            });
-        </script>
+    });
+</script>

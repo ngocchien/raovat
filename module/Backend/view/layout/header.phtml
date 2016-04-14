@@ -32,7 +32,23 @@ $action = $params['action'];
                         </li>
                     </ul>
                 </li>
-
+                
+                <li class="dropdown">
+                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="javascript:;"><i class="icon-list-ul"></i> <b>Quản lý Nhu cầu rao vặt </b><b class="icon-angle-down"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="<?php echo ($module=='backend' && $controller=='properties' &&  $action=='index') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'index'));?>">
+                                Danh sách Nhu cầu rao vặt
+                            </a>
+                        </li>
+                        <li class="<?php echo ($module=='backend' && $controller=='properties' &&  $action=='add') ? 'active' : '';?>">
+                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'add'));?>">
+                                Thêm nhu cầu
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
                 <li class="dropdown">
                     <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt"></i> <b>Quản lý bài đăng </b><b class="icon-angle-down"></b></a>
                     <ul class="dropdown-menu">

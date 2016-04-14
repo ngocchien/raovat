@@ -117,17 +117,6 @@ class storageProperties extends AbstractTableGateway {
             return false;
         }
 
-        $validator = new Validate();
-        $arrExclude = array(
-            'field' => 'prop_id',
-            'value' => $intPropertiID
-        );
-
-        $noRecordExists = $validator->noRecordExists($p_arrParams['prop_name'], $this->table, 'prop_name', $this->adapter, $arrExclude);
-
-        if (!$noRecordExists) {
-            return false;
-        }
         try {
             $adapter = $this->adapter;
             $sql = new Sql($adapter);
@@ -140,6 +129,10 @@ class storageProperties extends AbstractTableGateway {
             $result = $resultSet->count() ? true : false;
             return $result;
         } catch (\Exception $exc) {
+            echo '<pre>';
+            print_r($exc->getMessage());
+            echo '</pre>';
+            die();
             if (APPLICATION_ENV !== 'production') {
                 throw new \Zend\Http\Exception($exc->getMessage());
             }
@@ -147,28 +140,21 @@ class storageProperties extends AbstractTableGateway {
         }
     }
 
-    public function getListUnlike($arrCondition = null) {
-        try {
-            $strWhere = $this->_buildWhere($arrCondition);
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $select = $sql->Select($this->table)
-                    ->where('1=1' . $strWhere)
-                    ->order(array('prop_grade ASC'));
-            $query = $sql->getSqlStringForSqlObject($select);
-            return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
-        } catch (\Zend\Http\Exception $exc) {
-            if (APPLICATION_ENV !== 'production') {
-                throw new \Zend\Http\Exception($exc->getMessage());
-            }
-            return array();
-        }
-    }
-
     public function updateTree($dataUpdate) {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
-        $query = "update " . $this->table . " set prop_grade = REPLACE(prop_grade,'" . $dataUpdate['prop_grade'] . "','" . $dataUpdate['parentGrade'] . $dataUpdate['prop_id'] . ":')  WHERE prop_grade LIKE '" . $dataUpdate['prop_grade'] . "%'";
+        $query = "update " . $this->table . " set prop_grade = REPLACE(prop_grade,'" . $dataUpdate['prop_grade'] . "','" . $dataUpdate['grade_update'] . "'),prop_status =" . $dataUpdate['prop_status'] . " WHERE prop_grade LIKE '" . $dataUpdate['prop_grade'] . "%'";
+        $result = $adapter->query($query, $adapter::QUERY_MODE_EXECUTE);
+        $resultSet = new \Zend\Db\ResultSet\ResultSet();
+        $resultSet->initialize($result);
+        $result = $resultSet->count() ? true : false;
+        return $result;
+    }
+
+    public function updateStatusTree($dataUpdate) {
+        $adapter = $this->adapter;
+        $sql = new Sql($adapter);
+        $query = "update " . $this->table . " set prop_status = " . $dataUpdate['prop_status'] . " WHERE prop_grade LIKE '" . $dataUpdate['grade_update'] . "%'";
         $result = $adapter->query($query, $adapter::QUERY_MODE_EXECUTE);
         $resultSet = new \Zend\Db\ResultSet\ResultSet();
         $resultSet->initialize($result);
@@ -185,20 +171,36 @@ class storageProperties extends AbstractTableGateway {
         if ($arrCondition['prop_id'] !== '' && $arrCondition['prop_id'] !== NULL) {
             $strWhere .= " AND prop_id=" . $arrCondition['prop_id'];
         }
+        
+        if ($arrCondition['not_prop_id'] !== '' && $arrCondition['not_prop_id'] !== NULL) {
+            $strWhere .= " AND prop_id !=" . $arrCondition['not_prop_id'];
+        }
 
         if (isset($arrCondition['prop_name']) && $arrCondition['prop_name']) {
             $strWhere .= " AND prop_name='" . $arrCondition['prop_name'] . "'";
         }
+        if (isset($arrCondition['prop_slug']) && $arrCondition['prop_slug']) {
+            $strWhere .= " AND prop_slug='" . $arrCondition['prop_slug'] . "'";
+        }
 
-        if ($arrCondition['prop_parent'] !== '' && $arrCondition['prop_parent'] !== NULL) {
-            $strWhere .= " AND prop_parent=" . $arrCondition['prop_parent'];
+        if ($arrCondition['parent_id'] !== '' && $arrCondition['parent_id'] !== NULL) {
+            $strWhere .= " AND parent_id=" . $arrCondition['parent_id'];
+        }
+        
+        if ($arrCondition['not_parent_id'] !== '' && $arrCondition['not_parent_id'] !== NULL) {
+            $strWhere .= " AND parent_id !=" . $arrCondition['not_parent_id'];
         }
 
         if ($arrCondition['prop_status'] !== '' && $arrCondition['prop_status'] !== NULL) {
             $strWhere .= " AND prop_status=" . $arrCondition['prop_status'];
         }
-        if ($arrCondition['prop_not_status'] !== '' && $arrCondition['prop_not_status'] !== NULL) {
-            $strWhere .= " AND prop_status !=" . $arrCondition['prop_not_status'];
+        
+        if ($arrCondition['not_prop_sort'] !== '' && $arrCondition['not_prop_sort'] !== NULL) {
+            $strWhere .= " AND prop_sort !=" . $arrCondition['not_prop_sort'];
+        }
+        
+        if ($arrCondition['not_prop_status'] !== '' && $arrCondition['not_prop_status'] !== NULL) {
+            $strWhere .= " AND prop_status !=" . $arrCondition['not_prop_status'];
         }
 
         if ($arrCondition['prop_grade'] !== '' && $arrCondition['prop_grade'] !== NULL) {
