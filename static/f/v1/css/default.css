@@ -1013,6 +1013,12 @@ input[type="submit"]:hover{
     color: #ffffff;
 }
 
+.sidebar .side-widget .tags .active{
+    background: #a0ce4e;
+    padding: 10px;
+    color: #ffffff;
+}
+
 .l-pro a{
     background: #f6f6f6;
     padding: 10px;

@@ -60,37 +60,6 @@ class storageContent extends AbstractTableGateway {
         }
     }
 
-    public function getLimit($arrCondition = [], $intPage = 1, $intLimit = 15, $strOrder = 'cont_id DESC') {
-        try {
-            $strWhere = $this->_buildWhere($arrCondition);
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $strScore = !empty($arrCondition['search']) ? ',MATCH(cont_title,cont_content,cont_summary) AGAINST("' . $arrCondition['search'] . '" ) as score' : ',0 as score';
-            $query = 'select *' . $strScore
-                    . ' from ' . $this->table
-                    . ' where 1=1' . $strWhere
-                    . ' order by ' . $strOrder
-                    . ' limit ' . $intLimit
-                    . ' offset ' . ($intLimit * ($intPage - 1));
-//            p($query);die;
-            return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
-        } catch (\Zend\Http\Exception $exc) {
-            if (APPLICATION_ENV !== 'production') {
-                die($exc->getMessage());
-            }
-            return array();
-        }
-    }
-
-    public function getLimitUnion($cateID) {
-        $adapter = $this->adapter;
-        $sql = new Sql($adapter);
-        $query = "SELECT * FROM(SELECT *FROM tbl_contents WHERE main_cate_id = " . $cateID . " and cont_status = 1 UNION SELECT * FROM  tbl_contents WHERE FIND_IN_SET(" . $cateID . ",cate_id) AND cont_status = 1 )  as tb_temp LIMIT 0,10";
-        //p($query);die;
-        $result = $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
-        return $result;
-    }
-
     public function getDetail($arrCondition = array()) {
         try {
             $strWhere = $this->_buildWhere($arrCondition);
@@ -135,9 +104,16 @@ class storageContent extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
+                $p_arrParams['content_id'] = $result;
+                $instanceJob = new \My\Job\JobContent();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeContent', $p_arrParams);
             }
             return $result;
-        } catch (\Zend\Http\Exception $exc) {
+        } catch (\Exception $exc) {
+            echo '<pre>';
+            print_r($exc->getMessage());
+            echo '</pre>';
+            die();
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());
             }

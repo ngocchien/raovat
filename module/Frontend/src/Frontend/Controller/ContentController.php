@@ -240,6 +240,7 @@ class ContentController extends MyController {
                     }
                 }
             }
+
             if (empty($errors)) {
 
                 /*

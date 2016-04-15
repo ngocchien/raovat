@@ -205,7 +205,6 @@ return array(
                     ),
                 ),
             ),
-            
             'add-content-complete' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -222,7 +221,6 @@ return array(
                     ),
                 ),
             ),
-            
             'getproperties' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -256,6 +254,150 @@ return array(
                     ),
                 ),
             ),
+            'comfirm-forgot-password' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/xac-nhan-lay-lai-mat-khau[/:randomKey][.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'auth',
+                        'action' => 'confirm-reset-password',
+                        'randomKey' => '[a-zA-Z0-9_-]*'
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'auth',
+                        'action' => 'confirm-reset-password',
+                        'randomKey' => '[a-zA-Z0-9_-]*'
+                    ),
+                ),
+            ),
+            'member-block' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/da-bi-khoa[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'auth',
+                        'action' => 'block',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'auth',
+                        'action' => 'block',
+                    ),
+                ),
+            ),
+            'user-login' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/dang-nhap[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'login',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'login',
+                    ),
+                ),
+            ),
+            
+            'user-profile' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/thong-tin-ca-nhan[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'index',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            
+             'user-list-post' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/danh-sach-tin-dang[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-post',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-post',
+                    ),
+                ),
+            ),
+            
+            'user-change-password' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/doi-mat-khau[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'change-password',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'change-password',
+                    ),
+                ),
+            ),
+            
+            'user-recharge' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/nap-tien-tai-khoan[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'recharge',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'recharge',
+                    ),
+                ),
+            ),
+            
+            'user-deal-history' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/lich-su-giao-dich[.html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'deal-history',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'deal-history',
+                    ),
+                ),
+            ),
+            
             'tags' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -443,22 +585,6 @@ return array(
                     ),
                 ),
             ),
-            'profile' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/:controller[/:action]]',
-                    'constraints' => array(
-                        'controller' => 'profile',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'index',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'general' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -602,15 +728,6 @@ return array(
         'doctype' => 'HTML5',
         'template_map' => array(
             FRONTEND_TEMPLATE . '/layout/layout' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/layout.phtml',
-//            'frontend/createOrder' => __DIR__ . '/../view/email/create_order.phtml',
-//            'frontend/topbar' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/topbar.phtml',
-//            'frontend/vertical-menu' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/vertical-menu.phtml',
-//            'frontend/horizontal-menu' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/horizontal-menu.phtml',
-//            'frontend/main-left-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-left-banner.phtml',
-//            'frontend/main-right-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-right-banner.phtml',
-//            'frontend/main-bottom-banner' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/main-bottom-banner.phtml',
-//            'frontend/layout/viewQuotation' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/view-quotation.phtml',
-//            'error/production' => __DIR__ . '/../view/error/production.phtml',
             'frontend/header' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/header.phtml',
             'frontend/layder-slider' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/layderSlider.phtml',
             'frontend/search' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/search.phtml',
@@ -620,6 +737,9 @@ return array(
             'frontend/footer' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/footer.phtml',
             'frontend/template_email' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/template_email.phtml',
             'frontend/content/upload' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/upload.phtml',
+            'frontend/auth/reset-password' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/auth/reset-password.phtml',
+            'frontend/nav-user-left' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-user-left.phtml',
+            'frontend/nav-ads-right' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-ads-right.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,

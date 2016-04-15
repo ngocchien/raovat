@@ -43,6 +43,10 @@ class ConsoleController extends MyController {
                 $this->__migrateLogs($intIsCreateIndex);
                 break;
 
+            case 'content':
+                $this->__migrateContent($intIsCreateIndex);
+                break;
+
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
@@ -94,9 +98,56 @@ class ConsoleController extends MyController {
         die('done');
     }
 
+    public function __migrateContent($intIsCreateIndex) {
+        $serviceContent = $this->serviceLocator->get('My\Models\Content');
+        $intLimit = 1000;
+        $instanceSearchContent = new \My\Search\Content();
+        $instanceSearchContent->createIndex();
+        die('done');
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrContentList = $serviceContent->getListLimit([], $intPage, $intLimit, 'cont_id ASC');
+            if (empty($arrContentList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearchContent->createIndex();
+                } else {
+                    $result = $instanceSearchContent->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrContentList as $arrContent) {
+                $id = (int) $arrContent['cont_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arrContent);
+                echo General::getColoredString("Created new document with cont_id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrContentList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearchContent->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
     public function workerAction() {
         $params = $this->request->getParams();
-        
+
         //stop all job
         if ($params['stop'] === 'all') {
             if ($params['type'] || $params['background']) {
@@ -133,6 +184,23 @@ class ConsoleController extends MyController {
             }
         }
 
+        //stop job sendmail
+        if ($params['stop'] === 'raovat-content') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-content' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-content is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
         $worker = General::getWorkerConfig();
         //  die($params['type']);
         switch ($params['type']) {
@@ -146,9 +214,26 @@ class ConsoleController extends MyController {
                     }
                     echo General::getColoredString("Job raovat-logs is running in background ... \n", 'green');
                 }
-                
+
                 $funcName1 = SEARCH_PREFIX . 'writeLog';
                 $methodHandler1 = '\My\Job\JobLog::writeLog';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-content':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-content >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-content in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-content is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeContent';
+                $methodHandler1 = '\My\Job\JobLog::writeContent';
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
 
                 break;
@@ -172,6 +257,17 @@ class ConsoleController extends MyController {
     }
 
     public function checkWorkerRunningAction() {
+        //check content worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-content' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-content >/dev/null & echo 2>&1 & echo $!");
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-content in background. \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+        
         //check send-mail worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-logs' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
@@ -183,4 +279,5 @@ class ConsoleController extends MyController {
             }
         }
     }
+
 }

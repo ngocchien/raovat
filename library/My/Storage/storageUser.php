@@ -272,8 +272,8 @@ class storageUser extends AbstractTableGateway {
             $strWhere .= " AND ( MATCH(user_fullname, user_email) AGAINST ('" . $keyword . "'  IN BOOLEAN MODE))";
         }
 
-        if (isset($arrCondition['user_randomkey'])) {
-            $strWhere .= " AND user_randomkey='" . $arrCondition['user_randomkey'] . "'";
+        if (isset($arrCondition['random_key'])) {
+            $strWhere .= " AND random_key='" . $arrCondition['random_key'] . "'";
         }
 
         if ($arrCondition['in_user_id'] !== '' && $arrCondition['in_user_id'] !== NULL) {

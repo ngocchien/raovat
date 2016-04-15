@@ -11,4 +11,5 @@ return array(
     'Frontend\Controller\GeneralController' => __DIR__ . '/src/Frontend/Controller/GeneralController.php',
     'Frontend\Controller\CommentController' => __DIR__ . '/src/Frontend/Controller/CommentController.php',
     'Frontend\Controller\ContentController' => __DIR__ . '/src/Frontend/Controller/ContentController.php',
+    'Frontend\Controller\UserController' => __DIR__ . '/src/Frontend/Controller/UserController.php'
 );
