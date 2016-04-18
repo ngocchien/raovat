@@ -8,11 +8,11 @@ $action = $paramsRouter['action'];
     <div class="sidebar">
         <div class="side-widget">
             <div class="tags">
-                <a href="<?php echo $this->serverUrl() . $this->Url('user-profile'); ?>" class="<?php echo ($controller == 'user' && ($action == 'index' || empty($action))) ? 'active' : ''; ?>"><i class="fa fa-user"></i> Thông tin tài khoản</a>
-                <a href="<?php echo $this->serverUrl() . $this->Url('user-list-post'); ?>" class="<?php echo ($controller == 'user' && $action == 'list-post') ? 'active' : ''; ?>"><i class="fa fa-bars"></i> Tất cả tin đăng</a>
-                <a href="<?php echo $this->serverUrl() . $this->Url('user-recharge'); ?>" class="<?php echo ($controller == 'user' && $action == 'recharge') ? 'active' : ''; ?>"><i class="fa fa-usd" aria-hidden="true"></i> Nạp tiền tài khoản</a>
-                <a href="<?php echo $this->serverUrl() . $this->Url('user-deal-history'); ?>" class="<?php echo ($controller == 'user' && $action == 'deal-history') ? 'active' : ''; ?>"><i class="fa fa-history"></i> Lịch sử giao dich</a>
-                <a href="<?php echo $this->serverUrl() . $this->Url('user-change-password'); ?>" class="<?php echo ($controller == 'user' && $action == 'change-password') ? 'active' : ''; ?>"><i class="fa fa-keyboard-o" aria-hidden="true"></i> Đổi mật khẩu</a>
+                <a href="<?php echo $this->serverUrl() . $this->Url('user-profile'); ?>" class="<?php echo ($controller == 'user' && ($action == 'index' || empty($action))) ? 'active' : ''; ?>" style="display: block"><i class="fa fa-user"></i> Thông tin tài khoản</a>
+                <a href="<?php echo $this->serverUrl() . $this->Url('user-list-post'); ?>" class="<?php echo ($controller == 'user' && $action == 'list-post') ? 'active' : ''; ?>" style="display: block"><i class="fa fa-bars"></i> Tất cả tin đăng</a>
+                <a href="<?php echo $this->serverUrl() . $this->Url('user-recharge'); ?>" class="<?php echo ($controller == 'user' && $action == 'recharge') ? 'active' : ''; ?>" style="display: block"><i class="fa fa-usd" aria-hidden="true"></i> Nạp tiền tài khoản</a>
+                <a href="<?php echo $this->serverUrl() . $this->Url('user-deal-history'); ?>" class="<?php echo ($controller == 'user' && $action == 'deal-history') ? 'active' : ''; ?>" style="display: block"><i class="fa fa-history"></i> Lịch sử giao dich</a>
+                <a href="<?php echo $this->serverUrl() . $this->Url('user-change-password'); ?>" class="<?php echo ($controller == 'user' && $action == 'change-password') ? 'active' : ''; ?>" style="display: block"><i class="fa fa-keyboard-o" aria-hidden="true"></i> Đổi mật khẩu</a>
             </div>
         </div>
     </div>

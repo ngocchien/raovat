@@ -25,7 +25,7 @@ $arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
                                 <a id="loginRegister" href="javascript:;"><i class="fa fa-user-plus"></i> Đăng ký</a>
                                 <a id="loginButton" href="javascript:;"><i class="fa fa-sign-in"></i> Login</a>
                             <?php else: ?>
-                                <a href="<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'detail')) ?>"><i class="fa fa-user"></i> Tài khoản</a>
+                                <a href="<?php echo $this->serverUrl() . $this->Url('user-profile') ?>"><i class="fa fa-user"></i> Tài khoản</a>
                                 <a href="<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'logout')) ?>"><i class="fa fa-sign-out"></i> Signout</a>
                             <?php endif; ?>
                         </div>

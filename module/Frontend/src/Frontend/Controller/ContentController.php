@@ -275,7 +275,7 @@ class ContentController extends MyController {
                         'cont_slug' => General::getSlug(trim($params['content_title'])),
                         'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
                         'cate_id' => $intCategoryId,
-                        'user_created' => UID,
+                        'user_created' => CUSTOMER_ID,
                         'cont_image' => trim($params['image_prod']),
                         'prop_id' => $intProperties,
                         'created_date' => time(),
@@ -290,7 +290,7 @@ class ContentController extends MyController {
                         ];
                     }
                     $intResult = $serviceContent->add($arrData);
-
+                    
                     if ($intResult > 0) {
                         //update tổng số rao vặt trong danhmục
 //                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);

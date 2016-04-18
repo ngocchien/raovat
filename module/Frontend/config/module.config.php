@@ -192,7 +192,7 @@ return array(
             'addcontent' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/dang-tin-rao-vat[.html]',
+                    'route' => '/rao-vat/dang-tin-rao-vat[.html]',
                     'constraints' => array(
                         'controller' => 'content',
                         'action' => 'add',
@@ -394,6 +394,24 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'deal-history',
+                    ),
+                ),
+            ),
+            
+            'user-login-social' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/dang-nhap-bang-mang-xa-hoi[-:type].html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'social',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'social',
                     ),
                 ),
             ),

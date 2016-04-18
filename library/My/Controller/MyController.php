@@ -153,7 +153,7 @@ class MyController extends AbstractActionController {
             define('CUSTOMER_AVATAR', $arrUserData['user_avatar'] ? $arrUserData['user_avatar'] : '');
             define('LOGGED', $arrUserData ? 1 : 0);
 
-            if (empty(CUSTOMER_ID)) {
+            if (empty(CUSTOMER_ID) && $arrData['controller'] != 'user' && $arrData['action'] != 'social') {
                 /*
                  * Oauth Google API;
                  */
@@ -166,10 +166,8 @@ class MyController extends AbstractActionController {
                 $helperFacebook = $this->__createServiceFacebook();
                 $loginFacebookUrl = $helperFacebook->getLoginUrl($fbInfo['redirect_uri']);
             }
-
             define('GOOGLE_AUTH_URL', $googleAuthUrl ? $googleAuthUrl : '' );
             define('FACEBOOK_AUTH_URL', $loginFacebookUrl ? $loginFacebookUrl : '');
-
             $serviceCategory = $this->serviceLocator->get('My\Models\Category');
 
             $arrCondition = array(
@@ -189,11 +187,10 @@ class MyController extends AbstractActionController {
                     $arrCategoryFormat[$arrCategory['cate_id']] = $arrCategory;
                 }
             }
-            
+
             define('ARR_CATEGORY_PARENT', serialize($arrCategoryParentList));
             define('ARR_CATEGORY_BY_PARENT', serialize($arrCategoryByParent));
             define('ARR_CATEGORY', serialize($arrCategoryFormat));
-            
         }
     }
 
@@ -218,10 +215,10 @@ class MyController extends AbstractActionController {
         $facebookClient = new \Facebook\Facebook([
             'app_id' => $fbInfo['appId'],
             'app_secret' => $fbInfo['secret'],
-            'default_graph_version' => 'v2.2'
+            'default_graph_version' => 'v2.5'
         ]);
         $helper = $facebookClient->getRedirectLoginHelper();
-
+//        $loginFacebookUrl = $helperFacebook->getLoginUrl($fbInfo['redirect_uri']);
         return $helper;
     }
 

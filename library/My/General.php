@@ -29,12 +29,18 @@ class General {
     const EMAIL_SYS_PASSWORD = 'chien123';
     //define host mail
     const HOST_MAIL = 'smtp.gmail.com';
+    const RECHARGE_VIETTEL = 1;
+    const RECHARGE_MOBI = 2;
+    const RECHARGE_VINA = 3;
+    const RECHARGE_GATE = 4;
+    const RECHARGE_VIETNAM_MOBI = 6;
+    const RECHARGE_ZING = 7;
 
     private $headlink;
     static $fbConfig = [
         'appId' => '1697339473867169',
         'secret' => 'b8db461aceec01487b234135a3b44f30',
-        'redirect_uri' => 'http://dev.raovat.vn/dang-nhap-voi-facebook.html',
+        'redirect_uri' => 'http://dev.raovat.vn/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
         'field_profile' => 'fields=id,name,email,locale,link,cover,picture'
     ];
     static $ggConfig = [
@@ -43,7 +49,7 @@ class General {
         'client_secret' => 'xkMI-2BixBMBgw8PCCddKJub',
         'developer_key' => 'YOUR_DEVELOPER_KEY',
         'set_scopes' => 'https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile',
-        'redirect_uri' => 'http://dev.raovat.vn/dang-nhap-voi-google.html',
+        'redirect_uri' => 'http://dev.raovat.vn/thanh-vien/dang-nhap-bang-mang-xa-hoi-google.html',
         'api_map_key' => 'AIzaSyCoRSTyg5afMbwc9vbx-HItfQSndzlNQjs'
     ];
     static $foreground_colors = array(
@@ -62,6 +68,36 @@ class General {
         'blue' => '44', 'magenta' => '45',
         'cyan' => '46', 'light_gray' => '47',
     );
+
+    public static function getMethodRecharge() {
+        return [
+            self::RECHARGE_VIETTEL => 'Viettel',
+            self::RECHARGE_MOBI => 'Mobiphone',
+            self::RECHARGE_VINA => 'Vinaphone',
+            self::RECHARGE_GATE => 'Gate',
+            self::RECHARGE_VIETNAM_MOBI => 'Vietnam mobi',
+            self::RECHARGE_ZING => 'Zing'
+        ];
+    }
+    
+    public static function getMethodRechargeId() {
+        return [
+            self::RECHARGE_VIETTEL,
+            self::RECHARGE_MOBI,
+            self::RECHARGE_VINA,
+            self::RECHARGE_GATE,
+            self::RECHARGE_VIETNAM_MOBI,
+            self::RECHARGE_ZING
+        ];
+    }
+    
+    public static function infoRechargeGameBank() {
+        return [
+            'merchant_id' => 2980,
+            'api_user' => '54f529add4abb',
+            'api_password' => '5676369aed0e328fee1f67eff13d478b'
+        ];
+    }
 
     public static function getSlug($string, $maxLength = 255, $separator = '-') {
         $arrCharFrom = array("ạ", "á", "à", "ả", "ã", "Ạ", "Á", "À", "Ả", "Ã", "â", "ậ", "ấ", "ầ", "ẩ", "ẫ", "Â", "Ậ", "Ấ", "Ầ", "Ẩ", "Ẫ", "ă", "ặ", "ắ", "ằ", "ẳ", "ẵ", "ẫ", "Ă", "Ắ", "Ằ", "Ẳ", "Ẵ", "Ặ", "Ẵ", "ê", "ẹ", "é", "è", "ẻ", "ẽ", "Ê", "Ẹ", "É", "È", "Ẻ", "Ẽ", "ế", "ề", "ể", "ễ", "ệ", "Ế", "Ề", "Ể", "Ễ", "Ệ", "ọ", "ộ", "ổ", "ỗ", "ố", "ồ", "Ọ", "Ộ", "Ổ", "Ỗ", "Ố", "Ồ", "Ô", "ô", "ó", "ò", "ỏ", "õ", "Ó", "Ò", "Ỏ", "Õ", "ơ", "ợ", "ớ", "ờ", "ở", "ỡ", "Ơ", "Ợ", "Ớ", "Ờ", "Ở", "Ỡ", "ụ", "ư", "ứ", "ừ", "ử", "ữ", "ự", "Ụ", "Ư", "Ứ", "Ừ", "Ử", "Ữ", "Ự", "ú", "ù", "ủ", "ũ", "Ú", "Ù", "Ủ", "Ũ", "ị", "í", "ì", "ỉ", "ĩ", "Ị", "Í", "Ì", "Ỉ", "Ĩ", "ỵ", "ý", "ỳ", "ỷ", "ỹ", "Ỵ", "Ý", "Ỳ", "Ỷ", "Ỹ", "đ", "Đ");

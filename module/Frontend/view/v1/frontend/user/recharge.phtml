@@ -3,7 +3,7 @@
         <div class="row col-md-12">
             <div class="page-heading">
                 <h1>TÀI KHOẢN </h1>
-                <h4>Đổi mật khẩu</h4>
+                <h4>Nạp thẻ</h4>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
             <?php endif; ?>
 
             <?php
-            if ($this->flashMessenger()->setNamespace('change-pass-success')->getMessages()):
+            if ($this->flashMessenger()->setNamespace('recharge-success')->getMessages()):
                 ?>
                 <div class="alert alert-success alert-block fade in">
                     <button class="close close-sm" type="button" data-dismiss="alert">
@@ -46,16 +46,35 @@
                                         <div id="form">
                                             <form method="post">
                                                 <div class="col-md-12 form-group">
-                                                    <input type="password" class="form-group" name="old_password" placeholder="Nhập mật khẩu cũ">
+                                                    <label for="type">Chọn loại thẻ</label>
+                                                    <select class="form-group" name="type">
+                                                        <option value="0"> Chọn loại thẻ</option>
+                                                        <?php foreach (My\General::getMethodRecharge() as $key => $value): ?>
+                                                            <option value="<?php echo $key ?>"><?php echo $value; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
                                                 <div class="col-md-12 form-group">
-                                                    <input type="password" class="form-group" name="new_password" placeholder="Nhập mật khẩu mới">
+                                                    <label for="seri">Seri</label>
+                                                    <input type="text" class="form-control" name="seri" placeholder="Nhập seri">
                                                 </div>
                                                 <div class="col-md-12 form-group">
-                                                    <input type="password" class="form-group" name="re_new_password" placeholder="Nhập lại mật khẩu mới">
+                                                    <label for="code">Mã thẻ cào</label>
+                                                    <input type="text" class="form-control" name="code" placeholder="Nhập mã thẻ">
+                                                </div>
+                                                <div class="col-md-12 form-group">
+                                                    <div class="col-md-3 form-group">
+                                                        <img class="img-captcha form-control" src=""/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" name="code_security" placeholder="Nhập mã bên cạnh">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <i class="fa fa-refresh" data-toggle="tooltip" title="Lấy mã mới" style=" cursor: pointer; margin-top: 15px"></i>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-2 col-xs-offset-6 col-md-offset-8">
-                                                 <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                                    <button type="submit" class="btn btn-primary">Xác nhận</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -73,4 +92,5 @@
     </div>
 </section>
 <script>
+    User.captcha();
 </script>
