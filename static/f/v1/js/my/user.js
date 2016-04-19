@@ -4,9 +4,13 @@ var User = {
             _getCaptcha();
             $('.fa-refresh').on('click', function () {
                 _getCaptcha();
-            })
+            });
 
-        })
+            $('form').submit(function () {
+                $('.btn-primary').prop("disabled", true);
+                $('#loading-mask').show();
+            });
+        });
     }
 };
 

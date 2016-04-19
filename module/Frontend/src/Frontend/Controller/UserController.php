@@ -174,19 +174,56 @@ class UserController extends MyController {
                 $gb_api->setPin(trim($params['code']));
                 $gb_api->setSeri(trim($params['seri']));
                 $gb_api->setCardType($type);
-                $gb_api->setNote("user_id" . CUSTOMER_ID); // ghi chu giao dich ben ban tu sinh
+                $gb_api->setNote('user_id = ' . CUSTOMER_ID); // ghi chu giao dich ben ban tu sinh
                 $gb_api->cardCharging();
                 $code = intval($gb_api->getCode());
                 $info_card = intval($gb_api->getInfoCard());
                 if ($code === 0 && $info_card >= 10000) {
-                    echo json_encode(array('code' => 0, 'msg' => "Nạp thẻ thành công mệnh giá " . $info_card));
+                    //tăng số tiền trong tài khoản lên
+                    $balance = CUSTOMER_BALANCE + $info_card;
+                    $arrUserUpdate = [
+                        'user_balance' => $balance
+                    ];
+                    $serviceUser = $this->serviceLocator->get('My\Models\User');
+                    $intResult = $serviceUser->edit($arrUserUpdate, CUSTOMER_ID);
+                    if ($intResult) {
+                        //lưu lại lịch sử nạp tiền
+                        $arrData = [
+                            'user_id' => CUSTOMER_ID,
+                            'created_date' => time(),
+                            'tran_type' => General::TRANS_INPUT,
+                            'soucre_id' => $type,
+                            'tran_deal' => $info_card
+                        ];
+                        $serviceTrans = $this->serviceLocator->get('My\Models\TransactionHistory');
+                        $serviceTrans->add($arrData);
+
+                        //set lại session
+                        $arrUser = [
+                            'user_id' => CUSTOMER_ID,
+                            'user_fullname' => CUSTOMER_FULLNAME,
+                            'user_email' => CUSTOMER_EMAIL,
+                            'user_phone' => CUSTOMER_PHONE,
+                            'user_balance' => $balance
+                        ];
+
+                        $this->getAuthService()->clearIdentity();
+                        $this->getAuthService()->getStorage()->write($arrUser);
+
+                        //redirect
+                        $this->flashMessenger()->setNamespace('recharge-success')->addMessage('Bạn đã nạp thành công ' . number_format($info_card, 0, ",", ".") . ' vnđ vào tài khoản!<br/>Số dư hiện tại của bạn là :' . number_format($balance, 0, ",", ".") . ' vnđ');
+                        return $this->redirect()->toRoute('user-recharge');
+                    } else {
+                        //xảy ra lỗi trong quá trình xử lý!
+                        //save log vào server
+                        $str = '||' . date('h:i:s d/m/Y') . ' lỗi nạp thẻ từ user id = ' . CUSTOMER_ID . ' loại thẻ : ' . $type . ' mệnh giá =' . $info_card;
+                        $filename = WEB_ROOT . '/data/json_log_recharge.txt';
+                        file_put_contents($filename, json_encode($str), FILE_APPEND);
+                        $errors[] = 'Xảy ra lỗi trong quá trình xử lý! Bạn vui lòng liên hệ quản trị viên để được hỗ trợ! Chân thành xin lỗi!';
+                    }
                 } else {
                     // get thong bao loi
-                    echo '<pre>';
-                    print_r($gb_api->getMsg());
-                    echo '</pre>';
-                    die();
-                    echo json_encode(array('code' => 1, 'msg' => $gb_api->getMsg()));
+                    $errors[] = $gb_api->getMsg();
                 }
             }
         }
@@ -194,7 +231,7 @@ class UserController extends MyController {
         $this->renderer->headTitle(html_entity_decode('Tài khoản - Nạp tiền tài khoản') . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Thông tin, Thông tin tài khoản, Thông tin tài khoản chototquynhon.com'));
         $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Thông tin tài khoản tại' . General::TITLE_META));
-        
+
         return [
             'params' => $params,
             'errors' => $errors
