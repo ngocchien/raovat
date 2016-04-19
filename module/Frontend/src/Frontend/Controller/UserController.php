@@ -167,11 +167,7 @@ class UserController extends MyController {
 
             if (empty($errors)) {
                 $gamebankConfig = General::infoRechargeGameBank();
-                $gb_api = new \My\Recharge\GB_API();
-                echo '<pre>';
-                print_r('a');
-                echo '</pre>';
-                die();
+                $gb_api = new \My\Recharge\GameBank\GameBank();
                 $gb_api->setMerchantId($gamebankConfig['merchant_id']);
                 $gb_api->setApiUser($gamebankConfig['api_user']);
                 $gb_api->setApiPassword($gamebankConfig['api_password']);
