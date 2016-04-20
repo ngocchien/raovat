@@ -152,6 +152,7 @@ class MyController extends AbstractActionController {
             define('CUSTOMER_PHONE', $arrUserData['user_phone'] ? $arrUserData['user_phone'] : '');
             define('CUSTOMER_AVATAR', $arrUserData['user_avatar'] ? $arrUserData['user_avatar'] : '');
             define('LOGGED', $arrUserData ? 1 : 0);
+            define('CUSTOMER_BALANCE', $arrUserData['user_balance'] ? (int)$arrUserData['user_balance'] : 0);
 
             if (empty(CUSTOMER_ID) && $arrData['controller'] != 'user' && $arrData['action'] != 'social') {
                 /*

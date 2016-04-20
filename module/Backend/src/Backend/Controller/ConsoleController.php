@@ -47,6 +47,10 @@ class ConsoleController extends MyController {
                 $this->__migrateContent($intIsCreateIndex);
                 break;
 
+            case 'trans-history':
+                $this->__migrateTrans($intIsCreateIndex);
+                break;
+
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
@@ -102,8 +106,7 @@ class ConsoleController extends MyController {
         $serviceContent = $this->serviceLocator->get('My\Models\Content');
         $intLimit = 1000;
         $instanceSearchContent = new \My\Search\Content();
-        $instanceSearchContent->createIndex();
-        die('done');
+
         for ($intPage = 1; $intPage < 10000; $intPage ++) {
             $arrContentList = $serviceContent->getListLimit([], $intPage, $intLimit, 'cont_id ASC');
             if (empty($arrContentList)) {
@@ -136,6 +139,53 @@ class ConsoleController extends MyController {
             $this->flush();
 
             $instanceSearchContent->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
+    public function __migrateTrans($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\TransactionHistory');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\TransactionHistory();
+        $instanceSearch->createIndex();
+        die('done');
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrListLimit = $service->getListLimit([], $intPage, $intLimit, 'tran_id ASC');
+            if (empty($arrListLimit)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrListLimit as $value) {
+                $id = (int) $value['tran_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $value);
+                echo General::getColoredString("Created new document with tran_id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrListLimit); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
             echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
 
             unset($arrDocument);
@@ -201,6 +251,23 @@ class ConsoleController extends MyController {
             }
         }
 
+        //stop job sendmail
+        if ($params['stop'] === 'raovat-tran') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-tran' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-tran is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
         $worker = General::getWorkerConfig();
         //  die($params['type']);
         switch ($params['type']) {
@@ -237,6 +304,22 @@ class ConsoleController extends MyController {
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
 
                 break;
+            case 'raovat-tran':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-tran >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-tran in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-tran is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeTran';
+                $methodHandler1 = '\My\Job\JobTransactionHistory::writeTran';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                break;
 
             default:
                 return General::getColoredString("Invalid or not found function \n", 'light_cyan', 'red');
@@ -267,7 +350,7 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
+
         //check send-mail worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-logs' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
@@ -275,6 +358,17 @@ class ConsoleController extends MyController {
             $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-logs >/dev/null & echo 2>&1 & echo $!");
             if (empty($PID)) {
                 echo General::getColoredString("Cannot deamon PHP process to run job raovat-logs in background. \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+        
+         //check tran worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-tran' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-tran >/dev/null & echo 2>&1 & echo $!");
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-tran in background. \n", 'light_cyan', 'red');
                 return;
             }
         }

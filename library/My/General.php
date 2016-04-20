@@ -35,8 +35,12 @@ class General {
     const RECHARGE_GATE = 4;
     const RECHARGE_VIETNAM_MOBI = 6;
     const RECHARGE_ZING = 7;
+    const TRANS_INPUT = 1;
+    const TRANS_OUTPUT = 2;
 
     private $headlink;
+
+
     static $fbConfig = [
         'appId' => '1697339473867169',
         'secret' => 'b8db461aceec01487b234135a3b44f30',
@@ -79,7 +83,7 @@ class General {
             self::RECHARGE_ZING => 'Zing'
         ];
     }
-    
+
     public static function getMethodRechargeId() {
         return [
             self::RECHARGE_VIETTEL,
@@ -90,7 +94,7 @@ class General {
             self::RECHARGE_ZING
         ];
     }
-    
+
     public static function infoRechargeGameBank() {
         return [
             'merchant_id' => 2980,

@@ -26,137 +26,51 @@ class ContentController extends MyController {
 
     public function detailAction() {
         $params = $this->params()->fromRoute();
-        $client = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote = $_SERVER['REMOTE_ADDR'];
+        $cont_id = (int) $params['contentId'];
+        $cont_slug = $params['contentSlug'];
 
-        $intPage = is_numeric($this->params()->fromQuery('page', 1)) ? $this->params()->fromQuery('page', 1) : 1;
-        $intLimit = 20;
-        if (empty($params['productId']) || empty($params['productslug'])) {
+        if (empty($cont_id) || empty($cont_slug)) {
             return $this->redirect()->toRoute('404', array());
         }
+        $arrConditionContent = [
+            'cont_id' => $cont_id,
+            'cont_status' => 1
+        ];
+        $instanceSearchContent = new \My\Search\Content();
+        $arrContent = $instanceSearchContent->getDetail($arrConditionContent);
 
-        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
-        $arrCondition = array(
-            'prod_id' => (int) $params['productId'],
-            'not_prod_status' => -1
-        );
-        $arrProductDetail = $serviceProduct->getDetail($arrCondition);
-
-        if ($arrProductDetail['prod_slug'] != $params['productslug']) {
-            return $this->redirect()->toRoute('404', array());
-        }
-        $serviceProduct->editviewer($arrProductDetail['prod_id']);
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $arrCategoryDetail = $serviceCategory->getDetail(array('cate_id' => $arrProductDetail['cate_id']));
-        $arrCategoryParent = array();
-        if ($arrCategoryDetail['cate_parent'] != 0) {
-            $arrCategoryParent = $serviceCategory->getDetail(array('cate_id' => $arrCategoryDetail['cate_parent']));
-        }
-        $arrConditionProduct = array(
-            'small_prod_id' => $arrProductDetail['prod_id'],
-            'cate_id' => $arrProductDetail['cate_id'],
-            'not_prod_status' => -1
-        );
-        $arrProductInCate = array();
-        $arrProductInCate = $serviceProduct->getListLimit($arrConditionProduct, $intPage, $intLimit, 'prod_id DESC');
-
-        //get list Parent Comment in Product
-        if (filter_var($client, FILTER_VALIDATE_IP)) {
-            $ipaddress = $client;
+        if (empty($arrContent)) {
+            return $this->redirect()->toRoute('404');
         }
 
-        if (filter_var($forward, FILTER_VALIDATE_IP)) {
-            $ipaddress = $forward;
+        if ($cont_slug != $arrContent['cont_slug']) {
+            return $this->redirect()->toRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id));
         }
 
-        if (filter_var($remote, FILTER_VALIDATE_IP)) {
-            $ipaddress = $remote;
-        }
-
-        $arrDataComment = array(
-            'prod_id' => $arrProductDetail['prod_id'],
-            'ipaddress' => $ipaddress,
-        );
-//        p('chưa loi');
-        $intPage = $this->params()->fromRoute('page', 1);
-        $intLimit = 10;
-        $arrCondition = array('prod_id' => $arrProductDetail['prod_id'], 'comm_status' => 1, 'comm_parent' => 0, 'comm_ip' => $ipaddress);
-        $serviceComment = $this->serviceLocator->get('My\Models\Comment');
-        $intTotalComment = $serviceComment->getTotalInProduct($arrCondition);
-//        p($intTotalComment);die;
-        $arrParentCommentList = $serviceComment->getListLimitInProduct($arrCondition, $intPage, $intLimit, 'comm_id ASC');
-        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Pagingajax');   //phân trang ajax
-        $pagingComment = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotalComment, $intPage, $intLimit, 'product', array('controller' => 'product', 'action' => 'detail', 'page' => $intPage));
-
-        //get list userComment
-        $totalComment = 0;
-        $arrListCommentChildren = array();
-        if (count($arrParentCommentList) > 0) {
-            $totalComment = $totalComment + count($arrParentCommentList);
-            foreach ($arrParentCommentList as $key => $value) {
-                $listIdParent[] = $value['comm_id'];
-                $listIdUser[] = $value['user_id'];
-            }
-            $arrListCommentChildren = array();
-            if (count($listIdParent) > 0) {
-                $strlistIdParent = implode(',', $listIdParent);
-                $listCommentChildren = $serviceComment->getListChildren(array('listIdParen' => $strlistIdParent, 'comm_status' => 1, 'comm_ip' => $ipaddress));
-                if (count($listCommentChildren) > 0) {
-                    foreach ($listCommentChildren as $value) {
-                        $totalComment = $totalComment + 1;
-                        $arrListCommentChildren[$value['comm_parent']][] = $value;
-                        $listIdUser[] = $value['user_id'];
-                    }
-                }
-            }
-//            p($arrListCommentChildren);die;
-            //get info user Comment
-            $listIdUser = array_unique($listIdUser);
-//            p($listIdUser);die;
-            $arrListUserComment = array();
-            if (count($listIdUser) > 0) {
-                $serviceUser = $this->serviceLocator->get('My\Models\User');
-                $strListId = implode(',', $listIdUser);
-                $listUserComment = $serviceUser->getList(array('listUserID' => $strListId));
-                if (count($listUserComment) > 0) {
-                    foreach ($listUserComment as $valueUser) {
-                        $arrListUserComment[$valueUser['user_id']] = $valueUser;
-                    }
-                }
-            }
-        }
-//        p($arrListUserComment);die;
-        //get User
+        //update số lần view
+        $arrUpdate = [
+            'cont_views' => $arrContent['cont_views'] + 1
+        ];
+        $serviceContent = $this->serviceLocator->get('My\Models\Content');
+        $serviceContent->edit($arrUpdate, $cont_id);
         $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $arrUserDetail = $serviceUser->getDetail(array('user_id' => $arrProductDetail['user_created']));
+        $arrUser = $serviceUser->getDetail(array('user_id' => $arrContent['user_created']));
 
-        $arrProductDetail['cate_meta_title'] ? $metaTitle = $arrProductDetail['cate_meta_title'] : $metaTitle = $arrProductDetail['prod_name'];
-        $arrProductDetail['cate_meta_keyword'] ? $metaKeyword = $arrProductDetail['cate_meta_keyword'] : NULL;
-        $arrProductDetail['cate_meta_description'] ? $metaDescription = $arrProductDetail['cate_meta_description'] : NULL;
-        $arrProductDetail['cate_meta_social'] ? $metaSocial = $arrProductDetail['cate_meta_social'] : NULL;
+        $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
+        $arrContent['meta_keyword'] ? $metaKeyword = $arrContent['meta_keyword'] : NULL;
+        $arrContent['meta_description'] ? $metaDescription = $arrContent['meta_description'] : NULL;
+        $arrContent['meta_social'] ? $metaSocial = $arrContent['meta_social'] : NULL;
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headTitle(html_entity_decode($metaTitle) . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode($metaKeyword));
         $this->renderer->headMeta()->appendName('description', html_entity_decode($metaDescription));
         $this->renderer->headMeta()->appendName('social', $metaSocial);
-//        $intTotalView = $serviceProduct->getviewer($arrProductDetail['prod_id']);
-//        p($intTotalView);die;
 
 
         return array(
             'params' => $params,
-            'arrProductDetail' => $arrProductDetail,
-            'arrCategoryDetail' => $arrCategoryDetail,
-            'arrProductInCate' => $arrProductInCate,
-            'arrCategoryParent' => $arrCategoryParent,
-            'arrUserDetail' => $arrUserDetail,
-            'intTotalComment' => $intTotalComment,
-            'arrParentCommentList' => $arrParentCommentList,
-            'pagingComment' => $pagingComment,
-            'arrListCommentChildren' => $arrListCommentChildren,
-            'arrListUserComment' => $arrListUserComment
+            'arrContent' => $arrContent,
         );
     }
 
@@ -262,10 +176,10 @@ class ContentController extends MyController {
                         'user_created' => CUSTOMER_ID,
                         'cate_id' => $intCategoryId
                     ];
-
                     $arrContent = $serviceContent->getDetail($arrCondition);
+
                     if ($arrContent) {
-                        $errors['total'] = 'Bạn đã đăng tin này trong, danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
+                        $errors['total'] = 'Bạn đã đăng tin này trong danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
                     }
                 }
 
@@ -276,7 +190,7 @@ class ContentController extends MyController {
                         'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
                         'cate_id' => $intCategoryId,
                         'user_created' => CUSTOMER_ID,
-                        'cont_image' => trim($params['image_prod']),
+                        'cont_image' => json_encode($params['image_prod']),
                         'prop_id' => $intProperties,
                         'created_date' => time(),
                         'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR')
@@ -290,7 +204,7 @@ class ContentController extends MyController {
                         ];
                     }
                     $intResult = $serviceContent->add($arrData);
-                    
+
                     if ($intResult > 0) {
                         //update tổng số rao vặt trong danhmục
 //                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
@@ -299,6 +213,9 @@ class ContentController extends MyController {
 
                         $completeSession = new Container('contentComplete');
                         $completeSession->complete = true;
+                        $completeSession->id = $intResult;
+                        $completeSession->title = $params['content_title'];
+                        $completeSession->title_slug = General::getSlug(trim($params['content_title']));
 
                         return $this->redirect()->toRoute('add-content-complete');
                     }
@@ -336,7 +253,10 @@ class ContentController extends MyController {
             return $this->redirect()->toRoute('home');
         }
 
-        $completeSession->getManager()->getStorage()->clear('contentComplete');
+//        $completeSession->getManager()->getStorage()->clear('contentComplete');
+        return [
+            'completeSession' => $completeSession
+        ];
     }
 
     public function getPropertiesAction() {

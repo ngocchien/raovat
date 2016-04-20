@@ -23,10 +23,6 @@ class Content extends SearchAbstract {
         
         $searchClient = General::getSearchConfig();
         $searchIndex = $searchClient->getIndex($strIndexName);
-        echo '<pre>';
-        print_r('a');
-        echo '</pre>';
-        die();
 
         $objStatus = new Status($searchIndex->getClient());
         $arrIndex = $objStatus->getIndexNames();
@@ -226,8 +222,8 @@ class Content extends SearchAbstract {
         }
 
         if (!empty($params['cont_id'])) {
-            $addQuery = new ESQuery\Terms();
-            $addQuery->setTerms('cont_id', $params['cont_id']);
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('cont_id', $params['cont_id']);
             $boolQuery->addMust($addQuery);
         }
 
@@ -241,6 +237,12 @@ class Content extends SearchAbstract {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cont_status', $params['cont_status']);
             $boolQuery->addMust($addQuery);
+        }
+        
+        if (!empty($params['not_cont_status'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('cont_status', $params['not_cont_status']);
+            $boolQuery->addMustNot($addQuery);
         }
         
         if (!empty($params['ip_address'])) {

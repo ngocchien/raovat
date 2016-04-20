@@ -51,66 +51,6 @@ return array(
                     ),
                 ),
             ),
-//            'frontend-search' => array(
-//                'type' => 'Segment',
-//                'options' => array(
-//                    'route' => '/s/[o-[:keySlug[.html]]][[:categorySlug]-[:categoryID/]][:brand/][?[s=:s][&price=:price][&sort=:sort][&page=:page]]',
-//                    'constraints' => array(
-//                        'controller' => 'search',
-//                        'index' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        's' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'categorySlug' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'categoryID' => '[0-9]+',
-//                        'brand' => '[a-zA-Z0-9_-]*',
-//                         'keySlug' => '[a-zA-Z0-9_-]*',
-//                        'price' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'sort' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'page' => '[0-9]+',
-//                    ),
-//                    'defaults' => array(
-//                        '__NAMESPACE__' => 'Frontend\Controller',
-//                        'module' => 'frontend',
-//                        'controller' => 'search',
-//                        'action' => 'index',
-//                    ),
-//                ),
-//            ),
-            'frontend-order' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/:controller[/:action][?[s=:s][&page=:page]]]',
-                    'constraints' => array(
-                        'controller' => 'order',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        //'category' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        's' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'page' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'index',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'order-view' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/:controller[/:action][/id/:id]]',
-                    'constraints' => array(
-                        'controller' => 'order',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'index',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'product_rate' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -143,26 +83,24 @@ return array(
                     ),
                 ),
             ),
-            'product' => array(
+            'view-content' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/rao-vat[[/:productslug]-[:productId].html]',
+                    'route' => '/rao-vat[[/:contentSlug]-[:contentId].html]',
                     'constraints' => array(
-                        //'categorySlug' => '[a-zA-Z0-9_-]*',
-                        //'categoryId' => '[a-zA-Z0-9_-]*',
-                        'productslug' => '[a-zA-Z0-9_-]*',
-                        'productId' => '[0-9]+',
-                        'page' => '[0-9]+',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'detail',
+                        'contentSlug' => '[a-zA-Z0-9_-]*',
+                        'contentId' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'detail',
-                        //'categorySlug' => '',
-                        //'categoryId' => 0,
-                        'productslug' => '',
-                        'productId' => 0
+                        'contentSlug' => '',
+                        'contentId' => 0
                     ),
                 ),
             ),

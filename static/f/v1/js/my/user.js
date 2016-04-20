@@ -4,12 +4,12 @@ var User = {
             _getCaptcha();
             $('.fa-refresh').on('click', function () {
                 _getCaptcha();
-            })
+            });
 
-        });
-
-        $('form#form-recharge').submit(function () {
-            $(this).find('button[type=submit]').prop('disabled', true);
+            $('form').submit(function () {
+                $('.btn-primary').prop("disabled", true);
+                $('#loading-mask').show();
+            });
         });
     }
 };

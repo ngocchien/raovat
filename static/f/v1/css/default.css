@@ -1775,3 +1775,27 @@ input[type="radio"]{
     margin-bottom: 15px
 }
 .border-detail{ padding-top:5px; padding-bottom: 5px; padding-right:10px; border:  1px solid #e1e1e1};
+#loading-mask {
+    color: #D85909;
+    font-size: 1.1em;
+    font-weight: bold;
+    opacity: 0.8;
+    position: absolute;
+    text-align: center;
+    z-index: 500;
+}
+
+#loading-mask .loader {
+    background: none repeat scroll 0 0 #FFF4E9;
+    border: 2px solid #F1AF73;
+    color: #D85909;
+    font-weight: bold;
+    left: 50%;
+    margin-left: -105px;
+    padding: 15px 30px;
+    position: fixed;
+    text-align: center;
+    top: 45%;
+    width: 150px;
+    z-index: 1000;
+}
