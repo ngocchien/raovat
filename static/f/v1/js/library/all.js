@@ -257,7 +257,7 @@ $(document).ready(function () {
             return false
         }
     };
-    $('.fa-refresh').click(function () {
+    $('#resetpassForm .fa-refresh').click(function () {
         Captcha();
     });
 
