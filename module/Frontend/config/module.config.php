@@ -245,7 +245,6 @@ return array(
                     ),
                 ),
             ),
-            
             'user-profile' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -263,8 +262,7 @@ return array(
                     ),
                 ),
             ),
-            
-             'user-list-post' => array(
+            'user-list-post' => array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/thanh-vien/danh-sach-tin-dang[.html]',
@@ -281,7 +279,6 @@ return array(
                     ),
                 ),
             ),
-            
             'user-change-password' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -299,7 +296,6 @@ return array(
                     ),
                 ),
             ),
-            
             'user-recharge' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -317,7 +313,6 @@ return array(
                     ),
                 ),
             ),
-            
             'user-deal-history' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -335,7 +330,6 @@ return array(
                     ),
                 ),
             ),
-            
             'user-login-social' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -353,128 +347,6 @@ return array(
                     ),
                 ),
             ),
-            
-            'tags' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/tags[/:tagsSlug]-[:tagsID][/:brand][.html][?[&price=:price][&sort=:sort][&page=:page]]',
-                    'constraints' => array(
-                        'tagsSlug' => '[a-zA-Z0-9_-]*',
-                        'tagsID' => '[a-zA-Z0-9_-]*',
-                        'sort' => '[a-zA-Z0-9_-]*',
-                        'brand' => '[a-zA-Z0-9_-]*',
-                        'price' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'page' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'tags',
-                        'action' => 'index',
-                        'tagsSlug' => '',
-                        'tagsID' => 0,
-                    ),
-                ),
-            ),
-            'tags-content' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/ctags[/:tagsSlug]-[:tagsID][.html][?[&page=:page]]',
-                    'constraints' => array(
-                        'tagsSlug' => '[a-zA-Z0-9_-]*',
-                        'tagsID' => '[a-zA-Z0-9_-]*',
-                        'page' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'TagsContent',
-                        'action' => 'index',
-                        'tagsSlug' => '',
-                        'tagsID' => 0,
-                    ),
-                ),
-            ),
-            'category' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/danh-muc[/:categorySlug]-[:categoryID][.html][?[&page=:page]]]',
-                    'constraints' => array(
-                        'controller' => 'category',
-                        'action' => '[a-zA-Z0-9_-]*',
-                        'categorySlug' => '[a-zA-Z0-9_-]*',
-                        'categoryID' => '[0-9]+',
-                        'sort' => '[a-zA-Z0-9_-]*',
-                        'page' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'category',
-                        'action' => 'index',
-                        'categorySlug' => '',
-                        'categoryID' => 0,
-                    ),
-                ),
-            ),
-//            'cate' => array(
-//                'type' => 'Segment',
-//                'options' => array(
-//                    'route' => '[/:controller[/:action]]',
-//                    'constraints' => array(
-//                        'controller' => 'category',
-//                        'action' => '[a-zA-Z0-9_-]*',
-//                        'id' => '[0-9]+',
-//                    ),
-//                    'defaults' => array(
-//                        '__NAMESPACE__' => 'Frontend\Controller',
-//                        'module' => 'frontend',
-//                        'controller' => 'category',
-//                        'action' => 'index',
-//                    ),
-//                ),
-//            ),
-//            'brand' => array(
-//                'type' => 'Segment',
-//                'options' => array(
-//                    'route' => '[/br[/:brandSlug][[/:categorySlug]-[:categoryID]].html][?[s=:s][&price=:price][&sort=:sort][&page=:page]]',
-//                    'constraints' => array(
-//                        'controller' => 'brand',
-//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'brandSlug' => '[a-zA-Z0-9_-]*',
-//                        's' => '[a-zA-Z0-9_-]*',
-//                        'categorySlug' => '[a-zA-Z0-9_-]*',
-//                        'categoryID' => '[0-9]+',
-//                        'price' => '[a-zA-Z0-9_-]*',
-//                        'sort' => '[a-zA-Z0-9_-]*',
-//                        'page' => '[0-9]+',
-//                    ),
-//                    'defaults' => array(
-//                        '__NAMESPACE__' => 'Frontend\Controller',
-//                        'module' => 'frontend',
-//                        'controller' => 'brand',
-//                        'action' => 'index',
-//                        'brandSlug' => '',
-//                        'brandID' => 0,
-//                    ),
-//                ),
-//            ),
-            'auth' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/taikhoan[[/][:action][.html]]]',
-                    'constraints' => array(
-                        'controller' => 'auth',
-                        'action' => '[a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'auth',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -488,129 +360,6 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'captcha',
                         'action' => '[a-zA-Z0-9_-]*',
-                    ),
-                ),
-            ),
-            'checkout' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/:controller[/][:action/]]',
-                    'constraints' => array(
-                        'controller' => 'checkout',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'checkout',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'checkout_add_product' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/checkout/[:slug]-[:prod_id].html',
-                    'constraints' => array(
-                        'slug' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'prod_id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'checkout',
-                        'action' => 'index',
-                        'slug' => 'khong-them-san-pham-nao',
-                        'prod_id' => 0,
-                    ),
-                ),
-            ),
-            'add_comment' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/dang-binh-luan.html',
-                    'constraints' => array(
-                        'controller' => 'comment',
-                        'action' => 'add',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'comment',
-                        'action' => 'add',
-                    ),
-                ),
-            ),
-            'general' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/ge/[:title]-[:id].html',
-                    'constraints' => array(
-                        'title' => '[a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'general',
-                        'action' => 'index',
-                        'title' => '',
-                        'id' => 0,
-                    ),
-                ),
-            ),
-//            'content' => array(
-//                'type' => 'Segment',
-//                'options' => array(
-//                    'route' => '/tt[[/:categorySlug]-[:categoryID].html][?[&page=:page]]',
-//                    'constraints' => array(
-//                        'slug' => '[a-zA-Z0-9_-]*',
-//                        'id' => '[0-9]+',
-//                        'page' => '[0-9]+',
-//                    ),
-//                    'defaults' => array(
-//                        '__NAMESPACE__' => 'Frontend\Controller',
-//                        'module' => 'frontend',
-//                        'controller' => 'content',
-//                        'action' => 'index',
-//                        'slug' => 'tt',
-//                        'id' => 0,
-//                    ),
-//                ),
-//            ),
-            'content_detail' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/co/[:contslug]-[:contId].html',
-                    'constraints' => array(
-                        'contslug' => '[a-zA-Z0-9_-]*',
-                        'contId' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'content',
-                        'action' => 'view',
-                        'contslug' => 'chi-tiet',
-                        'contId' => 0,
-                    ),
-                ),
-            ),
-            'ordertracking' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '[/:controller[/:action][?id=:id][&email=:email]]',
-                    'constraints' => array(
-                        'controller' => 'ordertracking',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'email' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'index',
-                        'action' => 'index',
                     ),
                 ),
             ),
@@ -651,19 +400,59 @@ return array(
                     ),
                 ),
             ),
-            'menu' => array(
+            'category' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:controller[/][:action[/]]]',
+                    'route' => '[/danh-muc[/:categorySlug]-[:categoryID][.html][?[&page=:page]]]',
                     'constraints' => array(
-                        'controller' => 'menu',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'controller' => 'category',
+                        'action' => '[a-zA-Z0-9_-]*',
+                        'categorySlug' => '[a-zA-Z0-9_-]*',
+                        'categoryID' => '[0-9]+',
+                        'sort' => '[a-zA-Z0-9_-]*',
+                        'page' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'menu',
-                        'action' => 'load-menu',
+                        'controller' => 'category',
+                        'action' => 'index',
+                        'categorySlug' => '',
+                        'categoryID' => 0,
+                    ),
+                ),
+            ),
+            'general' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/ge/[:title]-[:id].html',
+                    'constraints' => array(
+                        'title' => '[a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'general',
+                        'action' => 'index',
+                        'title' => '',
+                        'id' => 0,
+                    ),
+                ),
+            ),
+            'auth' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '[/taikhoan[[/][:action][.html]]]',
+                    'constraints' => array(
+                        'controller' => 'auth',
+                        'action' => '[a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'auth',
+                        'action' => 'index',
                     ),
                 ),
             ),

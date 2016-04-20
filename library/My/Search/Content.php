@@ -20,7 +20,7 @@ class Content extends SearchAbstract {
 
     public function createIndex() {
         $strIndexName = SEARCH_PREFIX . 'content';
-        
+
         $searchClient = General::getSearchConfig();
         $searchIndex = $searchClient->getIndex($strIndexName);
 
@@ -138,23 +138,26 @@ class Content extends SearchAbstract {
      * Get List Limit
      */
     public function getListLimit($params = array(), $intPage = 1, $intLimit = 15, $sort = ['created_date' => ['order' => 'desc']]) {
-
-        $intFrom = $intLimit * ($intPage - 1);
-        $boolQuery = new Bool();
-        $boolQuery = $this->__buildWhere($params, $boolQuery);
-        $query = new ESQuery();
-
-        $query->setFrom($intFrom)
-                ->setSize($intLimit)
-                ->setSort($sort);
-        $query->setQuery($boolQuery);
-        $instanceSearch = new Search(General::getSearchConfig());
-        $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
-                ->addType($this->getSearchType())
-                ->search($query);
-        $this->setResultSet($resultSet);
-        $arrUserList = $this->toArray();
-        return $arrUserList;
+        try {
+            $intFrom = $intLimit * ($intPage - 1);
+            $boolQuery = new Bool();
+            $boolQuery = $this->__buildWhere($params, $boolQuery);
+            $query = new ESQuery();
+            $query->setFrom($intFrom)
+                    ->setSize($intLimit)
+                    ->setSort($sort);
+            $query->setQuery($boolQuery);
+            $instanceSearch = new Search(General::getSearchConfig());
+            $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
+                    ->addType($this->getSearchType())
+                    ->search($query);
+            $this->setResultSet($resultSet);
+            $arrUserList = $this->toArray();
+            return $arrUserList;
+        } catch (\Exception $exc) {
+            echo $exc->getMessage();
+            die;
+        }
     }
 
     /**
@@ -232,31 +235,31 @@ class Content extends SearchAbstract {
             $addQuery->setTerm('user_created', $params['user_created']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (!empty($params['cont_status'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cont_status', $params['cont_status']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (!empty($params['not_cont_status'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cont_status', $params['not_cont_status']);
             $boolQuery->addMustNot($addQuery);
         }
-        
+
         if (!empty($params['ip_address'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('ip_address', $params['ip_address']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (!empty($params['cate_id'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cate_id', $params['cate_id']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         return $boolQuery;
     }
 
