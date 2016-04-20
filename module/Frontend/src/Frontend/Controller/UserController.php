@@ -138,6 +138,7 @@ class UserController extends MyController {
     public function rechargeAction() {
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
+
             if (empty($params['type'])) {
                 $errors['type'] = 'Bạn chưa chọn loại thẻ nạp !';
             } else {

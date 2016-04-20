@@ -6,7 +6,11 @@ var User = {
                 _getCaptcha();
             })
 
-        })
+        });
+
+        $('form#form-recharge').submit(function () {
+            $(this).find('button[type=submit]').prop('disabled', true);
+        });
     }
 };
 
