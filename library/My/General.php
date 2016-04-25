@@ -4,7 +4,9 @@ namespace My;
 
 class General {
 
-    const TITLE_META = " || Ngáođá.net";
+    const TITLE_META = " || QuyNhon247.com";
+    const SITE_AUTH = "QuyNhon247.com";
+    const SITE_LOCATION = "";
     const CAT_TINTUC = 1;
     const CAT_ADS = 2;
     const CAT_PR = 3;
@@ -351,7 +353,7 @@ class General {
                 case 'cate':
                     return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
                 case 'content':
-                    return array('150x100', '224x224', '291x250');
+                    return array('150x100', '224x224', '291x250','490x294');
                 default:
                     return array();
             }

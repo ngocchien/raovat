@@ -39,24 +39,6 @@ class storageComment extends AbstractTableGateway {
             return array();
         }
     }
-    public function getTotalById($arrCondition = null) {
-        try {
-            $strWhere = $this->_buildWhere($arrCondition);
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $select = $sql->Select($this->table)
-                    ->where('1=1' . $strWhere)
-                    ->order(array('comm_parent ASC'));
-            $query = $sql->getSqlStringForSqlObject($select);
-            return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
-        } catch (\Zend\Http\Exception $exc) {
-            if (APPLICATION_ENV !== 'production') {
-                throw new \Zend\Http\Exception($exc->getMessage());
-            }
-            return array();
-        }
-    }
-
     public function add($p_arrParams) {
         try {
             if (!is_array($p_arrParams) || empty($p_arrParams)) {
@@ -65,9 +47,16 @@ class storageComment extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
+                $p_arrParams['comm_id'] = $result;
+                $instanceJob = new \My\Job\JobComment();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeComment', $p_arrParams);
             }
             return $result;
-        } catch (\Zend\Http\Exception $exc) {
+        } catch (\Exception $exc) {
+            echo '<pre>';
+            print_r($exc->getMessage());
+            echo '</pre>';
+            die();
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());
             }
@@ -121,7 +110,6 @@ class storageComment extends AbstractTableGateway {
             $sql = new Sql($adapter);
             $select = $sql->Select($this->table);
             $select->where('1=1' . $strWhere)
-                    ->join('tbl_products', 'tbl_comments.prod_id = tbl_products.prod_id')
                     ->order($strOrder)
                     ->limit($intLimit)
                     ->offset($intLimit * ($intPage - 1));
@@ -270,11 +258,16 @@ class storageComment extends AbstractTableGateway {
     
     public function edit($p_arrParams, $intCommentID) {
         try {
-            $result = array();
             if (!is_array($p_arrParams) || empty($p_arrParams) || empty($intCommentID)) {
-                return $result;
+                return false;
             }
-            return $this->update($p_arrParams, 'comm_id=' . $intCommentID);
+            $result = $this->update($p_arrParams, 'comm_id=' . $intCommentID);
+            if($result){
+                $p_arrParams['comm_id'] = $intCommentID;
+                $instanceJob = new \My\Job\JobComment();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editComment', $p_arrParams);
+            }
+            return $result;
         } catch (\Zend\Http\Exception $exc) {
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());

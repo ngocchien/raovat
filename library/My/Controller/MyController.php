@@ -56,19 +56,18 @@ class MyController extends AbstractActionController {
 
     private function setMeta($arrData) {
         $this->renderer->headMeta()->setCharset('UTF-8');
+        $this->renderer->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
         switch ($this->resource) {
             case 'frontend:index:index':
-                $this->renderer->headTitle('rao vat!' . \My\General::TITLE_META);
-                $this->renderer->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
-                $this->renderer->headMeta()->appendName('keywords', 'ngaoda.net, ngao da, tre trau, suu nhi, hai vl, hai huoc, che anh, videos hai huoc');
-                $this->renderer->headMeta()->appendName('description', 'Ngáođá.net,ngaoda.net , chế ảnh, chia sẻ ảnh vui, video vui, hài hước vui nhộn, trẻ trâu, ngáo đá, hài vkl');
+                $this->renderer->headTitle('Rao vặt Quy Nhơn - Bình Định ' . \My\General::TITLE_META);
+                $this->renderer->headMeta()->appendName('keywords', 'quynhon247.com, quy nhon, binh dinh, rao vat quy nhon, rao vat binh dinh, rao vat quy nhon - binh dinh, mua ban laptop, rao vat smartphone - dien thoai - laptop - my tinh pc - nha dat - dich vu - tuyen dung - viec lam ...');
+                $this->renderer->headMeta()->appendName('description', 'quynhon247.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
                 break;
             default:
                 break;
         }
         if ($arrData['module'] === 'backend') {
             $this->renderer->headTitle('Administrator - NGÁOĐÁ.NET');
-            $this->renderer->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
         }
     }
 
@@ -152,7 +151,7 @@ class MyController extends AbstractActionController {
             define('CUSTOMER_PHONE', $arrUserData['user_phone'] ? $arrUserData['user_phone'] : '');
             define('CUSTOMER_AVATAR', $arrUserData['user_avatar'] ? $arrUserData['user_avatar'] : '');
             define('LOGGED', $arrUserData ? 1 : 0);
-            define('CUSTOMER_BALANCE', $arrUserData['user_balance'] ? (int)$arrUserData['user_balance'] : 0);
+            define('CUSTOMER_BALANCE', $arrUserData['user_balance'] ? (int) $arrUserData['user_balance'] : 0);
 
             if (empty(CUSTOMER_ID) && $arrData['controller'] != 'user' && $arrData['action'] != 'social') {
                 /*

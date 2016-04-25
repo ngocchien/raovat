@@ -350,16 +350,32 @@ return array(
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:controller[/:action][.html]]',
+                    'route' => '/lay-ma-xac-nhan',
                     'constraints' => array(
                         'controller' => 'captcha',
-                        'action' => '[a-zA-Z0-9_-]*',
+                        'action' => 'index',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
                         'controller' => 'captcha',
-                        'action' => '[a-zA-Z0-9_-]*',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'add-comment' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/dang-phan-hoi',
+                    'constraints' => array(
+                        'controller' => 'content',
+                        'action' => 'add-comment',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'add-comment',
                     ),
                 ),
             ),

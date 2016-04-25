@@ -50,11 +50,61 @@ class ConsoleController extends MyController {
             case 'trans-history':
                 $this->__migrateTrans($intIsCreateIndex);
                 break;
+            
+            case 'comment':
+                $this->__migrateComment($intIsCreateIndex);
+                break;
 
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
         }
+    }
+    
+    public function __migrateComment($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\Comment');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\Comment();
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'comm_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['comm_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
     }
 
     public function __migrateLogs($intIsCreateIndex) {
@@ -267,6 +317,23 @@ class ConsoleController extends MyController {
                 return;
             }
         }
+        
+        //stop job comment
+        if ($params['stop'] === 'raovat-comment') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-comment' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-comment is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
 
         $worker = General::getWorkerConfig();
         //  die($params['type']);
@@ -300,8 +367,12 @@ class ConsoleController extends MyController {
                 }
 
                 $funcName1 = SEARCH_PREFIX . 'writeContent';
-                $methodHandler1 = '\My\Job\JobLog::writeContent';
+                $methodHandler1 = '\My\Job\JobContent::writeContent';
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editContent';
+                $methodHandler2 = '\My\Job\JobContent::editContent';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
                 break;
             case 'raovat-tran':
@@ -318,6 +389,27 @@ class ConsoleController extends MyController {
                 $funcName1 = SEARCH_PREFIX . 'writeTran';
                 $methodHandler1 = '\My\Job\JobTransactionHistory::writeTran';
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                break;
+                
+                case 'raovat-comment':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-comment >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-comment in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-comment is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeComment';
+                $methodHandler1 = '\My\Job\JobComment::writeComment';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+                
+                $funcName2 = SEARCH_PREFIX . 'editComment';
+                $methodHandler2 = '\My\Job\editComment::editComment';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
                 break;
 
@@ -361,14 +453,25 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
-         //check tran worker
+
+        //check tran worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-tran' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
         if (empty($PID)) {
             $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-tran >/dev/null & echo 2>&1 & echo $!");
             if (empty($PID)) {
                 echo General::getColoredString("Cannot deamon PHP process to run job raovat-tran in background. \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+        
+        //check tran worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-comment' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-comment >/dev/null & echo 2>&1 & echo $!");
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-comment in background. \n", 'light_cyan', 'red');
                 return;
             }
         }

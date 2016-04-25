@@ -104,7 +104,7 @@ class storageContent extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
-                $p_arrParams['content_id'] = $result;
+                $p_arrParams['cont_id'] = $result;
                 $instanceJob = new \My\Job\JobContent();
                 $instanceJob->addJob(SEARCH_PREFIX . 'writeContent', $p_arrParams);
             }
@@ -123,11 +123,16 @@ class storageContent extends AbstractTableGateway {
 
     public function edit($p_arrParams, $intProductID) {
         try {
-            $result = array();
             if (!is_array($p_arrParams) || empty($p_arrParams) || empty($intProductID)) {
-                return $result;
+                return false;
             }
-            return $this->update($p_arrParams, 'cont_id=' . $intProductID);
+            $result = $this->update($p_arrParams, 'cont_id=' . $intProductID);
+            if($result){
+                $p_arrParams['cont_id'] = $intProductID;
+                $instanceJob = new \My\Job\JobContent();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editContent', $p_arrParams);
+            }
+            return $result;
         } catch (\Zend\Http\Exception $exc) {
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());

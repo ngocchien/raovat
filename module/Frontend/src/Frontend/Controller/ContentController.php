@@ -49,28 +49,48 @@ class ContentController extends MyController {
 
         //update số lần view
         $arrUpdate = [
-            'cont_views' => $arrContent['cont_views'] + 1
+            'cont_views' => $arrContent['cont_views'] + 1,
+            'modified_date' => time()
         ];
         $serviceContent = $this->serviceLocator->get('My\Models\Content');
         $serviceContent->edit($arrUpdate, $cont_id);
+
+        //Lay thong tin người đăng
         $serviceUser = $this->serviceLocator->get('My\Models\User');
         $arrUser = $serviceUser->getDetail(array('user_id' => $arrContent['user_created']));
 
         $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
-        $arrContent['meta_keyword'] ? $metaKeyword = $arrContent['meta_keyword'] : NULL;
-        $arrContent['meta_description'] ? $metaDescription = $arrContent['meta_description'] : NULL;
+        $metaKeyword = $arrContent['meta_keyword'] ? $arrContent['meta_keyword'] : $arrContent['cont_title'];
+        $metaDescription = $arrContent['meta_description'] ? $arrContent['meta_description'] : $arrContent['cont_title'];
         $arrContent['meta_social'] ? $metaSocial = $arrContent['meta_social'] : NULL;
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+
+        $arrCategoryDetail = unserialize(ARR_CATEGORY)[$arrContent['cate_id']];
+
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode($arrCategoryDetail['cate_meta_description']) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode($arrCategoryDetail['cate_name']) . General::TITLE_META);
         $this->renderer->headTitle(html_entity_decode($metaTitle) . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode($metaKeyword));
         $this->renderer->headMeta()->appendName('description', html_entity_decode($metaDescription));
         $this->renderer->headMeta()->appendName('social', $metaSocial);
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id)));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode($arrContent['cont_title']));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode($arrContent['cont_title']));
 
-
+        $metaImage = '';
+        if (!empty($arrContent['cont_image'])) {
+            $metaImage = json_decode(current(json_decode($arrContent['cont_image'])), true);
+            $metaImage = $metaImage['thumbImage']['490x294'];
+        }
+        $this->renderer->headMeta()->setProperty('og:image', $metaImage);
+        $instanceSearchComment = new \My\Search\Comment();
+        $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
+        
         return array(
             'params' => $params,
             'arrContent' => $arrContent,
+            'arrCommentList'=>$arrCommentList
         );
     }
 
@@ -392,6 +412,71 @@ class ContentController extends MyController {
             'arrCategory' => $arrCategory,
             'arrDistrictList' => $arrDistrictList
         );
+    }
+
+    public function addCommentAction() {
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            $errors = [];
+
+            if ((int) CUSTOMER_ID < 1) {
+                if (empty($params['full_name'])) {
+                    $errors['full_name'] = 'Họ và tên không được bỏ trống!';
+                } else {
+                    if (strlen($params['full_name']) < 5) {
+                        $errors['full_name'] = 'Nhập Họ và tên không hợp lệ!';
+                    }
+                }
+
+                $validator = new Validate();
+                if (!$validator->emailAddress($params['email'])) {
+                    $errors['email'] = 'Địa chỉ email không hợp lệ!';
+                }
+            }
+
+            if (empty($params['comment_content'])) {
+                $errors['comment_content'] = 'Nội dung phản hồi không được bỏ trống!';
+            } else {
+                if (strlen($params['comment_content']) < 10) {
+                    $errors['comment_content'] = 'Nội dung phản hồi phải từ 10 ký tự trở lên!';
+                }
+            }
+
+            if (empty($params['cont_id'])) {
+                $errors['cont_id'] = 'Không tìm thấy tin rao vặt!';
+            } else {
+                $instanceSearchContent = new \My\Search\Content();
+                $content_detail = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'status' => 1]);
+                if (empty($content_detail)) {
+                    $errors['cont_id'] = 'Không tìm thấy tin rao vặt này trong hệ thống!';
+                }
+            }
+
+            if (!empty($errors)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'errors' => $errors)));
+            }
+
+            $arrData = [
+                'status' => 0,
+                'created_date' => time(),
+                'cont_id' => (int) $params['cont_id'],
+                'full_name' => (int) CUSTOMER_ID > 0 ? CUSTOMER_FULLNAME : trim($params['full_name']),
+                'email' => (int) CUSTOMER_ID > 0 ? CUSTOMER_EMAIL : trim($params['email']),
+                'user_id' => (int) CUSTOMER_ID > 0 ? CUSTOMER_ID : null,
+                'user_avatar' => (int) CUSTOMER_ID > 0 ? CUSTOMER_AVATAR : null,
+                'comm_content' => $params['comment_content']
+            ];
+
+            $serviceComment = $this->serviceLocator->get('My\Models\Comment');
+            $intResult = $serviceComment->add($arrData);
+            echo '<pre>';
+            print_r($intResult);
+            echo '</pre>';
+            die();
+            if ($intResult > 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Gửi phản hồi thành công!')));
+            }
+        }
     }
 
 }
