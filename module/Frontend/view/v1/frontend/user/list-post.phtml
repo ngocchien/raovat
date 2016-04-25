@@ -1,0 +1,43 @@
+<section id="page-head">
+    <div class="container">
+        <div class="row col-md-12">
+            <div class="page-heading">
+                <h1>TÀI KHOẢN </h1>
+                <h4>Thông tin cá nhân</h4>
+            </div>
+        </div>
+    </div>
+</section><!--end main page heading-->
+<section id="detail">
+    <div class="container">
+        <section class="wrapper site-min-height">
+            <div class="container">
+                <div class="row">
+                    <?php echo $this->render('frontend/nav-user-left'); ?>
+                    <div class="col-md-9">
+                        <div class="sidebar">
+                            <div class="side-widget">
+                                <div class="tags">
+                                    <?php
+                                    if (!empty($this->arrContentList)):
+                                        foreach ($this->arrContentList as $arrContent):
+                                            ?>
+                                            <div class="row">
+                                                <div class="col-md-9"><a href="<?php echo $this->serverUrl() . $this->Url('view-content', array('controller' => 'content', 'action' => 'title','contentSlug'=>$arrContent['cont_slug'],'contentId'=>$arrContent['cont_id']))?>" style="display: block"><?php echo $arrContent['cont_title']; ?></a></div>
+                                                <div class="col-md-1"><button><i class="fa fa-edit"></i></button></div>
+                                                <div class="col-md-2"></div>
+                                            </div>
+
+                                            <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!--end details-->
+    </div>
+</section>
