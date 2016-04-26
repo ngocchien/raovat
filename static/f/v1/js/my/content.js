@@ -57,15 +57,22 @@ var Content = {
     },
     detail: function () {
         $(document).ready(function () {
-            //add comment
+            Captcha();
+
+            $('.refresh-captcha').on('click', function () {
+                Captcha();
+            });
+
             $('.add-comment').on('click', function () {
                 $('.comment-error-name').hide();
                 $('.comment-error-email').hide();
                 $('.comment-error-content').hide();
+                $('.comment-error-captcha').hide();
                 var full_name = $('input[name=full_name]').val();
                 var email = $('input[name=email]').val();
                 var comment_content = $('textarea[name=comment-content]').val();
                 var cont_id = $('input[name=cont_id]').val();
+                var captcha = $('input[name=captcha]').val();
                 var error = 0;
 
                 if (!full_name || full_name.length < 5) {
@@ -74,7 +81,7 @@ var Content = {
                     error += 1;
                 }
 
-                if (isValidEmailAddress(email) == false) {
+                if (!IsEmail(email)) {
                     $('.comment-error-email').html('Địa chỉ email không hợp lệ!');
                     $('.comment-error-email').show();
                     error += 1;
@@ -86,6 +93,12 @@ var Content = {
                     error += 1;
                 }
 
+                if (!captcha || captcha.length != 6) {
+                    $('.comment-error-captcha').html('Nhập mã xác nhận chưa chính xác!');
+                    $('.comment-error-captcha').show();
+                    error += 1;
+                }
+
                 if (error == 0) {
                     $.ajax({
                         type: 'POST',
@@ -93,24 +106,103 @@ var Content = {
                         dataType: 'json',
                         cache: false,
                         beforeSend: function () {
-//                            $('#loading-mask').show();
+                            $('#loading-mask').show();
                         },
                         data: {
                             full_name: full_name,
                             email: email,
                             comment_content: comment_content,
-                            cont_id: cont_id
+                            cont_id: cont_id,
+                            captcha: captcha
                         },
                         success: function (rs) {
+                            $('#loading-mask').hide();
                             if (rs.st == 1) {
-
+                                $('.comment-list-post').prepend(rs.html);
                             } else {
-
+                                var html = '<div class="">';
+                                $.each(rs.errors, function (k, v) {
+                                    var temp = '<p style="color:red"> <b> - ' + v + '</b></p>'
+                                    html += temp;
+                                })
+                                html += '</div>';
+                                bootbox.alert(html);
                             }
                         }
                     });
                 }
-            })
+            });
+
+            //save content
+            $('a.save-post').on('click', function () {
+                if (!cont_id) {
+                    bootbox.alert('<p style="color:red"><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></p>', function () {
+                        return false;
+                    });
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: saveContentURL,
+                    dataType: 'json',
+                    cache: false,
+                    beforeSend: function () {
+                        $('#loading-mask').show()();
+                    },
+                    data: {
+                        cont_id: cont_id
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        bootbox.alert(rs.ms, function () {
+                            return false;
+                        });
+                    }
+                });
+            });
+
+            $('a.up-vip').on('click', function () {
+
+            });
+
+            $('a.modal-messages').on('click', function () {
+                $('#ModalSendMessages').modal('toggle');
+            });
+
+            $('button.send-messages').on('click', function () {
+                $('.error-messages').hide();
+                var messages_content = $(this).closest('.modal-content').find('#message-text').val();
+                if (messages_content.length < 10) {
+                    $('.error-messages').html('Nội dung tin nhắn phải từ 10 ký tự trở lên!');
+                    $('.error-messages').show();
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: sendMessagesURL,
+                    dataType: 'json',
+                    cache: false,
+                    beforeSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    data: {
+                        post_id: cont_id,
+                        messages_content: messages_content
+                    },
+                    success: function (rs) {
+                        $('#ModalSendMessages').modal('hide');
+                        $('#loading-mask').hide();
+                        bootbox.alert(rs.ms, function () {
+                            return false;
+                        });
+                    }
+                });
+
+            });
+
+            $('.no-login').on('click', function () {
+                bootbox.alert('<p style="color:red"><b>Vui lòng đăng nhập trước khi thực hiện thao tác này!</b></p>');
+            });
         })
     }
 };
@@ -161,7 +253,6 @@ function __valid(els) {
     });
 }
 
-function isValidEmailAddress(email) {
-    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return pattern.test(email);
+function loadCaptcha() {
+
 }

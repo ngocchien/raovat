@@ -83,6 +83,24 @@ return array(
                     ),
                 ),
             ),
+            'content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/rao-vat[[/:action].html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => '[a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => '[a-zA-Z0-9_-]*',
+                    ),
+                ),
+            ),
+            
             'view-content' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -501,6 +519,7 @@ return array(
             'frontend/auth/reset-password' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/auth/reset-password.phtml',
             'frontend/nav-user-left' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-user-left.phtml',
             'frontend/nav-ads-right' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-ads-right.phtml',
+            'frontend/content/add-comment' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/add-comment.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,

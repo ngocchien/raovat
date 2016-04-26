@@ -41,8 +41,6 @@ class General {
     const TRANS_OUTPUT = 2;
 
     private $headlink;
-
-
     static $fbConfig = [
         'appId' => '1697339473867169',
         'secret' => 'b8db461aceec01487b234135a3b44f30',
@@ -353,7 +351,7 @@ class General {
                 case 'cate':
                     return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
                 case 'content':
-                    return array('150x100', '224x224', '291x250','490x294');
+                    return array('150x100', '224x224', '291x250', '490x294');
                 default:
                     return array();
             }
@@ -658,6 +656,13 @@ class General {
         );
 
         return $arrData;
+    }
+
+    public static function formatDateTime($time) {
+        $temp = date('d/m/Y/H/i/s', $time);
+        list($day, $month, $year, $hour, $min, $second) = explode('/', $temp);
+        $strReturn = 'Ngày ' . $day . ' tháng ' . $month . ' năm ' . $year . ' - ' . $hour . ' giờ ' . $min . ' phút ' . $second . ' giây';
+        return $strReturn;
     }
 
 }

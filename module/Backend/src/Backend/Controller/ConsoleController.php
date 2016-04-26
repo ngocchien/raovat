@@ -50,9 +50,13 @@ class ConsoleController extends MyController {
             case 'trans-history':
                 $this->__migrateTrans($intIsCreateIndex);
                 break;
-            
+
             case 'comment':
                 $this->__migrateComment($intIsCreateIndex);
+                break;
+
+            case 'favourite':
+                $this->__migrateFavourite($intIsCreateIndex);
                 break;
 
             default:
@@ -60,7 +64,53 @@ class ConsoleController extends MyController {
                 break;
         }
     }
-    
+
+    public function __migrateFavourite($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\Favourite');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\Favourite();
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'favo_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['favo_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
     public function __migrateComment($intIsCreateIndex) {
         $service = $this->serviceLocator->get('My\Models\Comment');
         $intLimit = 1000;
@@ -317,7 +367,7 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
+
         //stop job comment
         if ($params['stop'] === 'raovat-comment') {
             if ($params['type'] || $params['background']) {
@@ -328,6 +378,23 @@ class ConsoleController extends MyController {
             if ($PID) {
                 shell_exec("kill " . $PID);
                 echo General::getColoredString("Job raovat-comment is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job Favourite
+        if ($params['stop'] === 'raovat-favourite') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-favourite' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-favourite is stopped running in backgound \n", 'green');
                 return;
             } else {
                 echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
@@ -391,8 +458,8 @@ class ConsoleController extends MyController {
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
 
                 break;
-                
-                case 'raovat-comment':
+
+            case 'raovat-comment':
                 //start job in background
                 if ($params['background'] === 'true') {
                     $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-comment >/dev/null & echo 2>&1 & echo $!");
@@ -406,9 +473,30 @@ class ConsoleController extends MyController {
                 $funcName1 = SEARCH_PREFIX . 'writeComment';
                 $methodHandler1 = '\My\Job\JobComment::writeComment';
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
-                
+
                 $funcName2 = SEARCH_PREFIX . 'editComment';
-                $methodHandler2 = '\My\Job\editComment::editComment';
+                $methodHandler2 = '\My\Job\JobComment::editComment';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-favourite':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-favourite >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-favourite in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-favourite is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeFavourite';
+                $methodHandler1 = '\My\Job\JobFavourite::writeFavourite';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editFavourite';
+                $methodHandler2 = '\My\Job\JobFavourite::editFavourite';
                 $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
                 break;
@@ -464,7 +552,7 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
+
         //check tran worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-comment' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
@@ -472,6 +560,18 @@ class ConsoleController extends MyController {
             $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-comment >/dev/null & echo 2>&1 & echo $!");
             if (empty($PID)) {
                 echo General::getColoredString("Cannot deamon PHP process to run job raovat-comment in background. \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+        
+        
+        //check tran worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-favourite' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-favourite >/dev/null & echo 2>&1 & echo $!");
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-favourite in background. \n", 'light_cyan', 'red');
                 return;
             }
         }

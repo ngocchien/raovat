@@ -228,35 +228,31 @@ $(document).ready(function () {
         }
     });
 
-    function Captcha() {
-        $(document).ready(function () {
-            $.ajax({
-                type: "POST",
-                url: captchaURL,
-                dataType: "json",
-                success: function (result) {
-                    $(".modal-dialog .img-captcha, .comment .img-captcha").attr('src', result.url);
-                }
-            });
-        });
-    }
-    ;
-
-    IsEmail = function (strEmail) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(strEmail);
-    };
-    validatePhone = function (txtPhone) {
-        var filter = /^[0-9-+]+$/;
-        if (filter.test(txtPhone)) {
-            if (txtPhone.length < 8 || txtPhone.length > 12) {
-                return false;
+    Captcha = function () {
+        $.ajax({
+            type: "POST",
+            url: captchaURL,
+            dataType: "json",
+            success: function (result) {
+                $(".img-captcha").attr('src', result.url);
             }
-            return true;
-        } else {
-            return false
-        }
-    };
+        });
+    },
+            IsEmail = function (strEmail) {
+                var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                return regex.test(strEmail);
+            },
+            validatePhone = function (txtPhone) {
+                var filter = /^[0-9-+]+$/;
+                if (filter.test(txtPhone)) {
+                    if (txtPhone.length < 8 || txtPhone.length > 12) {
+                        return false;
+                    }
+                    return true;
+                } else {
+                    return false
+                }
+            };
     $('#resetpassForm .fa-refresh').click(function () {
         Captcha();
     });
