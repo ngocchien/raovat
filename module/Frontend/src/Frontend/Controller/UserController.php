@@ -311,21 +311,32 @@ class UserController extends MyController {
     }
 
     public function changeAvatarAction() {
-        if (UID <= 0) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+        if (!CUSTOMER_ID) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Chưa đăng nhập!</b></p>')));
         }
-        $params = $this->params()->fromPost();
-        $files = $this->params()->fromFiles();
-        $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $user_avatar = General::ImageUpload($files['file-0'], 'auth', $resize = 1);   //xem phần profile.js - phần upload dưới cùng
-        $arrData = array(
-            'user_avatar' => json_encode($user_avatar),
-            'user_updated' => time(),
-        );
-        $intResult = $serviceUser->edit($arrData, UID);
-        if ($intResult) {
-            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'images' => $user_avatar[0]['thumbImage']['120x120'])));
+
+        if ($this->request->isPost()) {
+            $files = $this->params()->fromFiles();
+            $user_avatar = General::ImageUpload($files['file-0'], 'user');
+
+            if (empty($user_avatar)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<br>Hình up lên phải là định dạng hình ảnh (.jpg, .png , ...) ! Và dung lượng không được quá 2MB !</br>')));
+            }
+
+            //save lại cho user
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrData = array(
+                'user_avatar' => json_encode($user_avatar),
+                'updated_date' => time(),
+            );
+
+            $intResult = $serviceUser->edit($arrData, CUSTOMER_ID);
+            if ($intResult) {
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'images' => $user_avatar[0]['thumbImage']['150x150'])));
+            }
         }
+
+        return $this->getResponse()->setContent(json_encode(array('st' => -1, 'images' => 'Xảy ra lỗi trong quá trình xử lý! Xin vui lòng thử lại sau giây lát!')));
     }
 
     public function socialAction() {

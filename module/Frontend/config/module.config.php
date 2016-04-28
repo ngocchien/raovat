@@ -365,6 +365,23 @@ return array(
                     ),
                 ),
             ),
+            'user-change-avatar' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/thay-doi-anh-dai-dien.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'change-avatar',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'change-avatar',
+                    ),
+                ),
+            ),
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -520,6 +537,8 @@ return array(
             'frontend/nav-user-left' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-user-left.phtml',
             'frontend/nav-ads-right' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/nav-ads-right.phtml',
             'frontend/content/add-comment' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/add-comment.phtml',
+            'frontend/email-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/email-messages.phtml',
+            'frontend/footer-email' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/footer-email.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,

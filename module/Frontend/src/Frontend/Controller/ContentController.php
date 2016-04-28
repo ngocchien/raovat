@@ -551,7 +551,7 @@ class ContentController extends MyController {
             }
             $params = $this->params()->fromPost();
 
-            if (empty($params['post_id']) || empty($params['messages_content'])) {
+            if (empty($params['cont_id']) || empty($params['messages_content'])) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng nhập đầy đủ thông tin!</b></p>')));
             }
 
@@ -563,7 +563,7 @@ class ContentController extends MyController {
             }
 
             $arrData = [
-                'post_id' => (int) $params['cont_id'],
+                'cont_id' => (int) $params['cont_id'],
                 'mess_content' => trim($params['messages_content']),
                 'user_created' => CUSTOMER_ID,
                 'created_date' => time(),
@@ -575,11 +575,43 @@ class ContentController extends MyController {
                 $arrData['user_info'] = $arrContent['user_info'];
             }
 
-            echo '<pre>';
-            print_r($arrContent);
-            echo '</pre>';
-            die();
+            $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
+            $intResult = $serviceMessages->add($arrData);
+            if ($intResult) {
+                $arrData['mess_id'] = $intResult;
+                $arrUserInfo = [];
+                if (!empty($arrContent['user_created'])) {
+                    $serviceUser = $this->serviceLocator->get('My\Models\User');
+                    $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrContent['user_created']]);
+                }
+                //send mail
+                $template = 'frontend/email-messages';
+                $viewModel = new ViewModel();
+                $viewModel->setTerminal(true);
+                $viewModel->setTemplate($template);
+                $viewModel->setVariables(
+                        [
+                            'arrContent' => $arrContent,
+                            'arrMessages' => $arrData,
+                            'arrUser' => $arrUserInfo
+                        ]
+                );
+                $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
+
+                $arrEmail = [
+                    'user_email' => empty($arrContent['user_created']) ? $arrContent['user_info']['user_email'] : $arrUserInfo['user_email'],
+                    'html' => $html,
+                    'title' => 'Tin nhắn mới từ rao vặt "' . html_entity_decode($arrContent['cont_title']) . '"',
+                ];
+
+                $instanceJob = new \My\Job\JobMail();
+                $instanceJob->addJob(SEARCH_PREFIX . 'sendMail', $arrEmail);
+
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<p style="color:red">Gửi tin nhắn cho người đăng tin thành công!</b></p>')));
+            }
         }
+
+        return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát</b></p>')));
     }
 
 }

@@ -169,10 +169,7 @@ class MyController extends AbstractActionController {
             define('GOOGLE_AUTH_URL', $googleAuthUrl ? $googleAuthUrl : '' );
             define('FACEBOOK_AUTH_URL', $loginFacebookUrl ? $loginFacebookUrl : '');
             $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-            echo '<pre>';
-            print_r('a');
-            echo '</pre>';
-            die();
+
             $arrCondition = array(
                 'cate_status' => 1
             );

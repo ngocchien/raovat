@@ -40,7 +40,6 @@ var Content = {
                                 $('.list-image').show();
                                 $('.list-image').append(result.html);
                                 $('.list-image .delete-images').on('click', function () {
-                                    console.log('xxxxx');
                                     $(this).closest('.img-prod').remove();
                                 })
 
@@ -154,7 +153,6 @@ var Content = {
                     success: function (rs) {
                         $('#loading-mask').hide();
                         bootbox.alert(rs.ms, function () {
-                            return false;
                         });
                     }
                 });
@@ -183,17 +181,18 @@ var Content = {
                     dataType: 'json',
                     cache: false,
                     beforeSend: function () {
+                        $('#ModalSendMessages').modal('hide');
                         $('#loading-mask').show();
                     },
                     data: {
-                        post_id: cont_id,
+                        cont_id: cont_id,
                         messages_content: messages_content
                     },
                     success: function (rs) {
-                        $('#ModalSendMessages').modal('hide');
                         $('#loading-mask').hide();
+                        $('#message-text').val('');
                         bootbox.alert(rs.ms, function () {
-                            return false;
+
                         });
                     }
                 });

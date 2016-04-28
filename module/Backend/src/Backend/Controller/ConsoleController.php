@@ -59,10 +59,61 @@ class ConsoleController extends MyController {
                 $this->__migrateFavourite($intIsCreateIndex);
                 break;
 
+            case 'messages':
+                $this->__migrateMessages($intIsCreateIndex);
+                break;
+
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
         }
+    }
+
+    public function __migrateMessages($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\Messages');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\Messages();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'mess_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['mess_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
     }
 
     public function __migrateFavourite($intIsCreateIndex) {
@@ -402,6 +453,40 @@ class ConsoleController extends MyController {
             }
         }
 
+        //stop job Messages
+        if ($params['stop'] === 'raovat-messages') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-messages' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-messages is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+        
+        //stop job Messages
+        if ($params['stop'] === 'raovat-mail') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-mail' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-mail is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
         $worker = General::getWorkerConfig();
         //  die($params['type']);
         switch ($params['type']) {
@@ -501,6 +586,44 @@ class ConsoleController extends MyController {
 
                 break;
 
+            case 'raovat-messages':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-messages >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-messages in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-messages is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeMessages';
+                $methodHandler1 = '\My\Job\JobMessages::writeMessages';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editMessages';
+                $methodHandler2 = '\My\Job\JobMessages::editMessages';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-mail':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-mail >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-mail in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-mail is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'sendMail';
+                $methodHandler1 = '\My\Job\JobMail::sendMail';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+                
+                break;
+
             default:
                 return General::getColoredString("Invalid or not found function \n", 'light_cyan', 'red');
         }
@@ -520,14 +643,18 @@ class ConsoleController extends MyController {
     }
 
     public function checkWorkerRunningAction() {
+
         //check content worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-content' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
         if (empty($PID)) {
-            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-content >/dev/null & echo 2>&1 & echo $!");
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-content >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
             if (empty($PID)) {
                 echo General::getColoredString("Cannot deamon PHP process to run job raovat-content in background. \n", 'light_cyan', 'red');
                 return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-content in background with PID : {$PID}. \n", 'light_cyan', 'red');
             }
         }
 
@@ -563,8 +690,8 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
-        
+
+
         //check tran worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-favourite' | awk '{ print $2 }'", $PID);
         $PID = current($PID);
@@ -573,6 +700,31 @@ class ConsoleController extends MyController {
             if (empty($PID)) {
                 echo General::getColoredString("Cannot deamon PHP process to run job raovat-favourite in background. \n", 'light_cyan', 'red');
                 return;
+            }
+        }
+
+        //check tran worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-messages' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-messages >/dev/null & echo 2>&1 & echo $!");
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-messages in background. \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //check job mail worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-mail' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-mail >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-mail in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-mail in background with PID : {$PID}. \n", 'light_cyan', 'red');
             }
         }
     }

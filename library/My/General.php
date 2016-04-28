@@ -6,14 +6,15 @@ class General {
 
     const TITLE_META = " || QuyNhon247.com";
     const SITE_AUTH = "QuyNhon247.com";
+    const SITE_DOMAIN = 'quynhon247.com';
+    const SITE_SLOGAN = 'Mạng rao vặt - mua bán Quy Nhơn - Bình Định';
+    const SITE_HOTLINE = '097 353 16 18';
     const SITE_LOCATION = "";
     const CAT_TINTUC = 1;
     const CAT_ADS = 2;
     const CAT_PR = 3;
     const TYPE_NEWS = 1;
     const TYPE_VIDEO = 2;
-    const COMMENT_TYPE_GOPY = 1;
-    const COMMENT_TYPE_HOIDAP = 2;
     const MEMBER = 5;
     const ADMINISTRATOR = 2;
     const MODERATOR = 3;
@@ -39,6 +40,7 @@ class General {
     const RECHARGE_ZING = 7;
     const TRANS_INPUT = 1;
     const TRANS_OUTPUT = 2;
+    const SEND_MAIL_MESSAGES = 1;
 
     private $headlink;
     static $fbConfig = [
@@ -298,7 +300,7 @@ class General {
 
             $mail = new \Zend\Mail\Message();
             $mail->setSubject($strTitle)
-                    ->addFrom(self::EMAIL_SYS, 'dev.raovat.vn')
+                    ->addFrom(self::EMAIL_SYS, self::SITE_AUTH)
                     ->addReplyTo(self::EMAIL_SYS)
                     ->setBody($body);
 
@@ -348,10 +350,12 @@ class General {
     public static function getThumbSize($strControllerName = '') {
         if ($strControllerName) {
             switch ($strControllerName) {
-                case 'cate':
-                    return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
+//                case 'cate':
+//                    return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
                 case 'content':
                     return array('150x100', '224x224', '291x250', '490x294');
+                case 'user':
+                    return array('150x150');
                 default:
                     return array();
             }

@@ -103,9 +103,14 @@ class storageMessages extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
-                $p_arrParams['favo_id'] = $result;
-                $instanceJob = new \My\Job\JobFavourite();
-                $instanceJob->addJob(SEARCH_PREFIX . 'writeFavourite', $p_arrParams);
+                $p_arrParams['mess_id'] = $result;
+                $instanceJob = new \My\Job\JobMessages();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeMessages', $p_arrParams);
+                
+                //job send mail messages to user
+                
+                $instanceJob = new \My\Job\JobMessages();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeMessages', $p_arrParams);
             }
             return $result;
         } catch (\Exception $exc) {
@@ -125,11 +130,11 @@ class storageMessages extends AbstractTableGateway {
             if (!is_array($p_arrParams) || empty($p_arrParams) || empty($id)) {
                 return false;
             }
-            $result = $this->update($p_arrParams, 'favo_id=' . $id);
+            $result = $this->update($p_arrParams, 'mess_id=' . $id);
             if ($result) {
-                $p_arrParams['favo_id'] = $id;
-                $instanceJob = new \My\Job\JobFavourite();
-                $instanceJob->addJob(SEARCH_PREFIX . 'editFavourite', $p_arrParams);
+                $p_arrParams['mess_id'] = $id;
+                $instanceJob = new \My\Job\JobMessages();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editMessages', $p_arrParams);
             }
             return $result;
         } catch (\Zend\Http\Exception $exc) {
