@@ -1,4 +1,3 @@
-<?php ?>
 <!--main sub page heading-->
 <section id="page-head">
     <div class="container">
@@ -18,7 +17,7 @@
             <div class="col-md-8">
                 <div class="ads-detail">
                     <?php
-                    if (empty($this->arrContent['cont_image'])):
+                    if (!empty($this->arrContent['cont_image'])):
                         $arrImage = json_decode($this->arrContent['cont_image']);
                         ?>
                         <div class="row">
@@ -63,17 +62,36 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="author-detail-right">
-                                    <div class="author-info">
-                                        <i class="fa fa-map-marker"></i>
-                                        <p>Địa chỉ: BX 201 livingston street, Brooklyn New York</p>
+                                    <div class="row">
+                                        <div class="author-info">
+                                            <i class="fa fa-phone"></i>
+                                            <p>Số điện thoại : <?php echo $this->arrUser['user_phone']; ?></p>
+                                        </div>
+                                        <div class="author-info">
+                                            <i class="fa fa-globe"></i>
+                                            <p>Email: <a class="col" href="#"> <?php echo $this->arrUser['user_email']; ?> </a></p>
+                                        </div>
                                     </div>
-                                    <div class="author-info">
-                                        <i class="fa fa-phone"></i>
-                                        <p>Số điện thoại: +(646) 45321069</p>
-                                    </div>
-                                    <div class="author-info">
-                                        <i class="fa fa-globe"></i>
-                                        <p>Email: <a class="col" href="#"> ngocchien01@gmail.com </a></p>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <a class="btn btn-success <?php echo CUSTOMER_ID ? 'save-post' : 'no-login'; ?>" data-toggle="tooltip" title="Lưu lại tin này">
+                                                <i class="fa fa-save"></i>
+                                            </a>
+                                            <a class="btn btn-success up-vip" data-toggle="tooltip" title="Úp víp">
+                                                <i class="fa fa-star-o"></i>
+                                            </a>
+
+                                            <a class="btn btn-success <?php echo CUSTOMER_ID ? 'modal-messages' : 'no-login'; ?>" data-toggle="tooltip" title="Gửi tin nhắn cho người đăng!">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </a>
+                                            <a class="btn btn-success" data-toggle="tooltip" title="Sửa tin">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a class="btn btn-success" data-toggle="tooltip" title="Xóa tin">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -88,12 +106,18 @@
                         <i class="fa <?php echo str_replace('icon', 'fa', $category_parent['cate_icon']); ?> fa-2x"></i>
                         <h4 class="ad-cat"> Danh mục : <?php echo $category_parent['cate_name'] ?></h4>
                     </div>
+
                     <div class="ad-detail-info clearfix">
-                        <p class="pull-left">Ngày đăng :</p>
-                        <p class="pull-right light"><?php echo date('d/m/Y', $this->arrContent['created_date']); ?></p>
+                        <p class="pull-left"> <i class="fa fa-barcode" aria-hidden="true"></i>  Mã tin :</p>
+                        <p class="pull-right light">RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></p>
+                    </div>
+
+                    <div class="ad-detail-info clearfix">
+                        <p class="pull-left"><i class="fa fa-clock-o"></i> Đăng lúc :</p>
+                        <p class="pull-right light"><?php echo date('d/m/Y H:i', $this->arrContent['created_date']); ?></p>
                     </div>
                     <div class="ad-detail-info clearfix">
-                        <p class="pull-left">Số lượt xem :</p>
+                        <p class="pull-left"><i class="fa fa-eye" aria-hidden="true"></i> Số lượt xem :</p>
                         <p class="pull-right light"><?php echo $this->arrContent['cont_views']; ?></p>
                     </div>
 
@@ -114,43 +138,52 @@
                 </div>
 
                 <!--form submission-->
-                <div id="form">
+                <div id="form" class="row border-buttom">
                     <h4 class="inner-heading">PHẢN HỒI</h4>
-                    <div class="row">
-
-                    </div>
                     <form id="post-commet">
                         <div class="col-sm-6 input-pad">
-                            <span class="comment-error-name" style="color: red; display: none"></span>
                             <span class="fa fa-user form-control-feedback"></span>
-                            <input class="form-control" type="text" name="full_name" placeholder="Ex : Nguyễn Văn A" value=" <?php echo!empty(CUSTOMER_ID) ? CUSTOMER_FULLNAME : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                            <input class="form-control" type="text" name="full_name" placeholder="Ex : Nguyễn Văn A" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_FULLNAME : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                            <span class="comment-error-name" style="color: red; display: none"></span>
                         </div>
                         <div class="col-sm-6 input-pad">
-                            <span class="comment-error-email" style="color: red; display: none"></span>
                             <span class="fa fa-envelope form-control-feedback"></span>
-                            <input class="form-control" type="email" name="email" placeholder="Ex : abcxyz@gmail.com" value=" <?php echo!empty(CUSTOMER_ID) ? CUSTOMER_EMAIL : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                            <input class="form-control" type="text" name="email" placeholder="Ex : abcxyz@gmail.com" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_EMAIL : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                            <span class="comment-error-email" style="color: red; display: none"></span>
                         </div>
                         <div class="col-sm-12 padding-control">
-                            <span class="comment-error-content" style="color: red; display: none"></span>
                             <textarea class="form-control" name="comment-content"></textarea>
+                            <span class="comment-error-content" style="color: red; display: none"></span>
                         </div>
                         <!--<input type="text" name="humantest">-->
                     </form>
-                    <div class="col-sm-12 padding-control">
-                        <button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button>
+                    <div class="row">
+                        <div class="col-md-2 control-label">
+                            <img class="img-captcha form-control" src=""/>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="captcha" type="text" class="form-control" placeholder="Nhập mã bên cạnh">
+                            <span class="comment-error-captcha" style="color: red; display: none"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <a class="btn refresh-captcha" data-toggle="tooltip" title="Lấy mã mới"><i class="fa fa-2x fa-refresh"></i></a>
+                        </div>
+                        <div class="col-md-2"><button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button></div>
                     </div>
                 </div>
                 <!--end form submission-->
-                <div class="col-md-12 col-xs-12 col-sm-12 padding-control">
+                <div class="row" style="margin-top: 10px">
+                    <h4 class="inner-heading">DANH SÁCH PHẢN HỒI</h4>
                     <section class="comment-list comment-list-post">
                         <?php
                         if (!empty($this->arrCommentList)):
                             foreach ($this->arrCommentList as $comment):
+                                $avatar = empty($comment['user_avatar']) ? STATIC_URL . '/f/v1/images/no_avatar_male.jpg' : $comment['user_avatar'];
                                 ?>
-                                <article class="row item-<?php echo $comment['comm_id']; ?>">
+                                <article class="row">
                                     <div class="col-md-2 col-sm-2 hidden-xs">
                                         <figure class="thumbnail">
-                                            <img class="img-responsive" src="<?php echo json_decode($this->arrListUserComment[$value['user_id']]['user_avatar'], true)[0]['thumbImage']['120x120']; ?>">
+                                            <img class="img-responsive" src="<?php echo $avatar; ?>">
                                             <figcaption class="text-center"></figcaption>
                                         </figure>
                                     </div>
@@ -159,19 +192,19 @@
                                             <div class="panel-body">
                                                 <div class="row">
                                                     <header class="text-left">
-                                                        <div class="col-md-4"><i class="fa fa-user"></i> <?php echo $comment['full_name'] ?></div>
-                                                        <div class="col-md-8"><i class="fa fa-envelope"></i> <?php echo $comment['email'] ?></div>
+                                                        <div class="col-md-8"><i class="fa fa-user"></i> <span style="color: #007DFF"><?php echo $comment['full_name'] ?></span></div>
+                                                        <div class="col-md-4 text-right"><i class="fa fa-clock-o"></i> <span style="color: #007DFF"><?php echo My\General::formatDateString($comment['created_date']); ?></span></div>
                                                     </header>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-11">
-                                                        <i class="fa fa-clock-o"></i> <?php echo My\General::formatDateString($comment['created_date']); ?>
-                                                    <div>
-                                                </div>
-                                                <div class="comment-post">
-                                                    <p>
-                                                        <?php echo $comment['comm_content']; ?>
-                                                    </p>
+                                                        <i class="fa fa-envelope"></i> <span style="color: #007DFF"><?php echo $comment['email'] ?></span>
+                                                        <div>
+                                                        </div>
+                                                        <div class="comment-post bor-2-r col-md-12">
+                                                            <?php echo $comment['comm_content']; ?>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -183,7 +216,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))         ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                       ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">
@@ -339,7 +372,32 @@
         </div>
     </div>
 </section><!--end details-->
+<div class="modal fade" id="ModalSendMessages" tabindex="-1" role="dialog" aria-labelledby="ModalSendMessages">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Gửi tin nhắn cho người đăng tin</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="control-label">Nội dung:</label> <b class="error-messages" style="color: red; display: none"></b>
+                        <textarea class="form-control" id="message-text" rows="5"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-success send-messages">Gửi tin nhắn</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    var cont_id = '<?php echo $this->arrContent['cont_id']; ?>';
+    saveContentURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'save-content')); ?>';
+    sendMessagesURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'send-messages')); ?>';
     addCommentURL = '<?php echo $this->serverUrl() . $this->Url('add-comment'); ?>';
     Content.detail();
 </script>

@@ -52,12 +52,19 @@ class ContentController extends MyController {
             'cont_views' => $arrContent['cont_views'] + 1,
             'modified_date' => time()
         ];
+
         $serviceContent = $this->serviceLocator->get('My\Models\Content');
         $serviceContent->edit($arrUpdate, $cont_id);
 
         //Lay thong tin người đăng
-        $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $arrUser = $serviceUser->getDetail(array('user_id' => $arrContent['user_created']));
+        $arrUser = [];
+        if (!empty($arrContent['user_created'])) {
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUser = $serviceUser->getDetail(array('user_id' => $arrContent['user_created']));
+        } else {
+            $arrUser = json_decode($arrContent['user_info'], true);
+        }
+
 
         $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
         $metaKeyword = $arrContent['meta_keyword'] ? $arrContent['meta_keyword'] : $arrContent['cont_title'];
@@ -86,11 +93,12 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('og:image', $metaImage);
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
-        
+
         return array(
             'params' => $params,
             'arrContent' => $arrContent,
-            'arrCommentList'=>$arrCommentList
+            'arrCommentList' => $arrCommentList,
+            'arrUser' => $arrUser
         );
     }
 
@@ -216,12 +224,12 @@ class ContentController extends MyController {
                         'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR')
                     );
                     if (empty(CUSTOMER_ID)) {
-                        $arrData['user_info'] = [
-                            'name' => $params['name'],
-                            'email' => $params['email'],
-                            'phone' => $params['phone'],
+                        $arrData['user_info'] = json_encode([
+                            'user_fullname' => $params['name'],
+                            'user_email' => $params['email'],
+                            'user_phone' => $params['phone'],
                             'password' => $params['password']
-                        ];
+                        ]);
                     }
                     $intResult = $serviceContent->add($arrData);
 
@@ -452,6 +460,10 @@ class ContentController extends MyController {
                 }
             }
 
+            if (empty($params['captcha']) || strlen($params['captcha'] != 6 || $params['captcha'] != $_SESSION['captcha'])) {
+                $errors['captcha'] = 'Nhập mã xác nhận chưa chính xác!';
+            }
+
             if (!empty($errors)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'errors' => $errors)));
             }
@@ -469,13 +481,104 @@ class ContentController extends MyController {
 
             $serviceComment = $this->serviceLocator->get('My\Models\Comment');
             $intResult = $serviceComment->add($arrData);
+            if ($intResult > 0) {
+                unset($_SESSION['captcha']);
+                $viewModel = new ViewModel();
+                $viewModel->setTerminal(true);
+                $viewModel->setTemplate('frontend/content/add-comment');
+                $viewModel->setVariables(
+                        ['arrData' => $arrData]
+                );
+                $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
+
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Gửi phản hồi thành công!', 'html' => $html)));
+            } else {
+                $errors['errors'] = 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!';
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'errors' => $errors)));
+            }
+        }
+    }
+
+    public function saveContentAction() {
+        if ($this->request->isPost()) {
+            if (!CUSTOMER_ID) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng đăng nhập trước khi lưu tin!</b></p>')));
+            }
+
+            $params = $this->params()->fromPost();
+            if (empty($params['cont_id'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!</b></p>')));
+            }
+
+            $instanceSearchContent = new \My\Search\Content();
+            $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'status' => 1]);
+
+            if (empty($arrContent)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></p>')));
+            }
+
+            $instanceSearchFavourite = new \My\Search\Favourite();
+            $arrFavourite = $instanceSearchFavourite->getDetail(['user_id' => CUSTOMER_ID, 'cont_id' => $arrContent['cont_id']]);
+            $serviceFavourite = $this->serviceLocator->get('My\Models\Favourite');
+            if (empty($arrFavourite)) {
+                $arrData = [
+                    'user_id' => CUSTOMER_ID,
+                    'cont_id' => $arrContent['cont_id'],
+                    'status' => 1,
+                    'created_date' => time(),
+                    'updated_date' => time()
+                ];
+                if ($serviceFavourite->add($arrData)) {
+                    return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<p style="color:green">Lưu tin rao vặt thành công!</b></p>')));
+                } else {
+                    return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!</b></p>')));
+                }
+            } else {
+                if ($arrData['status'] == -1) {
+                    $arrData['status'] = 1;
+                    $arrData['updated_date'] = time();
+                    $serviceFavourite->edit($arrData, $arrData['favo_id']);
+                }
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<p style="color:green">Lưu tin rao vặt thành công!</b></p>')));
+            }
+        }
+    }
+
+    public function sendMessagesAction() {
+        if ($this->request->isPost()) {
+            if (!CUSTOMER_ID) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng đăng nhập trước khi lưu tin!</b></p>')));
+            }
+            $params = $this->params()->fromPost();
+
+            if (empty($params['post_id']) || empty($params['messages_content'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng nhập đầy đủ thông tin!</b></p>')));
+            }
+
+            $instanceSearchContent = new \My\Search\Content();
+            $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'cont_status' => 1]);
+
+            if (empty($arrContent)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Tin rao vặt này không tồn tại trong hệ thống của chúng tôi!</b></p>')));
+            }
+
+            $arrData = [
+                'post_id' => (int) $params['cont_id'],
+                'mess_content' => trim($params['messages_content']),
+                'user_created' => CUSTOMER_ID,
+                'created_date' => time(),
+            ];
+
+            if (!empty($arrContent['user_created'])) {
+                $arrData['to_user_id'] = $arrContent['user_created'];
+            } else {
+                $arrData['user_info'] = $arrContent['user_info'];
+            }
+
             echo '<pre>';
-            print_r($intResult);
+            print_r($arrContent);
             echo '</pre>';
             die();
-            if ($intResult > 0) {
-                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Gửi phản hồi thành công!')));
-            }
         }
     }
 
