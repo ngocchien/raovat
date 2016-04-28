@@ -562,11 +562,16 @@ class ContentController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Tin rao vặt này không tồn tại trong hệ thống của chúng tôi!</b></p>')));
             }
 
+            if ($arrContent['user_created' == CUSTOMER_ID]) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Bạn chính là người tạo rao vặt này. Nên không thể gửi tin nhắn cho chính bạn!</b></p>')));
+            }
+
             $arrData = [
                 'cont_id' => (int) $params['cont_id'],
                 'mess_content' => trim($params['messages_content']),
                 'user_created' => CUSTOMER_ID,
                 'created_date' => time(),
+                'is_view' => 0
             ];
 
             if (!empty($arrContent['user_created'])) {

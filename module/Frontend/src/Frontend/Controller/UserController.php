@@ -624,4 +624,56 @@ class UserController extends MyController {
         ];
     }
 
+    public function listMessagesAction() {
+        if (!CUSTOMER_ID) {
+            return $this->redirect()->toRoute('home');
+        }
+        $params = $this->params()->fromRoute();
+        $intLimit = 10;
+        $intPage = (int) $this->params()->fromQuery('page') > 0 ? (int) $this->params()->fromQuery('page') : 1;
+        $arrCondition = [
+            'to_user_id' => CUSTOMER_ID,
+            'not_is_view' => -1
+        ];
+
+        //content sẽ get từ elasticsearch
+        $instanceSearchMessages = new \My\Search\Messages();
+        $arrMessagesList = $instanceSearchMessages->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => 'desc']);
+        $intTotal = $instanceSearchMessages->getTotal($arrCondition);
+        $params = array_merge($params, $this->params()->fromQuery());
+
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $route, $params);
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Danh sách tin nhắn') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Thông tin, Thông tin tài khoản, danh sách tin nhắn'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Danh sách tin nhắn' . General::TITLE_META));
+        
+        //Lấy thông tin người gửi
+        $arrUserIdList = [];
+        if(!empty($arrMessagesList)){
+            foreach ($arrMessagesList as $arr){
+                $arrUserIdList[$arr['user_created']] = $arr['user_created'];
+            }
+        }
+        $arrUserList = [];
+        if(!empty($arrUserIdList)){
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUserTemp= $serviceUser->getList(['in_user_id'=>  implode(',', $arrUserIdList)]);
+            if(!empty($arrUserTemp)){
+                foreach ($arrUserTemp as $user){
+                    $arrUserList[$user['user_id']] = $user;
+                }
+            }
+        }
+        
+        return array(
+            'arrMessagesList' => $arrMessagesList,
+            'params' => $params,
+            'paging' => $paging,
+            'arrUserList'=>$arrUserList
+        );
+    }
+
 }

@@ -168,8 +168,15 @@ class MyController extends AbstractActionController {
             }
             define('GOOGLE_AUTH_URL', $googleAuthUrl ? $googleAuthUrl : '' );
             define('FACEBOOK_AUTH_URL', $loginFacebookUrl ? $loginFacebookUrl : '');
-            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+            
+            $intTotalMessages = 0;
+            if (CUSTOMER_ID) {
+                $instaceSearchMessages = new \My\Search\Messages();
+                $intTotalMessages = $instaceSearchMessages->getTotal(['to_user_id' => CUSTOMER_ID, 'is_view' => 0]);
+            }
+            define('NEW_MESSAGES', $intTotalMessages);
 
+            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
             $arrCondition = array(
                 'cate_status' => 1
             );

@@ -100,7 +100,6 @@ return array(
                     ),
                 ),
             ),
-            
             'view-content' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -379,6 +378,23 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'change-avatar',
+                    ),
+                ),
+            ),
+            'user-list-messages' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/danh-tin-nhan.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-messages',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-messages',
                     ),
                 ),
             ),

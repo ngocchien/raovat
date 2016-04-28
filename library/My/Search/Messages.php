@@ -189,7 +189,6 @@ class Messages extends SearchAbstract {
     public function getTotal($arrConditions = array()) {
         $boolQuery = new Bool();
         $boolQuery = $this->__buildWhere($arrConditions, $boolQuery);
-
         $query = new ESQuery();
         $query->setQuery($boolQuery);
         $instanceSearch = new Search(General::getSearchConfig());
@@ -236,8 +235,15 @@ class Messages extends SearchAbstract {
             $addQuery->setTerm('is_send_mail', $params['is_send_mail']);
             $boolQuery->addMust($addQuery);
         }
-
-        if (!empty($params['is_view'])) {
+        
+        
+        if (!empty($params['to_user_id'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('to_user_id', $params['to_user_id']);
+            $boolQuery->addMust($addQuery);
+        }
+        
+        if (isset($params['is_view'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('is_view', $params['is_view']);
             $boolQuery->addMust($addQuery);
