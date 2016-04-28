@@ -11,15 +11,15 @@ use Elastica\Query\QueryString,
     My\Search\SearchAbstract,
     My\General;
 
-class Content extends SearchAbstract {
+class Comment extends SearchAbstract {
 
     public function __construct() {
-        $this->setSearchIndex(SEARCH_PREFIX . 'content');
-        $this->setSearchType('contentList');
+        $this->setSearchIndex(SEARCH_PREFIX . 'comment');
+        $this->setSearchType('commentList');
     }
 
     public function createIndex() {
-        $strIndexName = SEARCH_PREFIX . 'content';
+        $strIndexName = SEARCH_PREFIX . 'comment';
 
         $searchClient = General::getSearchConfig();
         $searchIndex = $searchClient->getIndex($strIndexName);
@@ -62,31 +62,19 @@ class Content extends SearchAbstract {
                 ], true);
 
         //set search type
-        $searchType = $searchIndex->getType('contentList');
+        $searchType = $searchIndex->getType('commentList');
         $mapping = new Mapping();
         $mapping->setType($searchType);
         $mapping->setProperties([
-            'cont_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'cont_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_slug' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_detail' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'comm_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'comm_content' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'full_name' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'email' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'created_date' => ['type' => 'long', 'index' => 'not_analyzed'],
-            'user_created' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'updated_date' => ['type' => 'long', 'index' => 'not_analyzed'],
-            'user_updated' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'cate_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'cont_meta_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_meta_desciption' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_meta_keyword' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'is_vip' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'vip_type' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'expired_time' => ['type' => 'long', 'index' => 'not_analyzed'],
-            'prop_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'cont_views' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'user_info' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_status' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'ip_address' => ['type' => 'string', 'index' => 'not_analyzed'],
-            'cont_image' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets']
+            'status' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'user_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'user_avatar' => ['type' => 'string', 'index' => 'not_analyzed'],
+            'cont_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
         ]);
         $mapping->send();
     }
@@ -115,23 +103,6 @@ class Content extends SearchAbstract {
             return true;
         }
         return false;
-    }
-
-    public function getDetail($params, $arrFields = []) {
-        $boolQuery = new Bool();
-        $boolQuery = $this->__buildWhere($params, $boolQuery);
-        $query = new ESQuery();
-        $query->setQuery($boolQuery);
-        if ($arrFields && is_array($arrFields)) {
-            $query->setSource($arrFields);
-        }
-        $instanceSearch = new Search(General::getSearchConfig());
-        $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
-                ->addType($this->getSearchType())
-                ->search($query);
-        $this->setResultSet($resultSet);
-        $detailAreaPrice = current($this->toArray());
-        return $detailAreaPrice;
     }
 
     /**
@@ -206,7 +177,7 @@ class Content extends SearchAbstract {
 
     private function setSort($params) {
         //copy
-        return ['customer_id' => ['order' => 'desc']];
+        return ['created_date' => ['order' => 'desc']];
     }
 
     public function removeAllDoc() {

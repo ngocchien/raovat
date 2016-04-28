@@ -119,16 +119,20 @@ class UserController extends MyController {
         }
         $params = $this->params()->fromQuery();
         $intLimit = 15;
-        $intPage = $params['page'];
+        $intPage = $params['page'] ? (int) $params['page'] : 1;
         $arrCondition = [
             'user_created' => CUSTOMER_ID,
-            'cont_status' => -1
+            'not_cont_status' => -1
         ];
 
         //content sẽ get từ elasticsearch
         $instanceSearchContent = new \My\Search\Content();
-        $arrContentList = $instanceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['sort' => 'desc']]);
+        $arrContentList = $instanceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
 
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Thông tin tài khoản') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Thông tin, Thông tin tài khoản, Thông tin tài khoản chototquynhon.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Thông tin tài khoản tại' . General::TITLE_META));
         return array(
             'arrContentList' => $arrContentList,
             'params' => $params
