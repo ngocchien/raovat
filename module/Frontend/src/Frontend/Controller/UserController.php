@@ -649,31 +649,76 @@ class UserController extends MyController {
         $this->renderer->headTitle(html_entity_decode('Tài khoản - Danh sách tin nhắn') . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, tài khoản, Thông tin, Thông tin tài khoản, danh sách tin nhắn'));
         $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Danh sách tin nhắn' . General::TITLE_META));
-        
+
         //Lấy thông tin người gửi
         $arrUserIdList = [];
-        if(!empty($arrMessagesList)){
-            foreach ($arrMessagesList as $arr){
+        if (!empty($arrMessagesList)) {
+            foreach ($arrMessagesList as $arr) {
                 $arrUserIdList[$arr['user_created']] = $arr['user_created'];
             }
         }
         $arrUserList = [];
-        if(!empty($arrUserIdList)){
+        if (!empty($arrUserIdList)) {
             $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserTemp= $serviceUser->getList(['in_user_id'=>  implode(',', $arrUserIdList)]);
-            if(!empty($arrUserTemp)){
-                foreach ($arrUserTemp as $user){
+            $arrUserTemp = $serviceUser->getList(['in_user_id' => implode(',', $arrUserIdList)]);
+            if (!empty($arrUserTemp)) {
+                foreach ($arrUserTemp as $user) {
                     $arrUserList[$user['user_id']] = $user;
                 }
             }
         }
-        
+
         return array(
             'arrMessagesList' => $arrMessagesList,
             'params' => $params,
             'paging' => $paging,
-            'arrUserList'=>$arrUserList
+            'arrUserList' => $arrUserList
         );
+    }
+
+    public function getMessagesAction() {
+        if ($this->request->isPost()) {
+            if (!CUSTOMER_ID) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Chưa đăng nhập!</b></p>')));
+            }
+
+            $params = $this->params()->fromPost();
+
+            if (empty($params['id'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát</b></p>')));
+            }
+
+            $instanceSearchMessages = new \My\Search\Messages();
+            $arrMessges = $instanceSearchMessages->getDetail(['to_user_id' => CUSTOMER_ID, 'not_is_view' => -1, 'mess_id' => (int) $params['id']]);
+
+            if (empty($arrMessges)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Tin nhắn này không tồn tại trong hệ thống!</b></p>')));
+            }
+
+            if ($arrMessges['is_view'] == 0) {
+                $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
+                $serviceMessages->edit(['is_view'=>1],(int) $params['id']);
+            }
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrMessges['user_created']]);
+
+            $template = 'frontend/user/get-messages';
+            $viewModel = new ViewModel();
+            $viewModel->setTerminal(true);
+            $viewModel->setTemplate($template);
+            $viewModel->setVariables(
+                    [
+                        'mess_content' => $arrMessges['mess_content'],
+                        'from_user_name' => $arrUserInfo['user_fullname'],
+                        'from_user_email' => $arrUserInfo['user_email'],
+                        'mess_id' => $params['id']
+                    ]
+            );
+            $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
+
+            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html,'data'=>['from_user_name' => $arrUserInfo['user_fullname'],'from_user_email' => $arrUserInfo['user_email']])));
+        }
     }
 
 }

@@ -36,12 +36,13 @@ return array(
             'frontend' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:controller[/:action][/page:page]][/]',
+                    'route' => '[/:controller[/:action][/page:page][/id:id]][/]',
                     'constraints' => array(
                         'controller' => 'index',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'sort' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'page' => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
@@ -384,7 +385,7 @@ return array(
             'user-list-messages' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/thanh-vien/danh-tin-nhan.html',
+                    'route' => '/thanh-vien/danh-sach-tin-nhan.html',
                     'constraints' => array(
                         'module' => 'frontend',
                         'controller' => 'user',
@@ -395,6 +396,23 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'list-messages',
+                    ),
+                ),
+            ),
+            'user-get-messages' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/lay-noi-dung-tin-nhan.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'get-messages',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'get-messages',
                     ),
                 ),
             ),
@@ -555,6 +573,7 @@ return array(
             'frontend/content/add-comment' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/add-comment.phtml',
             'frontend/email-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/email-messages.phtml',
             'frontend/footer-email' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/footer-email.phtml',
+            'frontend/user/get-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/user/get-messages.phtml'
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,

@@ -75,6 +75,7 @@ class Messages extends SearchAbstract {
             'user_info' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'is_send_mail' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'is_view' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'updated_date' => ['type' => 'long', 'index' => 'not_analyzed'],
         ]);
         $mapping->send();
     }
@@ -248,6 +249,13 @@ class Messages extends SearchAbstract {
             $addQuery->setTerm('is_view', $params['is_view']);
             $boolQuery->addMust($addQuery);
         }
+        
+        if (isset($params['not_is_view'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('is_view', $params['not_is_view']);
+            $boolQuery->addMustNot($addQuery);
+        }
+        
 
         return $boolQuery;
     }

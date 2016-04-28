@@ -57,6 +57,68 @@ var User = {
             });
         });
     },
+    listMessages: function () {
+        $(document).ready(function () {
+            $('.read-messages').on('click', function () {
+                var id = $(this).attr('rel');
+                if (!id) {
+                    bootbox.alert('Xảy ra lỗi trong quá trình xử lý!');
+                }
+                var that = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: getMessagesURL,
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        id: id
+                    },
+                    beforSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        if (rs.st == 1) {
+                            that.closest('tr').removeClass('unread');
+                            bootbox.dialog({
+                                message: rs.html,
+                                title: "Nội dung tin nhắn",
+                                buttons: {
+                                    success: {
+                                        label: "OK",
+                                        className: "btn-success",
+                                        callback: function () {
+                                        }
+                                    },
+                                    main: {
+                                        label: "Gửi phản hồi",
+                                        className: "btn-primary",
+                                        callback: function () {
+                                            console.log(rs.data);
+                                            $('#recipient-name').val(rs.data.from_user_name);
+                                            $('#recipient-email').val(rs.data.from_user_email);
+                                            bootbox.hideAll();
+                                            $('#modalSendMessages').modal('toggle');
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            bootbox.alert(rs.ms);
+                        }
+                    }
+                });
+                console.log(id);
+            });
+
+            $('btn-send-messages').on('click', function () {
+                var mess_content = $('#message-text').val();
+                if (mess_content.length < 20) {
+                    
+                }
+            })
+        })
+    }
 };
 
 function _getCaptcha() {

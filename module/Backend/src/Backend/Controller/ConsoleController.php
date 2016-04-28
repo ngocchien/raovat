@@ -455,10 +455,13 @@ class ConsoleController extends MyController {
 
         //stop job Messages
         if ($params['stop'] === 'raovat-messages') {
+
             if ($params['type'] || $params['background']) {
                 return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
             }
+            
             exec("ps -ef | grep -v grep | grep 'type=raovat-messages' | awk '{ print $2 }'", $PID);
+            
             $PID = current($PID);
             if ($PID) {
                 shell_exec("kill " . $PID);
