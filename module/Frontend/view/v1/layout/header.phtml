@@ -1,7 +1,3 @@
-<?php
-$arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
-//$arrGeneral = unserialize(ARR_GENERAL);
-?>
 <section id="header">
     <header>
         <div class="top-bar">
@@ -64,7 +60,7 @@ $arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
                                     <li class="dropdown">
                                         <a href="javascript:;">Danh mục</a>
                                         <ul class="dropdown-menu sub-menu">
-                                            <?php foreach ($arrCategoryParent as $value): ?>
+                                            <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
                                                 <li><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?></a></li>
                                             <?php endforeach; ?>
                                         </ul>
@@ -79,7 +75,7 @@ $arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
                                             <li><a href="detail-page.html">Chi tiêt trang</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="contact.html">Liên hệ</a></li>
+                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('add-contact') ?>">Liên hệ</a></li>
                                 </ul>
                             </div>
                         </nav><!--end nav-->
@@ -96,16 +92,34 @@ $arrCategoryParent = unserialize(ARR_CATEGORY_PARENT);
         <div class="row text-center">
             <div class="col-md-12">
                 <form method="GET">
-                    <div class="label">
-                        <select class="select" name="category">
-                            <option>Chọn danh mục</option>
-                            <?php foreach ($arrCategoryParent as $value): ?>
-                                <option value="<?php echo $value['cate_id'] ?>"><?php echo $value['cate_name']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="col-md-3">
+                        <div class="label">
+                            <select class="select" name="category">
+                                <option value="0">Chọn khu vực</option>
+                                <option value="0">Toàn tỉnh</option>
+                                <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
+                                    <option value="<?php echo $value['dist_id'] ?>"><?php echo $value['dist_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-                    <input class="keyword" type="text" name="keyword" placeholder="Nhập từ khóa...">
-                    <button type="submit" class="search-btn">Tìm kiếm</button>
+                    <div class="col-md-3">
+                        <div class="label">
+                            <select class="select" name="category">
+                                <option value="0">Chọn danh mục</option>
+                                <option value="0">Tất cả danh mục</option>
+                                <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
+                                    <option value="<?php echo $value['cate_id'] ?>"><?php echo $value['cate_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <input class="keyword" type="text" name="keyword" placeholder="Nhập từ khóa...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="search-btn">Tìm kiếm</button>
+                    </div>
                 </form>
             </div>
         </div>

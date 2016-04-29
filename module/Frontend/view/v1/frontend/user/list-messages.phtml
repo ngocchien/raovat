@@ -63,6 +63,7 @@
             </div>
             <div class="modal-body">
                 <form>
+                    <input type="hidden" id="mess-id">
                     <div class="form-group col-lg-6">
                         <label for="recipient-name" class="control-label">Name:</label>
                         <input type="text" readonly class="form-control" id="recipient-name">
@@ -73,11 +74,13 @@
                     </div>
                     <div class="form-group">
                         <label for="title" class="control-label">Tiêu đề</label>
+                        <span class="valid-title" style="display: none; color: red"></span>
                         <input type="text" class="form-control" id="title">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="message-text" class="control-label">Nội dung</label>
+                        <span class="valid-content" style="display: none; color: red"></span>
                         <textarea class="form-control" id="message-text" rows="5"></textarea>
                     </div>
                 </form>

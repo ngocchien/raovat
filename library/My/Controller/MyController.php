@@ -168,7 +168,7 @@ class MyController extends AbstractActionController {
             }
             define('GOOGLE_AUTH_URL', $googleAuthUrl ? $googleAuthUrl : '' );
             define('FACEBOOK_AUTH_URL', $loginFacebookUrl ? $loginFacebookUrl : '');
-            
+
             $intTotalMessages = 0;
             if (CUSTOMER_ID) {
                 $instaceSearchMessages = new \My\Search\Messages();
@@ -177,10 +177,7 @@ class MyController extends AbstractActionController {
             define('NEW_MESSAGES', $intTotalMessages);
 
             $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-            $arrCondition = array(
-                'cate_status' => 1
-            );
-            $arrCategoryList = $serviceCategory->getList($arrCondition);
+            $arrCategoryList = $serviceCategory->getList(['cate_status' => 1]);
             $arrCategoryParentList = [];
             $arrCategoryByParent = [];
             $arrCategoryFormat = [];
@@ -198,6 +195,22 @@ class MyController extends AbstractActionController {
             define('ARR_CATEGORY_PARENT', serialize($arrCategoryParentList));
             define('ARR_CATEGORY_BY_PARENT', serialize($arrCategoryByParent));
             define('ARR_CATEGORY', serialize($arrCategoryFormat));
+
+            //location
+            $service = $this->serviceLocator->get('My\Models\District');
+            $arrDistrictList = $service->getList(['not_dist_status' => -1]);
+            $arrDistrictListFormat = [];
+            foreach($arrDistrictList as $value){
+                $arrDistrictListFormat[$value['dist_id']] = $value;
+            }
+            define('ARR_DISTRICT', serialize($arrDistrictListFormat));
+            
+            unset($arrDistrictList);
+            unset($arrDistrictListFormat);
+            unset($arrCategory);
+            unset($arrCategoryParentList);
+            unset($arrCategoryByParent);
+            unset($arrCategoryFormat);
         }
     }
 

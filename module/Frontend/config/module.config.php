@@ -448,6 +448,22 @@ return array(
                     ),
                 ),
             ),
+            'add-contact' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/gui-lien-he-cho-chung-toi.html',
+                    'constraints' => array(
+                        'controller' => 'general',
+                        'action' => 'contact',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'general',
+                        'action' => 'contact',
+                    ),
+                ),
+            ),
             '404' => array(
                 'type' => 'Segment',
                 'options' => array(

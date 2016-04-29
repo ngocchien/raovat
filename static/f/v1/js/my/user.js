@@ -94,9 +94,9 @@ var User = {
                                         label: "Gửi phản hồi",
                                         className: "btn-primary",
                                         callback: function () {
-                                            console.log(rs.data);
                                             $('#recipient-name').val(rs.data.from_user_name);
                                             $('#recipient-email').val(rs.data.from_user_email);
+                                            $('#mess-id').val(rs.data.mess_id);
                                             bootbox.hideAll();
                                             $('#modalSendMessages').modal('toggle');
                                         }
@@ -108,13 +108,59 @@ var User = {
                         }
                     }
                 });
-                console.log(id);
             });
 
             $('btn-send-messages').on('click', function () {
+                $('.valid-title').hide();
+                $('.valid-content').hide();
                 var mess_content = $('#message-text').val();
+                var mess_title = $('#title').val();
+                var mess_id = $('#mess-id').val();
+                if (!mess_id) {
+                    bootbox.alert('<p stype="color:red">Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</p>', function () {
+                        return;
+                    });
+                }
+                var error = 0;
+                if (!mess_id) {
+                    error += 1;
+                    bootbox.alert('Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát');
+                }
+
                 if (mess_content.length < 20) {
-                    
+                    error += 1;
+                    $('.valid-content').html('Nội dung tin nhắn phải từ 20 ký tự trở lên!');
+                    $('.valid-content').show();
+                }
+
+                if (mess_title.length < 10) {
+                    error += 1;
+                    $('.valid-title').html('Tiêu đề tin nhắn phải từ 10 ký tự trở lên!');
+                    $('.valid-title').show();
+                }
+
+                if (error == 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '',
+                        dataType: 'json',
+                        cache: false,
+                        data: {
+                            mess_id: mess_id,
+                            mess_title: mess_title,
+                            mess_content: mess_content
+                        },
+                        beforeSend: function () {
+                            $('#loading-mask').show();
+                        },
+                        success: function (rs) {
+                            $('#loading-mask').show();
+                            if (rs.ms == 1) {
+                                $('#modalSendMessages').modal('hide');
+                                bootbox.alert(rs.ms);
+                            }
+                        }
+                    })
                 }
             })
         })

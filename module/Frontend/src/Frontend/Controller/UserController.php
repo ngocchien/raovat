@@ -697,7 +697,7 @@ class UserController extends MyController {
 
             if ($arrMessges['is_view'] == 0) {
                 $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
-                $serviceMessages->edit(['is_view'=>1],(int) $params['id']);
+                $serviceMessages->edit(['is_view' => 1], (int) $params['id']);
             }
 
             $serviceUser = $this->serviceLocator->get('My\Models\User');
@@ -717,7 +717,52 @@ class UserController extends MyController {
             );
             $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
 
-            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html,'data'=>['from_user_name' => $arrUserInfo['user_fullname'],'from_user_email' => $arrUserInfo['user_email']])));
+            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html, 'data' => ['from_user_name' => $arrUserInfo['user_fullname'], 'from_user_email' => $arrUserInfo['user_email']])));
+        }
+    }
+
+    public function replayMessagesAction() {
+        if ($this->request->isPost()) {
+            if (!CUSTOMER_ID) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Chưa đăng nhập!</b></p>')));
+            }
+
+            $params = $this->params()->fromPost();
+
+            if (empty($params['id'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát</b></p>')));
+            }
+
+            $instanceSearchMessages = new \My\Search\Messages();
+            $arrMessges = $instanceSearchMessages->getDetail(['to_user_id' => CUSTOMER_ID, 'not_is_view' => -1, 'mess_id' => (int) $params['id']]);
+
+            if (empty($arrMessges)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Tin nhắn này không tồn tại trong hệ thống!</b></p>')));
+            }
+
+            if ($arrMessges['is_view'] == 0) {
+                $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
+                $serviceMessages->edit(['is_view' => 1], (int) $params['id']);
+            }
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrMessges['user_created']]);
+
+            $template = 'frontend/user/get-messages';
+            $viewModel = new ViewModel();
+            $viewModel->setTerminal(true);
+            $viewModel->setTemplate($template);
+            $viewModel->setVariables(
+                    [
+                        'mess_content' => $arrMessges['mess_content'],
+                        'from_user_name' => $arrUserInfo['user_fullname'],
+                        'from_user_email' => $arrUserInfo['user_email'],
+                        'mess_id' => $params['id']
+                    ]
+            );
+            $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
+
+            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html, 'data' => ['from_user_name' => $arrUserInfo['user_fullname'], 'from_user_email' => $arrUserInfo['user_email']])));
         }
     }
 

@@ -63,10 +63,36 @@ class ConsoleController extends MyController {
                 $this->__migrateMessages($intIsCreateIndex);
                 break;
 
+            case 'district' :
+                $this->__migrateDistrict($intIsCreateIndex);
+                break;
+
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
         }
+    }
+
+    //$arr = [
+//	'TP Qui Nhơn','Huyện Vân Canh','Huyện Tuy Phước','Huyện Tây Sơn','Huyện Phù Mỹ','Huyện Phù Cát','Huyện Hoài Nhơn','Huyện Hoài Ân','Huyện An Nhơn','Huyện An Lão','Huyện Vĩnh Thạnh'
+//];
+
+    public function __migrateDistrict($intIsCreateIndex) {
+        $arr = [
+            'TP Qui Nhơn', 'Huyện Vân Canh', 'Huyện Tuy Phước', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Phù Cát', 'Huyện Hoài Nhơn', 'Huyện Hoài Ân', 'Huyện An Nhơn', 'Huyện An Lão', 'Huyện Vĩnh Thạnh'
+        ];
+        $service = $this->serviceLocator->get('My\Models\District');
+        foreach ($arr as $name) {
+            $arrData = [
+                'dist_name' => $name,
+                'dist_slug' => General::getSlug($name),
+                'created_date' => time(),
+                'dist_status' => 1,
+                'user_created' => 1
+            ];
+            $service->add($arrData);
+        }
+        die('done');
     }
 
     public function __migrateMessages($intIsCreateIndex) {
@@ -459,9 +485,9 @@ class ConsoleController extends MyController {
             if ($params['type'] || $params['background']) {
                 return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
             }
-            
+
             exec("ps -ef | grep -v grep | grep 'type=raovat-messages' | awk '{ print $2 }'", $PID);
-            
+
             $PID = current($PID);
             if ($PID) {
                 shell_exec("kill " . $PID);
@@ -472,7 +498,7 @@ class ConsoleController extends MyController {
                 return;
             }
         }
-        
+
         //stop job Messages
         if ($params['stop'] === 'raovat-mail') {
             if ($params['type'] || $params['background']) {
@@ -624,7 +650,7 @@ class ConsoleController extends MyController {
                 $funcName1 = SEARCH_PREFIX . 'sendMail';
                 $methodHandler1 = '\My\Job\JobMail::sendMail';
                 $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
-                
+
                 break;
 
             default:

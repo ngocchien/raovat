@@ -2,20 +2,20 @@
 
 namespace My\Models;
 
-class District extends ModelAbstract {
+class Contact extends ModelAbstract {
 
     private function getParentTable() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        return new \My\Storage\storageDistrict($dbAdapter);
+        return new \My\Storage\storageContact($dbAdapter);
     }
 
     public function __construct() {
-        $this->setTmpKeyCache('tmpDistrict');
+        $this->setTmpKeyCache('tmpContact');
         parent::__construct();
     }
 
     public function getList($arrCondition = array()) {
-        $keyCaching = 'getListDistrict' . $this->cache->read($this->tmpKeyCache);
+        $keyCaching = 'getListContact' . $this->cache->read($this->tmpKeyCache);
         if (count($arrCondition) > 0) {
             foreach ($arrCondition as $k => $val) {
                 $keyCaching .= $k . ':' . $val . ':';
@@ -31,8 +31,8 @@ class District extends ModelAbstract {
         return $arrResult;
     }
 
-    public function getListLimit($arrCondition = array(), $intPage = 1, $intLimit = 15, $strOrder = 'dist_ordering ASC') {
-        $keyCaching = 'getListLimitDistrict:' . $intPage . ':' . $intLimit . ':' . str_replace(' ', '_', $strOrder) . ':' . $this->cache->read($this->tmpKeyCache);
+    public function getListLimit($arrCondition = array(), $intPage = 1, $intLimit = 15, $strOrder = 'created_date ASC') {
+        $keyCaching = 'getListLimitContact:' . $intPage . ':' . $intLimit . ':' . str_replace(' ', '_', $strOrder) . ':' . $this->cache->read($this->tmpKeyCache);
         if (count($arrCondition) > 0) {
             foreach ($arrCondition as $k => $val) {
                 $keyCaching .= $k . ':' . $val . ':';
@@ -52,7 +52,7 @@ class District extends ModelAbstract {
     }
 
     public function getDetail($arrCondition = array()) {
-        $keyCaching = 'getDetailDistrict:';
+        $keyCaching = 'getDetailContact:';
         if (count($arrCondition) > 0) {
             foreach ($arrCondition as $k => $condition) {
                 $keyCaching .= $k . ':' . $condition . ':';

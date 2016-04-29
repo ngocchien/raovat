@@ -6,9 +6,9 @@ use Zend\Db\TableGateway\AbstractTableGateway,
     Zend\Db\Adapter\Adapter,
     Zend\Db\Sql\Sql;
 
-class storageDistrict extends AbstractTableGateway {
+class storageContact extends AbstractTableGateway {
 
-    protected $table = 'tbl_districts';
+    protected $table = 'tbl_contact';
 
     public function __construct(Adapter $adapter) {
         $adapter->getDriver()->getConnection()->connect();
@@ -26,7 +26,7 @@ class storageDistrict extends AbstractTableGateway {
             $sql = new Sql($adapter);
             $select = $sql->Select($this->table)
                     ->where('1=1' . $strWhere)
-                    ->order(array('dist_sort ASC', 'dist_id ASC'));
+                    ->order(array('status ASC', 'created_date ASC'));
             $query = $sql->getSqlStringForSqlObject($select);
             return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
         } catch (\Zend\Http\Exception $exc) {
@@ -73,13 +73,13 @@ class storageDistrict extends AbstractTableGateway {
         }
     }
 
-    public function edit($p_arrParams, $intDistrictID) {
+    public function edit($p_arrParams, $contact_id) {
         try {
             $result = false;
-            if (!is_array($p_arrParams) || empty($p_arrParams) || empty($intDistrictID)) {
+            if (!is_array($p_arrParams) || empty($p_arrParams) || empty($contact_id)) {
                 return $result;
             }
-            return $this->update($p_arrParams, 'dist_id=' . $intDistrictID);
+            return $this->update($p_arrParams, 'contact_id=' . $contact_id);
         } catch (\Zend\Http\Exception $exc) {
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());
@@ -87,8 +87,8 @@ class storageDistrict extends AbstractTableGateway {
             return false;
         }
     }
-    
-    public function getListLimit($arrCondition, $intPage, $intLimit, $strOrder) {
+
+    public function getListLimit($arrCondition, $intPage, $intLimit, $strOrder = ['status ASC', 'created_date ASC']) {
         try {
             $strWhere = $this->_buildWhere($arrCondition);
             $adapter = $this->adapter;
@@ -128,19 +128,19 @@ class storageDistrict extends AbstractTableGateway {
 
     private function _buildWhere($arrCondition) {
         $strWhere = '';
-        if (isset($arrCondition['dist_status'])) {
-            $strWhere .= " AND dist_status=" . $arrCondition['dist_status'];
+        if (isset($arrCondition['status'])) {
+            $strWhere .= " AND status=" . $arrCondition['status'];
         }
-        
-        if (isset($arrCondition['dist_id'])) {
-            $strWhere .= " AND dist_id=" . (int) $arrCondition['dist_id'];
+
+        if (isset($arrCondition['contact_id'])) {
+            $strWhere .= " AND contact_id=" . (int) $arrCondition['contact_id'];
         }
-        
-        if (isset($arrCondition['not_dist_status'])) {
-            $strWhere .= " AND dist_status !=" . (int) $arrCondition['not_dist_status'];
+
+        if (isset($arrCondition['not_status'])) {
+            $strWhere .= " AND status !=" . (int) $arrCondition['not_status'];
         }
-        
-        
+
+
         return $strWhere;
     }
 
