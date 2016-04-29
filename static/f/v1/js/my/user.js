@@ -171,7 +171,56 @@ var User = {
                         }
                     })
                 }
+            });
+
+            $('.check-all').on('click', function () {
+                var isCheck = $(this).is(':checked');
+                $('tbody .item').each(function (e, v) {
+                    $(this).prop('checked', isCheck);
+                })
+            });
+
+            $('.btn-delete-all').on('click', function () {
+                var arrItem = [];
+                var that = $(this);
+                $('tbody .item').each(function () {
+                    var isCheck = $(this).is(':checked');
+                    if (isCheck == true) {
+                        var item = $(this).val();
+                        arrItem.push(item)
+                    }
+                })
+                if (arrItem.length === 0) {
+                    bootbox.alert('Vui lòng chọn tin cần xóa');
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: deleteMessagesURL,
+                    dataType: 'json',
+                    cache: false,
+                    data: {
+                        arrItem: arrItem
+                    },
+                    beforeSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        if (rs.st == 1) {
+                            bootbox.alert(rs.ms);
+                            $.each(rs.data, function (k, v) {
+                                $('#item-' + v).remove();
+                            })
+                        } else {
+                            bootbox.alert(rs.ms)
+                        }
+                    }
+                })
             })
+
+
         })
     }
 };

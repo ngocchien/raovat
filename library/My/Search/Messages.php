@@ -76,6 +76,8 @@ class Messages extends SearchAbstract {
             'is_send_mail' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'is_view' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'updated_date' => ['type' => 'long', 'index' => 'not_analyzed'],
+            'mess_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'parent_id' => ['type' => 'integer', 'index' => 'not_analyzed']
         ]);
         $mapping->send();
     }
@@ -201,7 +203,7 @@ class Messages extends SearchAbstract {
 
     private function setSort($params) {
         //copy
-        return ['customer_id' => ['order' => 'desc']];
+        return ['created_date' => ['order' => 'asc']];
     }
 
     public function removeAllDoc() {
@@ -236,26 +238,31 @@ class Messages extends SearchAbstract {
             $addQuery->setTerm('is_send_mail', $params['is_send_mail']);
             $boolQuery->addMust($addQuery);
         }
-        
-        
+
+
         if (!empty($params['to_user_id'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('to_user_id', $params['to_user_id']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (isset($params['is_view'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('is_view', $params['is_view']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (isset($params['not_is_view'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('is_view', $params['not_is_view']);
             $boolQuery->addMustNot($addQuery);
         }
-        
+
+        if (isset($params['in_mess_id'])) {
+            $addQuery = new ESQuery\Terms();
+            $addQuery->setTerms('mess_id', $params['in_mess_id']);
+            $boolQuery->addMust($addQuery);
+        }
 
         return $boolQuery;
     }

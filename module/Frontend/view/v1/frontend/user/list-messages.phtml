@@ -23,7 +23,7 @@
                                         <thead class="">
                                             <tr>
                                                 <td class="text-center" width="60"><input type="checkbox" class="mail-checkbox check-all"><b>All</b></td>
-                                                <td colspan="3"><a class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+                                                <td colspan="3"><a class="btn btn-danger btn-delete-all"><i class="fa fa-trash"></i></a></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-center"></th>
@@ -34,7 +34,7 @@
                                         </thead>
                                         <tbody>
                                             <?php foreach ($this->arrMessagesList as $arrMessages): ?>
-                                                <tr class="<?php echo $arrMessages['is_view'] ? null : 'unread'; ?>">
+                                            <tr class="<?php echo $arrMessages['is_view'] ? null : 'unread'; ?>" id="item-<?php echo $arrMessages['mess_id'];?>">
                                                     <td class="text-center">
                                                         <input type="checkbox" class="mail-checkbox item" value="<?php echo $arrMessages['mess_id']; ?>">
                                                     </td>
@@ -96,5 +96,6 @@
 <script>
     getMessagesURL = '<?php echo $this->serverUrl() . $this->Url('user-get-messages'); ?>';
     replayMessagesURL = '<?php echo $this->serverUrl() . $this->Url('user-replay-messages'); ?>';
+    deleteMessagesURL = '<?php echo $this->serverUrl() . $this->Url('delete-messages'); ?>';
     User.listMessages();
 </script>

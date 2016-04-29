@@ -433,6 +433,25 @@ return array(
                     ),
                 ),
             ),
+            
+            'delete-messages' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/phan-hoi-tin-nhan.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'delete-messages',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'delete-messages',
+                    ),
+                ),
+            ),
+            
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(

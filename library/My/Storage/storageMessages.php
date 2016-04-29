@@ -106,9 +106,9 @@ class storageMessages extends AbstractTableGateway {
                 $p_arrParams['mess_id'] = $result;
                 $instanceJob = new \My\Job\JobMessages();
                 $instanceJob->addJob(SEARCH_PREFIX . 'writeMessages', $p_arrParams);
-                
+
                 //job send mail messages to user
-                
+
                 $instanceJob = new \My\Job\JobMessages();
                 $instanceJob->addJob(SEARCH_PREFIX . 'writeMessages', $p_arrParams);
             }
@@ -147,6 +147,31 @@ class storageMessages extends AbstractTableGateway {
         }
     }
 
+    public function multiEdit($p_arrParams, $arrCondition) {
+        try {
+            if (!is_array($p_arrParams) || empty($p_arrParams) || empty($arrCondition) || !is_array($arrCondition)) {
+                return false;
+            }
+            $strWhere = $this->_buildWhere($arrCondition);
+
+            $result = $this->update($p_arrParams, '1=1 ' . $strWhere);
+            if ($result) {
+                $arrData = [
+                    'data' => $p_arrParams,
+                    'condition' => $arrCondition
+                ];
+                $instanceJob = new \My\Job\JobMessages();
+                $instanceJob->addJob(SEARCH_PREFIX . 'multiEditMessages', $arrData);
+            }
+            return $result;
+        } catch (\Exception $exc) {
+            if (APPLICATION_ENV !== 'production') {
+                throw new \Exception($exc->getMessage());
+            }
+            return false;
+        }
+    }
+
     private function _buildWhere($arrCondition) {
 
         $strWhere = '';
@@ -161,6 +186,10 @@ class storageMessages extends AbstractTableGateway {
 
         if (isset($arrCondition['user_id'])) {
             $strWhere .= " AND user_id=" . $arrCondition['user_id'];
+        }
+
+        if (isset($arrCondition['in_mess_id'])) {
+            $strWhere .= " AND mess_id IN (" . $arrCondition['in_mess_id'] . ")";
         }
 
         return $strWhere;

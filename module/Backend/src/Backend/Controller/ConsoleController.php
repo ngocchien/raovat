@@ -634,6 +634,10 @@ class ConsoleController extends MyController {
                 $methodHandler2 = '\My\Job\JobMessages::editMessages';
                 $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
+                $funcName3 = SEARCH_PREFIX . 'multiEditMessages';
+                $methodHandler3 = '\My\Job\JobMessages::multiEditMessages';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
+
                 break;
 
             case 'raovat-mail':

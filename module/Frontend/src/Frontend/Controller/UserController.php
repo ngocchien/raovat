@@ -789,4 +789,44 @@ class UserController extends MyController {
         return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!')));
     }
 
+    public function deleteMessagesAction() {
+        if ($this->request->isPost()) {
+            if (!CUSTOMER_ID) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Chưa đăng nhập!</b></p>')));
+            }
+            $params = $this->params()->fromPost();
+            if (empty($params['arrItem']) || !is_array($params['arrItem'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát!</b></p>')));
+            }
+            $arrItem = array_unique($params['arrItem']);
+            //find messges
+            $instanceSearchMessages = new \My\Search\Messages();
+            $arrList = $instanceSearchMessages->getList(['in_mess_id' => $arrItem, 'to_user_id' => CUSTOMER_ID, 'not_status' => -1]);
+
+            $arrIdList = [];
+            if (!empty($arrList)) {
+                foreach ($arrList as $value) {
+                    $arrIdList[] = $value['mess_id'];
+                }
+            }
+
+            if (empty($arrIdList)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Không tìm thấy các tin nhắn này trong hệ thống!</b></p>')));
+            }
+
+            $arrParams = [
+                'updated_date' => time(),
+                'is_view' => -1
+            ];
+            $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
+            $intResult = $serviceMessages->multiEdit($arrParams, ['in_mess_id' => implode(',', $arrIdList)]);
+
+            if ($intResult <= 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát!</b></p>')));
+            }
+
+            return $this->getResponse()->setContent(json_encode(array('st' => 1, 'data' => $arrIdList, 'ms' => 'Xóa thành công ' . count($arrIdList) . ' tin nhắn!')));
+        }
+    }
+
 }
