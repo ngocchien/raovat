@@ -641,7 +641,6 @@ class UserController extends MyController {
         $arrMessagesList = $instanceSearchMessages->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => 'desc']);
         $intTotal = $instanceSearchMessages->getTotal($arrCondition);
         $params = array_merge($params, $this->params()->fromQuery());
-
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $route, $params);
 
