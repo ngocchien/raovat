@@ -79,6 +79,16 @@ var User = {
                     success: function (rs) {
                         $('#loading-mask').hide();
                         if (rs.st == 1) {
+                            if (rs.data.is_active == true) {
+                                var totalNew = $('.total-new').attr('rel');
+                                var newNumber = totalNew - 1;
+                                if (newNumber > 0) {
+                                    $('.total-new').attr('rel', newNumber);
+                                    $('.total-new').html('(' + newNumber + ' tin nhắn mới)');
+                                } else {
+                                    $('.total-new').html('');
+                                }
+                            }
                             that.closest('tr').removeClass('unread');
                             bootbox.dialog({
                                 message: rs.html,
@@ -110,12 +120,13 @@ var User = {
                 });
             });
 
-            $('btn-send-messages').on('click', function () {
+            $('.btn-send-messages').on('click', function () {
                 $('.valid-title').hide();
                 $('.valid-content').hide();
                 var mess_content = $('#message-text').val();
                 var mess_title = $('#title').val();
                 var mess_id = $('#mess-id').val();
+                console.log(mess_id);
                 if (!mess_id) {
                     bootbox.alert('<p stype="color:red">Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</p>', function () {
                         return;
@@ -142,7 +153,7 @@ var User = {
                 if (error == 0) {
                     $.ajax({
                         type: 'POST',
-                        url: '',
+                        url: replayMessagesURL,
                         dataType: 'json',
                         cache: false,
                         data: {
@@ -154,11 +165,9 @@ var User = {
                             $('#loading-mask').show();
                         },
                         success: function (rs) {
-                            $('#loading-mask').show();
-                            if (rs.ms == 1) {
-                                $('#modalSendMessages').modal('hide');
-                                bootbox.alert(rs.ms);
-                            }
+                            $('#loading-mask').hide();
+                            $('#modalSendMessages').modal('toggle');
+                            bootbox.alert(rs.ms);
                         }
                     })
                 }

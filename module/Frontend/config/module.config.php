@@ -416,6 +416,23 @@ return array(
                     ),
                 ),
             ),
+            'user-replay-messages' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/phan-hoi-tin-nhan.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'replay-messages',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'replay-messages',
+                    ),
+                ),
+            ),
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -589,7 +606,8 @@ return array(
             'frontend/content/add-comment' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/content/add-comment.phtml',
             'frontend/email-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/email-messages.phtml',
             'frontend/footer-email' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/footer-email.phtml',
-            'frontend/user/get-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/user/get-messages.phtml'
+            'frontend/user/get-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/frontend/user/get-messages.phtml',
+            'frontend/email-replay-messages' => __DIR__ . '/../view/' . FRONTEND_TEMPLATE . '/layout/email-replay-messages.phtml'
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/' . FRONTEND_TEMPLATE,
