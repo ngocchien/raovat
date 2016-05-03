@@ -222,7 +222,145 @@ var User = {
 
 
         })
+    },
+    listPost: function () {
+        $(document).ready(function () {
+
+            $('.check-all').on('click', function () {
+                var isCheck = $(this).is(':checked');
+                $('tbody .content-item').each(function (e, v) {
+                    $(this).prop('checked', isCheck);
+                })
+            });
+
+            $('.remove-all').on('click', function () {
+                var arrItem = [];
+                $('tbody .content-item').each(function () {
+                    var isCheck = $(this).is(':checked');
+                    if (isCheck == true) {
+                        var item = $(this).val();
+                        arrItem.push(item)
+                    }
+                })
+
+                if (arrItem.length === 0) {
+                    bootbox.alert('Vui lòng chọn tin cần xóa!');
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: deletePostURL,
+                    dataType: 'json',
+                    cache: false,
+                    data: {
+                        arrItem: arrItem,
+                        type: 'delete-all'
+                    },
+                    beforeSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        if (rs.st == 1) {
+                            bootbox.alert(rs.ms);
+                            $.each(rs.data, function (k, v) {
+                                $('#item-' + v).remove();
+                            })
+                        } else {
+                            bootbox.alert(rs.ms)
+                        }
+                    }
+                })
+            })
+
+            $('.remove').on('click', function () {
+                var cont_id = $(this).attr('rel');
+                var that = $(this);
+                if (!cont_id) {
+                    bootbox.alert('Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát');
+                    return false;
+                }
+                bootbox.confirm('Bạn có chắc chắn muốn xóa rao vặt này không???', function (e) {
+                    if (e) {
+                        $.ajax({
+                            type: 'GET',
+                            url: deletePostURL,
+                            cache: false,
+                            dataType: 'json',
+                            data: {
+                                cont_id: cont_id
+                            },
+                            beforeSend: function () {
+                                $('#loading-mask').show();
+                            },
+                            success: function (rs) {
+                                $('#loading-mask').hide();
+                                if (rs.st == 1) {
+                                    bootbox.alert(rs.ms);
+                                    that.closest('tr').remove();
+                                } else {
+                                    bootbox.alert(rs.ms);
+                                    return false;
+                                }
+                            }
+                        });
+                    }
+                })
+            })
+        });
+    },
+    listSavePost: function () {
+        $(document).ready(function () {
+            $('.check-all').on('click', function () {
+                var isCheck = $(this).is(':checked');
+                $('tbody .content-item').each(function (e, v) {
+                    $(this).prop('checked', isCheck);
+                })
+            });
+            $('.remove-all').on('click', function () {
+                var arrItem = [];
+                $('tbody .content-item').each(function () {
+                    var isCheck = $(this).is(':checked');
+                    if (isCheck == true) {
+                        var item = $(this).val();
+                        arrItem.push(item)
+                    }
+                })
+
+                if (arrItem.length === 0) {
+                    bootbox.alert('Vui lòng chọn tin cần xóa!');
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: deleteSavePostURL,
+                    dataType: 'json',
+                    cache: false,
+                    data: {
+                        arrItem: arrItem,
+                        type: 'delete-all'
+                    },
+                    beforeSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        if (rs.st == 1) {
+                            bootbox.alert(rs.ms);
+                            $.each(rs.data, function (k, v) {
+                                $('#item-' + v).remove();
+                            })
+                        } else {
+                            bootbox.alert(rs.ms)
+                        }
+                    }
+                })
+            })
+        });
     }
+
 };
 
 function _getCaptcha() {

@@ -70,6 +70,7 @@ class Content extends SearchAbstract {
             'cont_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'cont_slug' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'cont_detail' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'cont_detail_text' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'created_date' => ['type' => 'long', 'index' => 'not_analyzed'],
             'user_created' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'updated_date' => ['type' => 'long', 'index' => 'not_analyzed'],
@@ -86,7 +87,8 @@ class Content extends SearchAbstract {
             'user_info' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'cont_status' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'ip_address' => ['type' => 'string', 'index' => 'not_analyzed'],
-            'cont_image' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets']
+            'cont_image' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'dist_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
         ]);
         $mapping->send();
     }
@@ -152,8 +154,8 @@ class Content extends SearchAbstract {
                     ->addType($this->getSearchType())
                     ->search($query);
             $this->setResultSet($resultSet);
-            $arrUserList = $this->toArray();
-            return $arrUserList;
+            $arrContentList = $this->toArray();
+            return $arrContentList;
         } catch (\Exception $exc) {
             echo $exc->getMessage();
             die;
@@ -163,15 +165,19 @@ class Content extends SearchAbstract {
     /**
      * Get List
      */
-    public function getList($params, $arrFields = []) {
+    public function getList($params, $sort = [], $arrFields = []) {
         $boolQuery = new Bool();
         $boolQuery = $this->__buildWhere($params, $boolQuery);
         $query = new ESQuery();
 
         $total = $this->getTotal($params);
 
+        if (empty($sort)) {
+            $sort = $this->setSort($params);
+        }
+
         $query->setSize($total)
-                ->setSort($this->setSort($params));
+                ->setSort($sort);
         $query->setQuery($boolQuery);
         if ($arrFields && is_array($arrFields)) {
             $query->setSource($arrFields);
@@ -206,7 +212,7 @@ class Content extends SearchAbstract {
 
     private function setSort($params) {
         //copy
-        return ['customer_id' => ['order' => 'desc']];
+        return ['cont_id' => ['order' => 'desc']];
     }
 
     public function removeAllDoc() {
@@ -228,6 +234,18 @@ class Content extends SearchAbstract {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cont_id', $params['cont_id']);
             $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['in_cont_id'])) {
+            $addQuery = new ESQuery\Terms();
+            $addQuery->setTerms('cont_id', $params['in_cont_id']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['not_cont_id'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('cont_id', $params['not_cont_id']);
+            $boolQuery->addMustNot($addQuery);
         }
 
         if (!empty($params['user_created'])) {
@@ -257,6 +275,85 @@ class Content extends SearchAbstract {
         if (!empty($params['cate_id'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('cate_id', $params['cate_id']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['in_cate_id'])) {
+            $addQuery = new ESQuery\Terms();
+            $addQuery->setTerms('cate_id', $params['in_cate_id']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['cont_slug'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('cont_slug', $params['cont_slug']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['created_date_today'])) {
+            $date = date('d-m-Y', time());
+            $firstSecond = strtotime($date);
+            $lastSecond = ($firstSecond - 1) + (60 * 60 * 24);
+
+            $addQuery = new ESQuery\Range();
+            $addQuery->addField('created_date', array('lte' => $lastSecond, 'gte' => $firstSecond));
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['key_word'])) {
+            $bool = new Bool();
+            if ((int) $params['key_word'] > 0) {
+                $queryTerm = new ESQuery\Term();
+                $queryTerm->setTerm('cont_id', (int) $params['key_word']);
+                $bool->addShould($queryTerm);
+            }
+
+            $strKeyword = trim($params['key_word']);
+
+            $titleQueryString = new QueryString();
+            $titleQueryString->setDefaultField('cont_title')
+                    ->setQuery($strKeyword)
+                    ->setAllowLeadingWildcard(1)
+                    ->setDefaultOperator('AND');
+            $bool->addShould($titleQueryString);
+
+            $detailQueryString = new QueryString();
+            $detailQueryString->setDefaultField('cont_detail_text')
+                    ->setQuery($strKeyword)
+                    ->setAllowLeadingWildcard(1)
+                    ->setDefaultOperator('AND');
+            $bool->addShould($detailQueryString);
+
+            $boolQuery->addMust($bool);
+        }
+
+        if (!empty($params['dist_id'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('dist_id', $params['dist_id']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['prop_id'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('prop_id', $params['prop_id']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['is_vip'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('is_vip', $params['is_vip']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['vip_type'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('vip_type', $params['vip_type']);
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['more_expired_time'])) {
+            $addQuery = new ESQuery\Range();
+            $addQuery->addField('expired_time', array('gte' => $params['more_expired_time']));
             $boolQuery->addMust($addQuery);
         }
 

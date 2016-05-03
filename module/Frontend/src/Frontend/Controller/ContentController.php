@@ -103,7 +103,6 @@ class ContentController extends MyController {
     }
 
     public function addAction() {
-
         $params = $this->params()->fromRoute();
         $errors = array();
 
@@ -188,13 +187,13 @@ class ContentController extends MyController {
                 /*
                  * Kiểm tra spam và trùng lặp tin
                  */
-                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $instanceSearchContent = new \My\Search\Content();
                 if (empty(CUSTOMER_ID)) {
                     $arrCondition = [
                         'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR'),
                         'created_date_today' => 1
                     ];
-                    $intTotal = $serviceContent->getTotal($arrCondition);
+                    $intTotal = $instanceSearchContent->getTotal($arrCondition);
                     if ($intTotal >= 3) {
                         $errors['total'] = 'Bạn chưa đăng ký thành viên nên chỉ được đăng tối đa 3 tin 1 ngày! Mời bạn đăng ký để sử dụng đầu đủ tính năng!';
                     }
@@ -202,26 +201,29 @@ class ContentController extends MyController {
                     $arrCondition = [
                         'cont_slug' => General::getSlug(trim($params['content_title'])),
                         'user_created' => CUSTOMER_ID,
-                        'cate_id' => $intCategoryId
+                        'cate_id' => $intCategoryId,
+                        'not_cont_status' => -1,
                     ];
-                    $arrContent = $serviceContent->getDetail($arrCondition);
+
+                    $arrContent = $instanceSearchContent->getDetail($arrCondition);
 
                     if ($arrContent) {
                         $errors['total'] = 'Bạn đã đăng tin này trong danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
                     }
                 }
-
                 if (empty($errors)) {
                     $arrData = array(
-                        'cont_title' => htmlentities($params['content_title']),
+                        'cont_title' => trim($params['content_title']),
                         'cont_slug' => General::getSlug(trim($params['content_title'])),
-                        'cont_detail' => \My\Minifier\HtmlMin::minify($params['content_content']),
+                        'cont_detail' => $params['content_content'],
+                        'cont_detail_text' => strip_tags(html_entity_decode(trim($params['content_content']))),
                         'cate_id' => $intCategoryId,
                         'user_created' => CUSTOMER_ID,
                         'cont_image' => json_encode($params['image_prod']),
                         'prop_id' => $intProperties,
                         'created_date' => time(),
-                        'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR')
+                        'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR'),
+                        'dist_id' => (int) $params['location']
                     );
                     if (empty(CUSTOMER_ID)) {
                         $arrData['user_info'] = json_encode([
@@ -231,6 +233,8 @@ class ContentController extends MyController {
                             'password' => $params['password']
                         ]);
                     }
+
+                    $serviceContent = $this->serviceLocator->get('My\Models\Content');
                     $intResult = $serviceContent->add($arrData);
 
                     if ($intResult > 0) {
@@ -241,6 +245,7 @@ class ContentController extends MyController {
 
                         $completeSession = new Container('contentComplete');
                         $completeSession->complete = true;
+                        $completeSession->type = 'add';
                         $completeSession->id = $intResult;
                         $completeSession->title = $params['content_title'];
                         $completeSession->title_slug = General::getSlug(trim($params['content_title']));
@@ -254,8 +259,8 @@ class ContentController extends MyController {
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headTitle(html_entity_decode('Rao vặt - Đăng tin rao vặt') . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, rao vặt, đăng tin rao vặt, rao vat, dang tin mua bán, dang tin rao vat quy nhon, tuyen dung - viec lam quy nhon, dang tin rao vat mien phi, dang rao vat chototquynhon.com'));
-        $this->renderer->headMeta()->appendName('description', html_entity_decode('chototquynhon.com  - sRao vặt - Đăng tin rao vặt, đăng tin rao vặt , mua bán, tuyển dụng , tìm việc tại miễn phí quy nhơn - bình định , rao vặt quy nhơn bình định nhanh chóng , chototquynhon.com - đăng tin rao vặt nhanh chóng, miễn phí !' . General::TITLE_META));
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('quynhon247.com, rao vặt, đăng tin rao vặt, rao vat, dang tin mua bán, dang tin rao vat quy nhon, tuyen dung - viec lam quy nhon, dang tin rao vat mien phi, dang rao vat quynhon247.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('quynhon247.com  - Rao vặt - Đăng tin rao vặt, đăng tin rao vặt , mua bán, tuyển dụng , tìm việc tại miễn phí quy nhơn - bình định , rao vặt quy nhơn bình định nhanh chóng , quynhon247.com - đăng tin rao vặt nhanh chóng, miễn phí !' . General::TITLE_META));
 
         $arrPropertiesList = [];
         if ($params['category']) {
@@ -272,6 +277,280 @@ class ContentController extends MyController {
             'errors' => $errors,
             'arrPropertiesList' => $arrPropertiesList
         );
+    }
+
+    public function confirmPasswordAction() {
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+
+            if (empty($params['cont_id']) || empty($params['cont_pass'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center><b style="color:red">Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></center>')));
+            }
+
+            $instaceSearchContent = new \My\Search\Content();
+            $arrContent = $instaceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'not_cont_status' => -1]);
+
+            if (!empty($arrContent) || !empty($arrContent['user_created'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b style="color:red">Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></center>']));
+            }
+
+            if ($arrContent['user_info']['password'] != trim($params['cont_pass'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b style="color:red">Nhập mật khẩu sửa tin không chính xác!</b></center>']));
+            }
+
+            $arrPass = empty($_SESSION['cont_pass']) ? [] : $_SESSION['cont_pass'];
+
+            if (!in_array($arrContent['cont_id'], $arrPass)) {
+                array_push($arrPass, $arrContent['cont_id']);
+            }
+
+            $_SESSION['arrContentPass'] = $arrPass;
+            return $this->getResponse()->setContent(json_encode(['st' => 1, 'url' => $this->url()->fromRoute('edit-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']])]));
+        }
+    }
+
+    public function editAction() {
+        $params = $this->params()->fromRoute();
+
+        if (empty($params['contentId']) || empty($params['contentSlug'])) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        $contentId = (int) $params['contentId'];
+        $contentSlug = trim($params['contentSlug']);
+        $instanceSearchContent = new \My\Search\Content();
+        $arrContent = $instanceSearchContent->getDetail(['cont_id' => $contentId, 'not_cont_status' => -1]);
+
+        if (empty($arrContent) || $arrContent['cont_slug'] != $contentSlug) {
+            return $this->redirect()->toRoute('home');
+        }
+
+        if (empty($arrContent['user_created'])) {
+            $arrContentPass = $_SESSION['arrContentPass'];
+            if (!in_array($arrContent['cont_id'], $arrContentPass)) {
+                return $this->redirect()->toRoute('home');
+            }
+        } else {
+            if (CUSTOMER_ID != $arrContent['user_created']) {
+                return $this->redirect()->toRoute('home');
+            }
+        }
+
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+
+            if (empty($params['category'])) {
+                $errors['category'] = 'Chưa chọn danh mục cho tin rao vặt !';
+            } else {
+                $intCategoryId = (int) ($params['category']);
+                $arrCategoryList = unserialize(ARR_CATEGORY);
+                if (empty($arrCategoryList[$intCategoryId]) || empty($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']])) {
+                    $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
+                }
+            }
+
+            $intProperties = (int) $params['properties'];
+            if ($intProperties) {
+                $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+                $arrProperties = $serviceProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
+
+                if (empty($arrProperties)) {
+                    $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
+                } else {
+                    if ($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']]['prop_id'] != $arrProperties['parent_id']) {
+                        $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
+                    }
+                }
+            }
+
+            if (empty($params['content_title'])) {
+                $errors['content_title'] = 'Chưa nhập tiêu đề cho tin rao vặt !';
+            }
+
+            if (empty($params['content_content'])) {
+                $errors['content_content'] = 'Chưa nhập nội dung cho tin rao vặt !';
+            }
+
+            if (empty($params['content_tags'])) {
+                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
+            }
+
+            if (empty(CUSTOMER_ID)) {
+
+                if (empty($params['name'])) {
+                    $errors['userInfo']['name'] = 'Vui lòng nhập họ và tên để liên lạc !';
+                }
+
+                if (empty($params['email'])) {
+                    $errors['userInfo']['email'] = 'Vui lòng nhập email liên lạc';
+                } else {
+                    $validatorEmail = new Zend\Validator\EmailAddress();
+                    if (!$validatorEmail->isValid($params['email'])) {
+                        $errors['userInfo']['email'] = 'Địa chỉ email không hợp lệ!';
+                    }
+                }
+
+                if (empty($params['phone'])) {
+                    $errors['userInfo']['phone'] = 'Vui lòng nhập số điện thoại liên lạc';
+                } else {
+                    $validationPhone = new Zend\I18n\Validator\IsInt;
+                    if (!$validationPhone->isValid($params['phone'])) {
+                        $errors['userInfo']['phone'] = 'Số điện thoại không hợp lệ';
+                    } else {
+                        $validBetween = new Zend\Validator\Between(array('min' => 8, 'max' => 12));
+                        if (!$validBetween->isValid($params['phone'])) {
+                            $errors['userInfo']['phone'] = 'Số điện thoại phải từ 8 đến 12 số';
+                        }
+                    }
+                }
+            }
+
+            if (empty($errors)) {
+
+                /*
+                 * Kiểm tra spam và trùng lặp tin
+                 */
+                $instanceSearchContent = new \My\Search\Content();
+                if (!empty(CUSTOMER_ID)) {
+                    $arrCondition = [
+                        'cont_slug' => General::getSlug(trim($params['content_title'])),
+                        'user_created' => CUSTOMER_ID,
+                        'cate_id' => $intCategoryId,
+                        'not_cont_status' => -1,
+                        'not_cont_id' => $arrContent['cont_id']
+                    ];
+
+                    $arrContentExit = $instanceSearchContent->getDetail($arrCondition);
+
+                    if ($arrContentExit) {
+                        $errors['total'] = 'Bạn đã đăng tin này trong danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
+                    }
+                }
+                if (empty($errors)) {
+                    $arrData = array(
+                        'cont_title' => trim($params['content_title']),
+                        'cont_slug' => General::getSlug(trim($params['content_title'])),
+                        'cont_detail' => $params['content_content'],
+                        'cont_detail_text' => strip_tags(html_entity_decode(trim($params['content_content']))),
+                        'cate_id' => $intCategoryId,
+                        'cont_image' => json_encode($params['image_prod']),
+                        'prop_id' => $intProperties,
+                        'updated_date' => time(),
+                        'dist_id' => (int) $params['location'],
+                        'user_updated' => empty(CUSTOMER_ID) ? null : CUSTOMER_ID
+                    );
+                    if (empty(CUSTOMER_ID)) {
+                        $arrData['user_info'] = json_encode([
+                            'user_fullname' => $params['name'],
+                            'user_email' => $params['email'],
+                            'user_phone' => $params['phone'],
+                            'password' => $arrContent['user_info']['password']
+                        ]);
+                    }
+
+                    $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                    $intResult = $serviceContent->edit($arrData, $arrContent['cont_id']);
+
+                    if ($intResult > 0) {
+                        if (!empty($arrContentPass)) {
+                            if (($key = array_search($arrContent['cont_id'], $arrContentPass)) !== false) {
+                                unset($arrContentPass[$key]);
+                                if (empty($arrContentPass)) {
+                                    unset($_SESSION['arrContentPass']);
+                                } else {
+                                    $_SESSION['arrContentPass'] = $arrContentPass;
+                                }
+                            }
+                        }
+                        //update tổng số rao vặt trong danhmục
+//                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
+                        //update tổng số rao vặt danh mục cha
+//                        $serviceCategory->edit(array('cate_total_product' => $arrCategory[$arrCategoryDetail['cate_parent']]['cate_total_product'] + 1), $arrCategoryDetail['cate_parent']);
+
+                        $completeSession = new Container('contentComplete');
+                        $completeSession->type = 'edit';
+                        $completeSession->complete = true;
+                        $completeSession->id = $arrContent['cont_id'];
+                        $completeSession->title = $params['content_title'];
+                        $completeSession->title_slug = General::getSlug(trim($params['content_title']));
+
+                        return $this->redirect()->toRoute('add-content-complete');
+                    }
+                    $errors['total'] = 'Xảy ra lỗi trong quá trình xử lý !';
+                }
+            }
+        }
+
+        $arrPropertiesList = [];
+        $arrCategoryList = unserialize(ARR_CATEGORY);
+        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+        if (!empty($params['category'])) {
+            $propertiesId = $arrCategoryList[$arrCategoryList[$params['category']]['parent_id']]['prop_id'];
+            if ($propertiesId) {
+                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+            }
+        } else {
+            $propertiesId = $arrCategoryList[$arrCategoryList[$arrContent['cate_id']]['parent_id']]['prop_id'];
+            if ($propertiesId) {
+                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+            }
+        }
+//        arrPropertiesList
+//        $instanceSearchContent = $this->serviceLocator->get('My\Models\Product');
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Rao vặt - Chỉnh sửa rao vặt') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('quynhon247.com, rao vặt, đăng tin rao vặt, rao vat, dang tin mua bán, dang tin rao vat quy nhon, tuyen dung - viec lam quy nhon, dang tin rao vat mien phi, dang rao vat quynhon247.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('quynhon247.com  - sRao vặt - Đăng tin rao vặt, đăng tin rao vặt , mua bán, tuyển dụng , tìm việc tại miễn phí quy nhơn - bình định , rao vặt quy nhơn bình định nhanh chóng , quynhon247.com - đăng tin rao vặt nhanh chóng, miễn phí !' . General::TITLE_META));
+
+        return array(
+            'params' => $params,
+            'errors' => $errors,
+            'arrContent' => $arrContent,
+            'arrPropertiesList' => $arrPropertiesList
+        );
+    }
+
+    public function deleteAction() {
+        if (!CUSTOMER_ID) {
+            return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => 'Please sigin before deleted post!']));
+        }
+
+        $params = array_merge($this->params()->fromRoute(), $this->params()->fromQuery(), $this->params()->fromPost());
+
+        $instanceSearchContent = new \My\Search\Content();
+        if (!empty($params['type']) && $params['type'] == 'delete-all' && is_array($params['arrItem'])) {
+            $arrContentList = $instanceSearchContent->getList(['user_created' => CUSTOMER_ID, 'in_cont_id' => $params['arrItem'], 'not_cont_status' => -1]);
+            if (!empty($arrContentList)) {
+                $arrIdList = [];
+                foreach ($arrContentList as $arrContent) {
+                    $arrIdList[] = $arrContent['cont_id'];
+                }
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $intResult = $serviceContent->multiEdit(['updated_date' => time(), 'user_updated' => CUSTOMER_ID, 'cont_status' => -1], ['in_cont_id' => implode(',', $arrIdList)]);
+                if ($intResult) {
+                    return $this->getResponse()->setContent(json_encode(['st' => 1, 'ms' => '<center><b>Xóa danh sách tin rao vặt thành công!</b></center>', 'data' => $arrIdList]));
+                }
+            }
+        } else {
+            if (empty($params['cont_id'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau  giây lát!</b></center>']));
+            }
+            $instanceSearchContent = new \My\Search\Content();
+            $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'user_created' => CUSTOMER_ID, 'not_cont_status' => -1]);
+
+            if (empty($arrContent)) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Không tìm thấy rao vặt này trong hệ thống của chúng tôi!</b></center>']));
+            }
+
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+
+            if ($serviceContent->edit(['cont_status' => -1, 'updated_date' => time()], (int) $params['cont_id'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => 1, 'ms' => '<center><b>Xóa rao vặt thành công!</b></center>']));
+            }
+        }
+
+        return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại trong giây lát!</b></center>']));
     }
 
     public function completeAction() {
@@ -375,53 +654,6 @@ class ContentController extends MyController {
         return $this->getResponse()->setContent(json_encode(array('st' => 1, 'html' => $html)));
     }
 
-    public function editAction() {
-        if (UID <= 0) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
-        }
-        $params = $this->params()->fromRoute();
-        if (empty($params['productId'])) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
-        }
-        $intProdID = (int) $params['productId'];
-        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
-        $arrProductDetail = $serviceProduct->getDetail(array('prod_id' => $intProdID, 'not_prod_status' => -1, 'user_created' => UID));
-        if (empty($arrProductDetail)) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
-        }
-
-        //get listCategory
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $arrCategoryList = $serviceCategory->getList(array('not_cate_parent' => 0, 'cate_status' => 1));
-        $arrCategory = unserialize(ARR_CATEGORY);
-        foreach ($arrCategory as $key => $value) {
-            foreach ($arrCategoryList as $val) {
-                if ($val['cate_parent'] == $value['cate_id']) {
-                    $arrCategory[$key]['cate_children'][] = $val;
-                }
-            }
-        }
-
-        //get ListDist
-        $serviceDistrict = $this->serviceLocator->get('My\Models\District');
-        $errors = array();
-        $arrDistrictList = $serviceDistrict->getList(array('city_id' => 9, 'dist_status' => 0));
-
-
-        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
-        $this->renderer->headTitle(html_entity_decode('Rao vặt - Chỉnh sửa rao vặt') . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('chototquynhon.com, rao vặt, đăng tin rao vặt, rao vat, dang tin mua bán, dang tin rao vat quy nhon, tuyen dung - viec lam quy nhon, dang tin rao vat mien phi, dang rao vat chototquynhon.com'));
-        $this->renderer->headMeta()->appendName('description', html_entity_decode('chototquynhon.com  - sRao vặt - Đăng tin rao vặt, đăng tin rao vặt , mua bán, tuyển dụng , tìm việc tại miễn phí quy nhơn - bình định , rao vặt quy nhơn bình định nhanh chóng , chototquynhon.com - đăng tin rao vặt nhanh chóng, miễn phí !' . General::TITLE_META));
-//        p(json_decode($arrProductDetail['prod_image'],true)['thumbImage']['120x120']);die;
-        return array(
-            'params' => $params,
-            'errors' => $errors,
-            'arrProductDetail' => $arrProductDetail,
-            'arrCategory' => $arrCategory,
-            'arrDistrictList' => $arrDistrictList
-        );
-    }
-
     public function addCommentAction() {
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
@@ -506,13 +738,14 @@ class ContentController extends MyController {
             }
 
             $params = $this->params()->fromPost();
+
             if (empty($params['cont_id'])) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!</b></p>')));
             }
 
             $instanceSearchContent = new \My\Search\Content();
             $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'status' => 1]);
-
+            
             if (empty($arrContent)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></p>')));
             }
@@ -520,6 +753,7 @@ class ContentController extends MyController {
             $instanceSearchFavourite = new \My\Search\Favourite();
             $arrFavourite = $instanceSearchFavourite->getDetail(['user_id' => CUSTOMER_ID, 'cont_id' => $arrContent['cont_id']]);
             $serviceFavourite = $this->serviceLocator->get('My\Models\Favourite');
+            
             if (empty($arrFavourite)) {
                 $arrData = [
                     'user_id' => CUSTOMER_ID,
@@ -534,10 +768,10 @@ class ContentController extends MyController {
                     return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!</b></p>')));
                 }
             } else {
-                if ($arrData['status'] == -1) {
+                if ($arrFavourite['status'] == -1) {
                     $arrData['status'] = 1;
                     $arrData['updated_date'] = time();
-                    $serviceFavourite->edit($arrData, $arrData['favo_id']);
+                    $serviceFavourite->edit($arrData, $arrFavourite['favo_id']);
                 }
                 return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<p style="color:green">Lưu tin rao vặt thành công!</b></p>')));
             }

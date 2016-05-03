@@ -41,6 +41,9 @@ class General {
     const TRANS_INPUT = 1;
     const TRANS_OUTPUT = 2;
     const SEND_MAIL_MESSAGES = 1;
+    
+    const VIP_ALL_PAGE = 3;
+    const VIP_CATE_PAGE = 2;
 
     private $headlink;
     static $fbConfig = [
@@ -355,7 +358,7 @@ class General {
                 case 'content':
                     return array('150x100', '224x224', '291x250', '490x294');
                 case 'user':
-                    return array('150x150');
+                    return array('150x150', '30x30');
                 default:
                     return array();
             }

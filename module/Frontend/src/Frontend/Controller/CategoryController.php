@@ -11,113 +11,142 @@ class CategoryController extends MyController {
     /* @var $serviceProperties \My\Models\Properties */
 
     public function __construct() {
-        $this->defaultJS = [
-            'frontend:category:index' => 'star-rating.js',
-        ];
-        $this->defaultCSS = [
-            'frontend:category:index' => 'star-rating.css',
+        $this->externalJS = [
+            STATIC_URL . '/f/v1/js/my/??category.js'
         ];
     }
 
     public function indexAction() {
         $params = $this->params()->fromRoute();
-        $intPage = is_numeric($this->params()->fromQuery('page', 1)) ? $this->params()->fromQuery('page', 1) : 1;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
         $intLimit = 20;
-        if (empty($params['categoryID']) || empty($params['categorySlug'])) {
+
+        if (empty($params['cateId']) || empty($params['cateSlug'])) {
             return $this->redirect()->toRoute('404', array());
         }
 
-        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-        $arrCondition = array(
-            'cate_id' => (int) $params['categoryID'],
-            'cate_status' => 1
-        );
+        $arrCategoryList = unserialize(ARR_CATEGORY);
 
-        $arrCategoryDetail = $serviceCategory->getDetail($arrCondition);
-
-        if ($arrCategoryDetail['cate_slug'] != $params['categorySlug']) {
+        if (empty($arrCategoryList[(int) $params['cateId']])) {
             return $this->redirect()->toRoute('404', array());
         }
 
-        $serviceProduct = $this->serviceLocator->get('My\Models\Product');
+        $arrCategoryDetail = $arrCategoryList[(int) $params['cateId']];
+
+        if ($arrCategoryDetail['cate_slug'] != $params['cateSlug']) {
+            $this->redirect()->toRoute('category', ['cateSlug' => $arrCategoryDetail['cate_slug'], 'cateId' => $arrCategoryDetail['cate_id']]);
+        }
+
+        $arrConditionContent = [
+            'not_cont_status' => -1
+        ];
+
+        $arrConditionProperties = [
+            'prop_status' => 1
+        ];
+
+        $arrCategoryChildren = [];
+        $arrCategoryParent = [];
+        if ($arrCategoryDetail['parent_id'] == 0) {
+            $arrCategoryParent = $arrCategoryDetail;
+            $arrConditionProperties['parent_id'] = $arrCategoryDetail['prop_id'];
+            $arrCategoryChildren = unserialize(ARR_CATEGORY_BY_PARENT)[$arrCategoryDetail['cate_id']];
+            $arrIdList = [];
+            foreach ($arrCategoryChildren as $arr) {
+                $arrIdList[] = $arr['cate_id'];
+            }
+            $arrConditionContent['in_cate_id'] = $arrIdList;
+        } else {
+            $arrCategoryParent = unserialize(ARR_CATEGORY)[$arrCategoryDetail['parent_id']];
+            $arrCategoryChildren = unserialize(ARR_CATEGORY_BY_PARENT)[$arrCategoryDetail['parent_id']];
+            $arrConditionContent['cate_id'] = $arrCategoryDetail['cate_id'];
+            $arrConditionProperties['parent_id'] = unserialize(ARR_CATEGORY)[$arrCategoryDetail['parent_id']]['prop_id'];
+        }
+
+        //list properties
         $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-        $arrProductList = array();
-        $arrProperties = array();
-        $arrProductVipList = array();
-        if ($arrCategoryDetail['cate_parent'] != 0) {
-            $arrProperties = $serviceProperties->getList(array('cate_id' => $arrCategoryDetail['cate_parent'], 'not_prop_status' => -1));
-            $arrConditionProduct = array(
-                'cate_id' => $arrCategoryDetail['cate_id'],
-                'not_prod_status' => -1,
-                'less_prod_time_vip'=>time(),
-            );
-            if ($params['properties']) {
-                $arrConditionProduct['prop_id'] = $params['properties'];
-            }
-            if ($params['location']) {
-                $arrConditionProduct['dist_id'] = $params['location'];
-            }
-            $arrProductList = $serviceProduct->getListLimit($arrConditionProduct, $intPage, $intLimit, 'prod_id DESC');
-            $arrProductVipList = $serviceProduct->getList(array('prod_vip'=>1,'cate_id'=>$arrCategoryDetail['cate_id'],'prod_time_vip'=>time()));
-        }
-        $arrCategoryChildrenList = array();
-        if ($arrCategoryDetail['cate_parent'] == 0) {
-            $arrProperties = $serviceProperties->getList(array('cate_id' => $arrCategoryDetail['cate_id'], 'not_prop_status' => -1));
-            $arrCategoryChildrenList = $serviceCategory->getList(array('cate_parent' => $arrCategoryDetail['cate_id'], 'cate_status' => 1));
-            if (!empty($arrCategoryChildrenList)) {
-                foreach ($arrCategoryChildrenList as $value) {
-                    $arrCategoryListID[] = $value['cate_id'];
-                    $strCategoryListID = implode(',', $arrCategoryListID);
-                }
-                if (!empty($strCategoryListID)) {
-                    $arrConditionProduct = array(
-                        'strCategoryListID' => $strCategoryListID,
-                        'not_prod_status' => -1,
-                        'less_prod_time_vip'=>time(),
-                    );
-                    if ($params['properties']) {
-                        $arrConditionProduct['prop_id'] = $params['properties'];
-                    }
-                    if ($params['location']) {
-                        $arrConditionProduct['dist_id'] = $params['location'];
-                    }
-                    $arrProductList = $serviceProduct->getListLimit($arrConditionProduct, $intPage, $intLimit, 'prod_id DESC');
-                    $arrProductVipList = $serviceProduct->getList(array('prod_vip'=>1,'strCategoryListID'=>$strCategoryListID,'prod_time_vip'=>time()));
-                }
-            }
-        }
-        
-        //get List User
-//        if ($arrCategoryDetail['cate_parent'] != 0) {
-//            
-//        }
+        $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
 
-        $arrCategoryDetail['cate_meta_title'] ? $metaTitle = $arrCategoryDetail['cate_meta_title'] : $metaTitle = $arrCategoryDetail['cate_name'];
-        $arrCategoryDetail['cate_meta_keyword'] ? $metaKeyword = $arrCategoryDetail['cate_meta_keyword'] : NULL;
-        $arrCategoryDetail['cate_meta_description'] ? $metaDescription = $arrCategoryDetail['cate_meta_description'] : NULL;
-        $arrCategoryDetail['cate_meta_social'] ? $metaSocial = $arrCategoryDetail['cate_meta_social'] : NULL;
+        $arrPropertiesFormat = [];
+        $propIdList = [];
+        foreach ($arrPropertiesList as $prop) {
+            $propIdList[] = $prop['prop_id'];
+            $arrPropertiesFormat[$prop['prop_id']] = $prop;
+        }
+
+        if (!empty($params['propId'])) {
+            //kiểm tra properties có nằm trong danh mục
+            if (in_array($params['propId'], $propIdList)) {
+                $arrConditionContent['prop_id'] = (int) $params['propId'];
+            } else {
+                $params['propId'] = 0;
+            }
+        }
+
+        if (!empty($params['distId'])) {
+            $arrDistIdList = array_keys(unserialize(ARR_DISTRICT));
+            if (in_array($params['distId'], $arrDistIdList)) {
+                $arrConditionContent['dist_id'] = (int) $params['distId'];
+            } else {
+                $params['distId'] = 0;
+            }
+        }
+
+        //list content 15
+        $instanceSearchContent = new \My\Search\Content();
+        $arrContentList = $instanceSearchContent->getListLimit($arrConditionContent, $intPage, $intLimit, ['vip_type' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
+        $intTotal = $instanceSearchContent->getTotal($arrConditionContent);
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'category', $params);
+
+        //info user post
+        $arrUserListFormat = [];
+        if (!empty($arrContentList)) {
+            $arrUserId = [];
+            foreach ($arrContentList as $arrContent) {
+                $arrUserId[] = $arrContent['user_created'];
+            }
+            $arrUserId = array_unique($arrUserId);
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $arrUserList = $serviceUser->getList(['in_user_id' => implode(',', $arrUserId)]);
+            if (!empty($arrUserList)) {
+                foreach ($arrUserList as $value) {
+                    $arrUserListFormat[$value['user_id']] = $value;
+                }
+            }
+        }
+
+        $arrLocation = unserialize(ARR_DISTRICT);
+
+        $metaTitle = $arrCategoryDetail['cate_meta_title'] ? $arrCategoryDetail['cate_meta_title'] : $arrCategoryDetail['cate_name'];
+        $metaKeyword = $arrCategoryDetail['cate_meta_keyword'] ? $arrCategoryDetail['cate_meta_keyword'] : NULL;
+        $metaDescription = $arrCategoryDetail['cate_meta_description'] ? $arrCategoryDetail['cate_meta_description'] : NULL;
+        $metaSocial = $arrCategoryDetail['cate_meta_social'] ? $arrCategoryDetail['cate_meta_social'] : NULL;
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode($metaDescription) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode($arrCategoryDetail['cate_name']) . General::TITLE_META);
         $this->renderer->headTitle(html_entity_decode($metaTitle) . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode($metaKeyword));
-        $this->renderer->headMeta()->appendName('description', html_entity_decode($metaDescription));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Danh sách rao vặt trong danh mục : ' . $arrCategoryDetail['cate_name']));
         $this->renderer->headMeta()->appendName('social', $metaSocial);
-//        p($params);die;
-        $intTotal = $serviceProduct->getTotal($arrConditionProduct);
-        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
-        $arrParams = array('controller' => 'category', 'action' => 'index', 'categoryID' => $params['categoryID'], 'categorySlug' => $params['categorySlug']);
-        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $params['__CONTROLLER__'], $arrParams);
-        foreach($arrProperties as $value){
-            $arrPropertiesFormat[$value['prop_id']] =$value;
-        }
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('category', array('cateSlug' => $params['cateSlug'], 'cateId' => $params['cateId'], 'dist' => $params['dist'], 'distId' => $params['distId'], 'propSlug' => $params['propSlug'], 'propId' => $params['propId'], 'page' => $intPage)));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Danh sách rao vặt trong danh mục : ' . $arrCategoryDetail['cate_name']));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Danh sách rao vặt trong danh mục : ' . $arrCategoryDetail['cate_name']));
+
         return array(
             'params' => $params,
             'paging' => $paging,
             'arrCategoryDetail' => $arrCategoryDetail,
-            'arrProductList' => $arrProductList,
-            'arrCategoryChildrenList' => $arrCategoryChildrenList,
-            'arrProperties' => $arrPropertiesFormat,
-            'arrProductVipList'=>$arrProductVipList
+            'arrContentList' => $arrContentList,
+            'arrCategoryChildren' => $arrCategoryChildren,
+            'arrPropertiesList' => $arrPropertiesFormat,
+            'intTotal' => $intTotal,
+            'arrLocation' => $arrLocation,
+            'arrUserList' => $arrUserListFormat,
+            'arrCategoryParent' => $arrCategoryParent
+//            'arrProductVipList' => $arrProductVipList
         );
     }
 

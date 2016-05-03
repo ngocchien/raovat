@@ -80,6 +80,20 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-12 padding-control">
+                                                    <div class="col-sm-6 input-pad">
+                                                        <b>Chọn Khu vực</b>
+                                                        <select class="form-control category" name="location">
+                                                            <option value="0"> Toàn tỉnh</option>
+                                                            <?php
+                                                            $arrDistrict = unserialize(ARR_DISTRICT);
+                                                            foreach ($arrDistrict as $value):
+                                                                ?>
+                                                                <option value="<?php echo $value['dist_id']; ?>"><?php echo $value['dist_name']; ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 padding-control">
                                                     <b>Nhập tiêu đề cho tin rao vặt</b>
                                                     <?php if ($this->errors['content_title']): ?><br/><p><b class="color-red"><?php echo $this->errors['content_title']; ?></b></p><?php endif; ?>
                                                     <input type="text" class="form-control" name="content_title" value="<?php echo!empty($params['content_title']) ? $params['content_title'] : '' ?>"/>

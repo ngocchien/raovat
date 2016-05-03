@@ -85,4 +85,13 @@ class Favourite extends ModelAbstract {
         return $intResult;
     }
 
+    public function multiEdit($p_arrParams, $arrCondition) {
+        $ttl = 60 * 60 * 24 * 7;
+        $intResult = $this->getParentTable()->multiEdit($p_arrParams, $arrCondition);
+        if ($intResult) {
+            $this->cache->increase($this->tmpKeyCache, 1);
+        }
+        return $intResult;
+    }
+
 }

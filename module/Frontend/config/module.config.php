@@ -70,17 +70,24 @@ return array(
             'search' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:controller[/:action]]',
+                    'route' => '/tim-kiem[?[khu-vuc=:khu-vuc][&danh-muc=:danh-muc][&tu-khoa=:tu-khoa][&trang=:trang]]',
                     'constraints' => array(
                         'controller' => 'search',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
+                        'action' => 'index',
+                        'trang' => '[0-9]+',
+                        'khu-vuc' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'danh-muc' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'tu-khoa' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
                         'controller' => 'search',
                         'action' => 'index',
+                        'trang' => 1,
+                        'khu-vuc' => 'toan-tinh',
+                        'danh-muc' => 'tat-ca-danh-muc',
+                        'tu-khoa' => ''
                     ),
                 ),
             ),
@@ -122,26 +129,68 @@ return array(
                     ),
                 ),
             ),
-            'edit_product' => array(
+            'edit-content' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/chinh-sua-rao-vat[[/:productslug]-[:productId].html]',
+                    'route' => '/rao-vat/chinh-sua-rao-vat[[/:contentSlug]-[:contentId].html]',
                     'constraints' => array(
-                        //'categorySlug' => '[a-zA-Z0-9_-]*',
-                        //'categoryId' => '[a-zA-Z0-9_-]*',
-                        'productslug' => '[a-zA-Z0-9_-]*',
-                        'productId' => '[0-9]+',
-//                        'page' => '[0-9]+',
+                        'contentSlug' => '[a-zA-Z0-9_-]*',
+                        'contentId' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
-                        'controller' => 'product',
+                        'controller' => 'content',
                         'action' => 'edit',
-                        //'categorySlug' => '',
-                        //'categoryId' => 0,
-                        'productslug' => '',
-                        'productId' => 0
+                        'contentSlug' => '',
+                        'contentId' => 0
+                    ),
+                ),
+            ),
+            'confirm-pass-content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/rao-vat/xac-nhan-mat-khau-tin-rao-vat.html',
+                    'constraints' => array(
+                        'contentId' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'confirm-password',
+                    ),
+                ),
+            ),
+            'delete-content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/xoa-tin-rao-vat[[/:contentId].html]',
+                    'constraints' => array(
+                        'contentId' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'delete',
+                        'contentId' => 0
+                    ),
+                ),
+            ),
+            'user-delete-content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/xoa-tin-rao-vat[[/:contentId].html]',
+                    'constraints' => array(
+                        'contentId' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'delete',
+                        'contentId' => 0
                     ),
                 ),
             ),
@@ -283,17 +332,38 @@ return array(
             'user-list-post' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/thanh-vien/danh-sach-tin-dang[.html]',
+                    'route' => '/thanh-vien/danh-sach-tin-dang[[-:page]].html',
                     'constraints' => array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'list-post',
+                        'page' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'list-post',
+                        'page' => '[0-9]+',
+                    ),
+                ),
+            ),
+            'user-list-save-post' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/danh-sach-rao-vat-da-luu[[-:page]].html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-save-post',
+                        'page' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'list-save-post',
+                        'page' => '[0-9]+',
                     ),
                 ),
             ),
@@ -385,17 +455,19 @@ return array(
             'user-list-messages' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/thanh-vien/danh-sach-tin-nhan.html',
+                    'route' => '/thanh-vien/danh-sach-tin-nhan[[-:page]].html',
                     'constraints' => array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'list-messages',
+                        'page' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'list-messages',
+                        'page' => '[0-9]+',
                     ),
                 ),
             ),
@@ -433,7 +505,6 @@ return array(
                     ),
                 ),
             ),
-            
             'delete-messages' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -451,7 +522,23 @@ return array(
                     ),
                 ),
             ),
-            
+            'delete-save-post' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/xao-rao-vat-da-luu.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'delete-save-post',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'delete-save-post',
+                    ),
+                ),
+            ),
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -487,7 +574,7 @@ return array(
             'add-contact' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/gui-lien-he-cho-chung-toi.html',
+                    'route' => '/general/gui-lien-he-cho-chung-toi.html',
                     'constraints' => array(
                         'controller' => 'general',
                         'action' => 'contact',
@@ -540,13 +627,16 @@ return array(
             'category' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/danh-muc[/:categorySlug]-[:categoryID][.html][?[&page=:page]]]',
+                    'route' => '/danh-muc/[[:cateSlug]-[:cateId]][/khu-vuc/[:dist]-[:distId]][/nhu-cau/[:propSlug]-[:propId]][[/:page]][.html]',
                     'constraints' => array(
                         'controller' => 'category',
-                        'action' => '[a-zA-Z0-9_-]*',
-                        'categorySlug' => '[a-zA-Z0-9_-]*',
-                        'categoryID' => '[0-9]+',
-                        'sort' => '[a-zA-Z0-9_-]*',
+                        'action' => 'index',
+                        'cateSlug' => '[a-zA-Z0-9_-]*',
+                        'cateId' => '[0-9]+',
+                        'propSlug' => '[a-zA-Z0-9_-]*',
+                        'propId' => '[0-9]+',
+                        'dist' => '[a-zA-Z0-9_-]*',
+                        'distId' => '[0-9]+',
                         'page' => '[0-9]+',
                     ),
                     'defaults' => array(
@@ -554,8 +644,35 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'category',
                         'action' => 'index',
-                        'categorySlug' => '',
-                        'categoryID' => 0,
+                        'cateSlug' => '',
+                        'cateId' => 0,
+                        'propId' => 0,
+                        'propSlug' => '',
+                        'dist' => '',
+                        'distId' => 0,
+                        'page' => 1
+                    ),
+                ),
+            ),
+            'view-user-info' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/danh-sach-rao-vat-tai-khoan/[[:fullname]-[:userId]][/trang/[:page]][.html]',
+                    'constraints' => array(
+                        'controller' => 'user',
+                        'action' => 'view-user',
+                        'fullname' => '[a-zA-Z0-9_-]*',
+                        'userId' => '[0-9]+',
+                        'page' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'view-user',
+                        'fullname' => '',
+                        'userId' => 0,
+                        'page' => 1
                     ),
                 ),
             ),

@@ -191,7 +191,6 @@ class MyController extends AbstractActionController {
                     $arrCategoryFormat[$arrCategory['cate_id']] = $arrCategory;
                 }
             }
-
             define('ARR_CATEGORY_PARENT', serialize($arrCategoryParentList));
             define('ARR_CATEGORY_BY_PARENT', serialize($arrCategoryByParent));
             define('ARR_CATEGORY', serialize($arrCategoryFormat));
@@ -200,11 +199,11 @@ class MyController extends AbstractActionController {
             $service = $this->serviceLocator->get('My\Models\District');
             $arrDistrictList = $service->getList(['not_dist_status' => -1]);
             $arrDistrictListFormat = [];
-            foreach($arrDistrictList as $value){
+            foreach ($arrDistrictList as $value) {
                 $arrDistrictListFormat[$value['dist_id']] = $value;
             }
             define('ARR_DISTRICT', serialize($arrDistrictListFormat));
-            
+
             unset($arrDistrictList);
             unset($arrDistrictListFormat);
             unset($arrCategory);

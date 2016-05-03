@@ -1,3 +1,7 @@
+<?php
+$paramsRouter = $this->getHelperPluginManager()->getServiceLocator()->get('Application')->getMvcEvent()->getRouteMatch()->getParams();
+$controller = $paramsRouter['__CONTROLLER__'];
+?>
 <section id="header">
     <header>
         <div class="top-bar">
@@ -61,7 +65,7 @@
                                         <a href="javascript:;">Danh mục</a>
                                         <ul class="dropdown-menu sub-menu">
                                             <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
-                                                <li><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?></a></li>
+                                                <li><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?></a></li>
                                             <?php endforeach; ?>
                                         </ul>
                                     </li>
@@ -86,42 +90,44 @@
     </header>
 </section>
 
-<!--search bar-->
-<section id="searchBar">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-12">
-                <form method="GET">
-                    <div class="col-md-3">
-                        <div class="label">
-                            <select class="select" name="category">
-                                <option value="0">Chọn khu vực</option>
-                                <option value="0">Toàn tỉnh</option>
-                                <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
-                                    <option value="<?php echo $value['dist_id'] ?>"><?php echo $value['dist_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+<?php if ($controller !== 'search'): ?>
+    <!--search bar-->
+    <section id="searchBar">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <form method="GET" action="<?php echo $this->serverUrl() . $this->Url('search') ?>">
+                        <div class="col-md-3">
+                            <div class="label">
+                                <select class="select" name="khu-vuc">
+                                    <option value="toan-tinh">Chọn khu vực</option>
+                                    <option value="toan-tinh">Toàn tỉnh</option>
+                                    <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
+                                        <option value="<?php echo $value['dist_id'] ?>"><?php echo $value['dist_name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="label">
-                            <select class="select" name="category">
-                                <option value="0">Chọn danh mục</option>
-                                <option value="0">Tất cả danh mục</option>
-                                <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
-                                    <option value="<?php echo $value['cate_id'] ?>"><?php echo $value['cate_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="col-md-3">
+                            <div class="label">
+                                <select class="select" name="danh-muc">
+                                    <option value="tat-ca-danh-muc">Chọn danh mục</option>
+                                    <option value="tat-ca-danh-muc">Tất cả danh mục</option>
+                                    <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
+                                        <option value="<?php echo $value['cate_id'] ?>"><?php echo $value['cate_name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <input class="keyword" type="text" name="keyword" placeholder="Nhập từ khóa...">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="search-btn">Tìm kiếm</button>
-                    </div>
-                </form>
+                        <div class="col-md-4">
+                            <input class="keyword" type="text" name="tu-khoa" placeholder="Nhập từ khóa...">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="search-btn">Tìm kiếm</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</section> <!--end search bar-->
+    </section> <!--end search bar-->
+<?php endif; ?>

@@ -117,9 +117,10 @@ class UserController extends MyController {
         if (!CUSTOMER_ID) {
             return $this->redirect()->toRoute('home');
         }
-        $params = $this->params()->fromQuery();
+        $params = $this->params()->fromRoute();
         $intLimit = 15;
-        $intPage = $params['page'] ? (int) $params['page'] : 1;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
+
         $arrCondition = [
             'user_created' => CUSTOMER_ID,
             'not_cont_status' => -1
@@ -128,6 +129,9 @@ class UserController extends MyController {
         //content sẽ get từ elasticsearch
         $instanceSearchContent = new \My\Search\Content();
         $arrContentList = $instanceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
+        $intTotal = $instanceSearchContent->getTotal($arrCondition);
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'user-list-post', $params);
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headTitle(html_entity_decode('Tài khoản - Thông tin tài khoản') . General::TITLE_META);
@@ -135,7 +139,8 @@ class UserController extends MyController {
         $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Thông tin tài khoản tại' . General::TITLE_META));
         return array(
             'arrContentList' => $arrContentList,
-            'params' => $params
+            'params' => $params,
+            'paging' => $paging
         );
     }
 
@@ -630,7 +635,7 @@ class UserController extends MyController {
         }
         $params = $this->params()->fromRoute();
         $intLimit = 10;
-        $intPage = (int) $this->params()->fromQuery('page') > 0 ? (int) $this->params()->fromQuery('page') : 1;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
         $arrCondition = [
             'to_user_id' => CUSTOMER_ID,
             'not_is_view' => -1
@@ -642,7 +647,8 @@ class UserController extends MyController {
         $intTotal = $instanceSearchMessages->getTotal($arrCondition);
         $params = array_merge($params, $this->params()->fromQuery());
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
-        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $route, $params);
+
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'user-list-messages', $params);
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headTitle(html_entity_decode('Tài khoản - Danh sách tin nhắn') . General::TITLE_META);
@@ -698,7 +704,7 @@ class UserController extends MyController {
             if ($arrMessges['is_view'] == 0) {
                 $isAcitve = true;
                 $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
-                $serviceMessages->edit(['is_view' => 1], (int) $params['id']);
+                $serviceMessages->edit(['is_view' => 1, 'updated_date' => time()], (int) $params['id']);
             }
 
             $serviceUser = $this->serviceLocator->get('My\Models\User');
@@ -826,6 +832,169 @@ class UserController extends MyController {
 
             return $this->getResponse()->setContent(json_encode(array('st' => 1, 'data' => $arrIdList, 'ms' => 'Xóa thành công ' . count($arrIdList) . ' tin nhắn!')));
         }
+    }
+
+    public function listSavePostAction() {
+        if (!CUSTOMER_ID) {
+            return $this->redirect()->toRoute('home');
+        }
+        $params = $this->params()->fromRoute();
+        $intLimit = 10;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
+
+        $arrCondition = [
+            'user_id' => CUSTOMER_ID,
+            'not_status' => -1
+        ];
+
+        $instanceSearchFavourite = new \My\Search\Favourite();
+        $arrFavouriteList = $instanceSearchFavourite->getListLimit($arrCondition, $intPage, $intLimit, ['updated_date' => ['order' => 'desc']]);
+
+        $intTotal = $instanceSearchFavourite->getTotal($arrCondition);
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'user-list-save-post', $params);
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headTitle(html_entity_decode('Tài khoản - Danh sách rao vặt đã lưu ') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('quynhon247.com, tài khoản, Thông tin, Thông tin tài khoản, Thông tin tài khoản quynhon247.com'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Tài khoản - Danh sách rao vặt đã lưu' . General::TITLE_META));
+
+
+        if (!empty($arrFavouriteList)) {
+            $arrContIdList = [];
+            foreach ($arrFavouriteList as $favourite) {
+                $arrContIdList[] = $favourite['cont_id'];
+            }
+            $instanceSearchContent = new \My\Search\Content();
+            $arrContentList = $instanceSearchContent->getList(['in_cont_id' => $arrContIdList]);
+            $arrContentListFormat = [];
+            if ($arrContentList) {
+                $arrUserIdList = [];
+                foreach ($arrContentList as $arrContent) {
+                    $arrUserIdList[] = $arrContent['user_created'];
+                    $arrContentListFormat[$arrContent['cont_id']] = $arrContent;
+                }
+                $serviceUser = $this->serviceLocator->get('My\Models\User');
+                $arrUserList = $serviceUser->getList(['in_user_id' => implode(',', $arrUserIdList)]);
+                $arrUserListFormat = [];
+                if (!empty($arrUserList)) {
+                    foreach ($arrUserList as $user) {
+                        $arrUserListFormat[$user['user_id']] = $user;
+                    }
+                }
+                unset($arrContentList);
+                unset($arrUserList);
+            }
+        }
+        return [
+            'params' => $params,
+            'arrFavouriteList' => $arrFavouriteList,
+            'arrContentList' => $arrContentListFormat,
+            'arrUserList' => $arrUserListFormat,
+            'paging' => $paging
+        ];
+    }
+
+    public function deleteSavePostAction() {
+        if (!CUSTOMER_ID) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Please login before delete!</b></p>')));
+        }
+
+        $params = $this->params()->fromPost();
+        if (empty($params['arrItem']) || !is_array($params['arrItem'])) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Can not get params from Post! Please try again!</b></p>')));
+        }
+        $arrItem = array_unique($params['arrItem']);
+
+        //find favourite
+        $instanceSearchFavourite = new \My\Search\Favourite();
+        $arrList = $instanceSearchFavourite->getList(['in_favo_id' => $arrItem, 'user_id' => CUSTOMER_ID, 'not_status' => -1]);
+
+        $arrIdList = [];
+        if (!empty($arrList)) {
+            foreach ($arrList as $value) {
+                $arrIdList[] = $value['favo_id'];
+            }
+        }
+
+        if (empty($arrIdList)) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Không tìm thấy các rao vặt này trong hệ thống!</b></p>')));
+        }
+
+        $arrParams = [
+            'updated_date' => time(),
+            'status' => -1
+        ];
+
+        $serviceFavourite = $this->serviceLocator->get('My\Models\Favourite');
+        $intResult = $serviceFavourite->multiEdit($arrParams, ['in_favo_id' => implode(',', $arrIdList)]);
+
+        if ($intResult <= 0) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát!</b></p>')));
+        }
+
+        return $this->getResponse()->setContent(json_encode(array('st' => 1, 'data' => $arrIdList, 'ms' => 'Xóa thành công ' . count($arrIdList) . ' tin nhắn!')));
+    }
+
+    public function viewUserAction() {
+        $params = $this->params()->fromRoute();
+
+        if (empty($params['userId']) || !is_numeric($params['userId'])) {
+            return $this->redirect()->toRoute('404', array());
+        }
+        $serviceUser = $this->serviceLocator->get('My\Models\User');
+        $arrUserDetail = $serviceUser->getDetail(['user_id' => (int) $params['userId']]);
+
+        if (empty($arrUserDetail)) {
+            return $this->redirect()->toRoute('404', array());
+        }
+
+        $instaceSearchContent = new \My\Search\Content();
+        $arrConditionContent = [
+            'user_created' => $arrUserDetail['user_id'],
+            'not_cont_status' => -1
+        ];
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] > 0 : 1;
+        $intLimit = 20;
+        $arrContentList = $instaceSearchContent->getListLimit($arrConditionContent, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
+        $intTotal = $instaceSearchContent->getTotal($arrConditionContent);
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'view-user-info', $params);
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Thông tin tài khoản : ' . $arrUserDetail['user_fullname']) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Thông tin tài khoản : ' . $arrUserDetail['user_fullname']) . General::TITLE_META);
+        $this->renderer->headTitle(html_entity_decode('Danh sách rao vặt tài khoản : ' . $arrUserDetail['user_fullname']) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Danh sách rao vặt tài khoản : ' . $arrUserDetail['user_fullname']) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Danh sách rao vặt tài khoản : ' . $arrUserDetail['user_fullname']) . General::TITLE_META);
+//        $this->renderer->headMeta()->appendName('social', $metaSocial);
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-user-info', ['fullname' => $params['fullname'], 'userId' => $params['userId'], 'page' => $intPage]));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Danh sách rao vặt tài khoản : ' . $arrUserDetail['user_fullname']));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Danh sách rao vặt tài khoản : ' . $arrUserDetail['user_fullname']));
+
+        $arrPropertiesFormat = [];
+        if (!empty($arrContentList)) {
+            $arrIdList = [];
+            foreach ($arrContentList as $prop) {
+                $arrIdList[] = $prop['prop_id'];
+            }
+            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
+            $arrPropertiesList = $serviceProperties->getList(['in_prop_id' => implode(',', $arrIdList)]);
+            if (!empty($arrPropertiesList)) {
+                foreach ($arrPropertiesList as $value) {
+                    $arrPropertiesFormat[$value['prop_id']] = $value;
+                }
+                unset($arrPropertiesList);
+            }
+        }
+
+        return [
+            'params' => $params,
+            'paging' => $paging,
+            'arrContentList' => $arrContentList,
+            'arrUserDetail' => $arrUserDetail,
+            'arrPropertiesList' => $arrPropertiesFormat
+        ];
     }
 
 }

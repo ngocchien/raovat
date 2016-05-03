@@ -74,22 +74,29 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 text-center">
-                                            <a class="btn btn-success <?php echo CUSTOMER_ID ? 'save-post' : 'no-login'; ?>" data-toggle="tooltip" title="Lưu lại tin này">
-                                                <i class="fa fa-save"></i>
-                                            </a>
-                                            <a class="btn btn-success up-vip" data-toggle="tooltip" title="Úp víp">
-                                                <i class="fa fa-star-o"></i>
-                                            </a>
-
-                                            <a class="btn btn-success <?php echo CUSTOMER_ID ? 'modal-messages' : 'no-login'; ?>" data-toggle="tooltip" title="Gửi tin nhắn cho người đăng!">
-                                                <i class="fa fa-envelope-o"></i>
-                                            </a>
-                                            <a class="btn btn-success" data-toggle="tooltip" title="Sửa tin">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <a class="btn btn-success" data-toggle="tooltip" title="Xóa tin">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+                                            <?php if (!(!empty($this->arrContent['user_created']) && ($this->arrContent['user_created'] == CUSTOMER_ID))): ?>
+                                                <a class="btn btn-success <?php echo CUSTOMER_ID ? 'save-post' : 'no-login'; ?>" data-toggle="tooltip" title="Lưu lại tin này">
+                                                    <i class="fa fa-save"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            <span data-toggle="modal" data-target="#ModalUpVip">
+                                                <a class="btn btn-success" data-toggle="tooltip" title="Úp víp" data-toggle="modal" data-target="#myModal">
+                                                    <i class="fa fa-star-o"></i>
+                                                </a>
+                                            </span>
+                                            <?php if (!(!empty($this->arrContent['user_created']) && ($this->arrContent['user_created'] == CUSTOMER_ID))): ?>
+                                                <a class="btn btn-success <?php echo CUSTOMER_ID ? 'modal-messages' : 'no-login'; ?>" data-toggle="tooltip" title="Gửi tin nhắn cho người đăng!">
+                                                    <i class="fa fa-envelope-o"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            <?php if (empty($this->arrContent['user_created'])) : ?>
+                                                <a class="btn btn-success modal-confirm-pass" data-toggle="tooltip" title="Sửa tin">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <a class="btn btn-success" data-toggle="tooltip" title="Xóa tin">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
 
                                     </div>
@@ -102,6 +109,7 @@
                 $category_parent = unserialize(ARR_CATEGORY)[unserialize(ARR_CATEGORY)[$this->arrContent['cate_id']]['parent_id']];
                 ?>
                 <div class="ad-detail">
+
                     <div class="ad-detail-head">
                         <i class="fa <?php echo str_replace('icon', 'fa', $category_parent['cate_icon']); ?> fa-2x"></i>
                         <h4 class="ad-cat"> Danh mục : <?php echo $category_parent['cate_name'] ?></h4>
@@ -109,16 +117,21 @@
 
                     <div class="ad-detail-info clearfix">
                         <p class="pull-left"> <i class="fa fa-barcode" aria-hidden="true"></i>  Mã tin :</p>
-                        <p class="pull-right light">RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></p>
+                        <p class="pull-right light"><a href="javascript:;" style="text-decoration: none"><b>RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b></a></p>
+                    </div>
+
+                    <div class="ad-detail-info clearfix">
+                        <p class="pull-left"> <i class="fa fa-globe" aria-hidden="true"></i>  Khu vực :</p>
+                        <p class="pull-right light"><a href="" style="text-decoration: none; font-weight: bold;"><?php echo (!empty($this->arrContent['dist_id'])) ? unserialize(ARR_DISTRICT)[$this->arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></a></p>
                     </div>
 
                     <div class="ad-detail-info clearfix">
                         <p class="pull-left"><i class="fa fa-clock-o"></i> Đăng lúc :</p>
-                        <p class="pull-right light"><?php echo date('d/m/Y H:i', $this->arrContent['created_date']); ?></p>
+                        <p class="pull-right light"><a href="javascript:;" style="text-decoration: none"><b><?php echo date('d/m/Y H:i', $this->arrContent['created_date']); ?></b></a></p>
                     </div>
                     <div class="ad-detail-info clearfix">
                         <p class="pull-left"><i class="fa fa-eye" aria-hidden="true"></i> Số lượt xem :</p>
-                        <p class="pull-right light"><?php echo $this->arrContent['cont_views']; ?></p>
+                        <p class="pull-right light"><a href="javascript:;" style="text-decoration: none"><b><?php echo $this->arrContent['cont_views']; ?></b></a></p>
                     </div>
 
                     <div class="ad-detail-info clearfix">
@@ -216,7 +229,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                       ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                       ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">
@@ -394,10 +407,87 @@
         </div>
     </div>
 </div>
+<?php
+if (empty($this->arrContent['user_created'])):
+    ?>
+    <div class="modal fade" id="confirm-pass-cont" tabindex="-1" role="dialog" aria-labelledby="ModalConfirmPass">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Mật khẩu để sửa tin</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <b class="error-pass-content" style="color: red; display: none"></b>
+                            <input class="form-control" id="pass-content" type="password"> 
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success send-pass-content">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+<?php if (empty(CUSTOMER_ID)): ?>
+    <div class="modal fade" id="ModalUpVip" tabindex="-1" role="dialog" aria-labelledby="ModalUpVip">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Mua víp cho tin</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="border-detail form-control timeline-desk">
+                        <p style="color: blue">Bạn có thể nhắn tin theo cú pháp : </p> 
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="modal fade" id="ModalUpVip" tabindex="-1" role="dialog" aria-labelledby="ModalUpVip">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">MUA VÍP CHO RAO VẶT</h4>
+                </div>
+                <div class="modal-body">
+                    <h5>BẰNG TIN NHẮN</h5>
+                    <div class="row border-detail form-control timeline-desk">
+                        <p style="color: blue">Bạn có thể nhắn tin theo cú pháp : </p> 
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                    </div>
+                    <h5>HOẶC BẰNG SỐ DƯ TÀI KHOẢN</h5>
+                    <div class="row border-detail form-control timeline-desk">
+                        <p style="color: blue">Bạn có thể nhắn tin theo cú pháp : </p> 
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
+                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 <script>
     var cont_id = '<?php echo $this->arrContent['cont_id']; ?>';
     saveContentURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'save-content')); ?>';
     sendMessagesURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'send-messages')); ?>';
     addCommentURL = '<?php echo $this->serverUrl() . $this->Url('add-comment'); ?>';
+    confirmPassContURL = '<?php echo $this->serverUrl() . $this->Url('confirm-pass-content'); ?>';
     Content.detail();
 </script>

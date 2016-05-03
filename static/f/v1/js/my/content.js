@@ -145,7 +145,7 @@ var Content = {
                     dataType: 'json',
                     cache: false,
                     beforeSend: function () {
-                        $('#loading-mask').show()();
+                        $('#loading-mask').show();
                     },
                     data: {
                         cont_id: cont_id
@@ -202,6 +202,53 @@ var Content = {
             $('.no-login').on('click', function () {
                 bootbox.alert('<p style="color:red"><b>Vui lòng đăng nhập trước khi thực hiện thao tác này!</b></p>');
             });
+
+            $('a.modal-confirm-pass').on('click', function () {
+                $('#confirm-pass-cont').modal('toggle');
+            });
+
+            $('.send-pass-content').on('click', function () {
+                $('.error-pass-content').hide();
+                if (!cont_id) {
+                    bootbox.alert('<p style="color:red"><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></p>', function () {
+                        return false;
+                    });
+                }
+
+                var pass_content = $('#pass-content').val();
+                var error = false;
+
+                if (!pass_content) {
+                    error = true;
+                    $('.error-pass-content').html('Bạn chưa nhập mật khẩu của tin này!');
+                    $('.error-pass-content').show();
+                }
+
+                if (error == false) {
+                    $.ajax({
+                        type: 'POST',
+                        url: confirmPassContURL,
+                        dataType: 'json',
+                        cache: false,
+                        beforeSend: function () {
+                            $('#loading-mask').show();
+                        },
+                        data: {
+                            cont_id: cont_id,
+                            cont_pass: pass_content
+                        },
+                        success: function (rs) {
+                            $('#loading-mask').hide();
+                            if (rs.st == 1) {
+                                window.location.href = rs.url;
+                            } else {
+                                bootbox.alert(rs.ms);
+                                return false;
+                            }
+                        }
+                    });
+                }
+            })
         })
     }
 };

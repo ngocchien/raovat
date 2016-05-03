@@ -140,6 +140,32 @@ class storageFavourite extends AbstractTableGateway {
         }
     }
 
+    public function multiEdit($p_arrParams, $arrCondition) {
+        try {
+            if (!is_array($p_arrParams) || empty($p_arrParams) || empty($arrCondition) || !is_array($arrCondition)) {
+                return false;
+            }
+
+            $strWhere = $this->_buildWhere($arrCondition);
+            $result = $this->update($p_arrParams, '1=1 ' . $strWhere);
+
+            if ($result) {
+                $arrData = [
+                    'data' => $p_arrParams,
+                    'condition' => $arrCondition
+                ];
+                $instanceJob = new \My\Job\JobFavourite();
+                $instanceJob->addJob(SEARCH_PREFIX . 'multiEditFavourite', $arrData);
+            }
+            return $result;
+        } catch (\Exception $exc) {
+            if (APPLICATION_ENV !== 'production') {
+                throw new \Exception($exc->getMessage());
+            }
+            return false;
+        }
+    }
+
     private function _buildWhere($arrCondition) {
 
         $strWhere = '';
@@ -154,6 +180,10 @@ class storageFavourite extends AbstractTableGateway {
 
         if (isset($arrCondition['user_id'])) {
             $strWhere .= " AND user_id=" . $arrCondition['user_id'];
+        }
+
+        if (isset($arrCondition['in_favo_id'])) {
+            $strWhere .= " AND favo_id IN(" . $arrCondition['in_favo_id'] . ")";
         }
 
         return $strWhere;

@@ -3,7 +3,7 @@
         <div class="row col-md-12">
             <div class="page-heading">
                 <h1>TÀI KHOẢN </h1>
-                <h4>Thông tin cá nhân</h4>
+                <h4>DANH SÁCH RAO VẶT ĐÃ ĐĂNG</h4>
             </div>
         </div>
     </div>
@@ -16,24 +16,75 @@
                     <?php echo $this->render('frontend/nav-user-left'); ?>
                     <div class="col-md-9">
                         <div class="sidebar">
-                            <div class="side-widget">
-                                <div class="tags">
-                                    <?php
-                                    if (!empty($this->arrContentList)):
-                                        foreach ($this->arrContentList as $arrContent):
-                                            ?>
-                                            <div class="row">
-                                                <div class="col-md-9"><a href="<?php echo $this->serverUrl() . $this->Url('view-content', array('controller' => 'content', 'action' => 'title','contentSlug'=>$arrContent['cont_slug'],'contentId'=>$arrContent['cont_id']))?>" style="display: block"><?php echo $arrContent['cont_title']; ?></a></div>
-                                                <div class="col-md-1"><button><i class="fa fa-edit"></i></button></div>
-                                                <div class="col-md-2"></div>
+                            <section class="panel panel-success">
+                                <div class="panel-body">    
+                                    <div class="adv-table editable-table ">  
+                                        <div class="row" style="margin-bottom: 5px">
+                                            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">                  
+                                                <div id="editable-sample_length" class="dataTables_length no-padding">
+                                                    <a class="btn btn-danger btn-sm remove-all" ><i class="fa fa-trash-o"></i> Xóa</a>
+                                                </div>
                                             </div>
-
-                                            <?php
-                                        endforeach;
-                                    endif;
-                                    ?>
+                                        </div>
+                                        <section id="unseen">
+                                            <table class="table table-bordered table-hover table-striped table-condensed cf">
+                                                <thead class="cf">
+                                                    <tr>
+                                                        <th class="text-center"><input type="checkbox" class="check-all">All</th>
+                                                        <th class="text-center"><i class="fa fa-barcode"></i> Mã tin</th>
+                                                        <th class="text-center"><i class="fa fa-thumb-tack" aria-hidden="true"></i>Tiêu đề</th>
+                                                        <th class="text-center"><i class="fa fa-eye" aria-hidden="true"></i>Xem</th>
+                                                        <th class="text-center"><i class="fa fa-wrench" aria-hidden="true"></i> Chức năng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    if ($this->arrContentList):
+                                                        foreach ($this->arrContentList as $arrContent):
+                                                            ?>
+                                                            <tr id="item-<?php echo $arrContent['cont_id'] ?>">
+                                                                <td class="text-center">
+                                                                    <input type="checkbox" class="content-item" value="<?php echo $arrContent['cont_id']; ?>">
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <b>RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b>
+                                                                </td>
+                                                                <td style="max-width: 400px">
+                                                                    <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" style="text-decoration: none">
+                                                                        <b><?php echo $arrContent['cont_title']; ?></b>
+                                                                    </a>
+                                                                    <div class="border-detail form-control timeline-desk">
+                                                                        <p style="color: blue">Bạn có thể nhắn tin theo cú pháp : </p> 
+                                                                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
+                                                                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center"><?php echo $arrContent['cont_views']; ?></td>
+                                                                <td class="text-center" witd="100">
+                                                                    <a class="btn btn-warning btn-xs up-vip" data-toggle="tooltip" title="Mua víp" rel="<?php echo $arrContent['cont_id'] ?>">
+                                                                        <i class="fa fa-star"></i>
+                                                                    </a>
+                                                                    <a class="btn btn-primary btn-xs" data-toggle="tooltip" title="Sửa" href="<?php echo $this->serverUrl() . $this->Url('edit-content', array('contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id'])) ?>">
+                                                                        <i class="fa fa-pencil"></i>
+                                                                    </a>
+                                                                    <a  class="btn btn-danger btn-xs remove" data-toggle="tooltip" title="Xóa tin" rel="<?php echo $arrContent['cont_id']; ?>">
+                                                                        <i class="fa fa-trash-o"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <tr><td colspan="5" class="text-center">Hiện tại chưa chưa có tin rao vặt nào cả.</td></tr>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                        </section>
+                                    </div>
+                                    <div>
+                                        <?php echo $this->paging; ?>
+                                    </div>
                                 </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -41,3 +92,7 @@
         </section><!--end details-->
     </div>
 </section>
+<script>
+    var deletePostURL = '<?php echo $this->serverUrl() . $this->Url('delete-content'); ?>';
+    User.listPost();
+</script>

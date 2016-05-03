@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright text-center">
-                        <p>@ All Copyrights Reseverd 2015 - Design & Development by <a class="col" href="<?php echo $this->serverUrl(); ?>">Chotoquynhon.com</a></p>
+                        <p>@ All Copyrights Reseverd 2016 - Design & Development by <a class="col" href="<?php echo $this->serverUrl(); ?>">quynhon247.com</a></p>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                         <?php
                         foreach (unserialize(ARR_CATEGORY) as $value):
                             ?>
-                            <a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'categorySlug' => $value["cate_slug"], 'categoryID' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?> </a> - 
+                            <a href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $value['cate_slug'], 'cateId' => $value['cate_id']]); ?>"><?php echo $value['cate_name'] ?> </a> - 
                         <?php endforeach; ?>
                     </div>
                 </div>

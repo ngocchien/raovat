@@ -555,6 +555,10 @@ class ConsoleController extends MyController {
                 $methodHandler2 = '\My\Job\JobContent::editContent';
                 $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
+                $funcName3 = SEARCH_PREFIX . 'multiEditContent';
+                $methodHandler3 = '\My\Job\JobContent::multiEditContent';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
+
                 break;
             case 'raovat-tran':
                 //start job in background
@@ -612,6 +616,10 @@ class ConsoleController extends MyController {
                 $funcName2 = SEARCH_PREFIX . 'editFavourite';
                 $methodHandler2 = '\My\Job\JobFavourite::editFavourite';
                 $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                $funcName3 = SEARCH_PREFIX . 'multiEditFavourite';
+                $methodHandler3 = '\My\Job\JobFavourite::multiEditFavourite';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
 
                 break;
 

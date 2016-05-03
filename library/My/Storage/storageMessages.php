@@ -130,9 +130,7 @@ class storageMessages extends AbstractTableGateway {
             if (!is_array($p_arrParams) || empty($p_arrParams) || empty($id)) {
                 return false;
             }
-
             $result = $this->update($p_arrParams, 'mess_id=' . $id);
-
             if ($result) {
                 $p_arrParams['mess_id'] = $id;
                 $instanceJob = new \My\Job\JobMessages();

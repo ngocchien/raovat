@@ -129,7 +129,7 @@ class Favourite extends SearchAbstract {
     /**
      * Get List Limit
      */
-    public function getListLimit($params = array(), $intPage = 1, $intLimit = 15, $sort = ['update_date' => ['order' => 'desc']]) {
+    public function getListLimit($params = array(), $intPage = 1, $intLimit = 15, $sort = ['updated_date' => ['order' => 'desc']]) {
         try {
             $intFrom = $intLimit * ($intPage - 1);
             $boolQuery = new Bool();
@@ -198,7 +198,7 @@ class Favourite extends SearchAbstract {
 
     private function setSort($params) {
         //copy
-        return ['customer_id' => ['order' => 'desc']];
+        return ['updated_date' => ['order' => 'desc']];
     }
 
     public function removeAllDoc() {
@@ -234,6 +234,21 @@ class Favourite extends SearchAbstract {
             $boolQuery->addMust($addQuery);
         }
 
+        if (!empty($params['not_status'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('status', $params['not_status']);
+            $boolQuery->addMustNot($addQuery);
+        }
+
+        if (!empty($params['in_favo_id'])) {
+            $addQuery = new ESQuery\Terms();
+            $addQuery->setTerms('favo_id', $params['in_favo_id']);
+            $boolQuery->addMust($addQuery);
+        }
+//        echo '<pre>';
+//        print_r($boolQuery);
+//        echo '</pre>';
+//        die();
         return $boolQuery;
     }
 

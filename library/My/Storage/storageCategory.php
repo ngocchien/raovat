@@ -23,6 +23,7 @@ class storageCategory extends AbstractTableGateway {
     }
 
     public function getList($arrCondition = array()) {
+
         try {
             $strWhere = $this->_buildWhere($arrCondition);
             $adapter = $this->adapter;
@@ -33,6 +34,10 @@ class storageCategory extends AbstractTableGateway {
             $query = $sql->getSqlStringForSqlObject($select);
             return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
         } catch (\Zend\Http\Exception $exc) {
+            echo '<pre>';
+            print_r($exc->getMesseges());
+            echo '</pre>';
+            die();
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());
             }
