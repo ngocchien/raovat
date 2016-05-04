@@ -188,8 +188,8 @@ class Content extends SearchAbstract {
                 ->addType($this->getSearchType())
                 ->search($query);
         $this->setResultSet($resultSet);
-        $arrUserList = $this->toArray();
-        return $arrUserList;
+        $arrContentList = $this->toArray();
+        return $arrContentList;
     }
 
     /**

@@ -353,12 +353,10 @@ class General {
     public static function getThumbSize($strControllerName = '') {
         if ($strControllerName) {
             switch ($strControllerName) {
-//                case 'cate':
-//                    return array('120x120', '50x50', '150x100', '170x170', '600x300', '224x224', '116x116');
                 case 'content':
                     return array('150x100', '224x224', '291x250', '490x294');
                 case 'user':
-                    return array('150x150', '30x30');
+                    return array('150x150', '30x30','120x120');
                 default:
                     return array();
             }

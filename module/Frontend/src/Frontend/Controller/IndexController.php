@@ -37,7 +37,7 @@ class IndexController extends MyController {
             'vip_type' => \My\General::VIP_ALL_PAGE,
             'more_expired_time' => time()
         ];
-        $arrContentList = $instaceSearchContent->getList($arrConditionContent, ['created_date' => ['order' => 'desc']]);
+        $arrContentList = $instaceSearchContent->getList($arrConditionContent, ['updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
 
         $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
         $intLimit = 20;

@@ -34,18 +34,23 @@ class SearchController extends MyController {
         $arrCondition = [
             'not_cont_status' => -1
         ];
+
+        $distName = 'Toàn tỉnh';
         if (!empty($params['khu-vuc'])) {
             foreach (unserialize(ARR_DISTRICT) as $dist) {
                 if ($dist['dist_slug'] == $params['khu-vuc']) {
+                    $distName = $dist['dist_name'];
                     $arrCondition['dist_id'] = $dist['dist_id'];
                     break;
                 }
             }
         }
+        $cateName = 'Tất cả danh mục';
         if (!empty($params['danh-muc'])) {
             $arrCategoryList = unserialize(ARR_CATEGORY);
             foreach ($arrCategoryList as $cate) {
                 if ($cate['cate_slug'] == $params['danh-muc']) {
+                    $cateName = $cate['cate_name'];
                     if ($cate['parent_id'] == 0) {
                         $arrChild = unserialize(ARR_CATEGORY_BY_PARENT)[$cate['cate_id']];
                         $arrIdList = [];
@@ -73,11 +78,11 @@ class SearchController extends MyController {
 
         $description = General::SITE_AUTH . ' -- Tìm kiếm';
         if (!empty($params['khu-vuc'])) {
-            $description .=' || khu-vuc = ' . $params['khu-vuc'];
+            $description .=' || khu-vuc = ' . $distName;
         }
 
         if (!empty($params['danh-muc'])) {
-            $description .=' || danh-muc = ' . $params['danh-muc'];
+            $description .=' || danh-muc = ' . $cateName;
         }
 
         if (!empty($params['tu-khoa'])) {
@@ -129,7 +134,9 @@ class SearchController extends MyController {
             'arrContentList' => $arrContentList,
             'arrUserList' => $arrUserList,
             'intTotal' => $intTotal,
-            'arrPropertiesList' => $arrPropertiesList
+            'arrPropertiesList' => $arrPropertiesList,
+            'distName' => $distName,
+            'cateName' => $cateName
         ];
     }
 
