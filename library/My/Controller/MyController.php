@@ -176,8 +176,9 @@ class MyController extends AbstractActionController {
             }
             define('NEW_MESSAGES', $intTotalMessages);
 
-            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-            $arrCategoryList = $serviceCategory->getList(['cate_status' => 1]);
+            $instanceSearchCategory = new \My\Search\Category();
+            $arrCategoryList = $instanceSearchCategory->getList(['cate_status' => 1], [], ['cate_sort' => ['order' => 'asc'], 'cate_id' => ['order' => 'asc']]);
+
             $arrCategoryParentList = [];
             $arrCategoryByParent = [];
             $arrCategoryFormat = [];
@@ -191,19 +192,23 @@ class MyController extends AbstractActionController {
                     $arrCategoryFormat[$arrCategory['cate_id']] = $arrCategory;
                 }
             }
+
             define('ARR_CATEGORY_PARENT', serialize($arrCategoryParentList));
             define('ARR_CATEGORY_BY_PARENT', serialize($arrCategoryByParent));
             define('ARR_CATEGORY', serialize($arrCategoryFormat));
 
             //location
-            $service = $this->serviceLocator->get('My\Models\District');
-            $arrDistrictList = $service->getList(['not_dist_status' => -1]);
+            $instanceSearchDistrict = new \My\Search\District();
+            $arrDistrictList = $instanceSearchDistrict->getList(['not_dist_status' => -1], [], ['dist_sort' => ['order' => 'asc'], 'dist_id' => ['order' => 'asc']]);
             $arrDistrictListFormat = [];
             foreach ($arrDistrictList as $value) {
                 $arrDistrictListFormat[$value['dist_id']] = $value;
             }
             define('ARR_DISTRICT', serialize($arrDistrictListFormat));
 
+            unset($instanceSearchDistrict);
+            unset($instaceSearchMessages);
+            unset($instanceSearchCategory);
             unset($arrDistrictList);
             unset($arrDistrictListFormat);
             unset($arrCategory);

@@ -44,7 +44,7 @@
                         <!-- page start-->
                         <section class="panel panel-success">
                             <header class="panel-heading">
-                                <h4>KẾT QUẢ TÌM KIẾM  ||  Khu vực : <?php echo $this->params['khu-vuc']; ?> & Danh mục : <?php echo $this->params['danh-muc']; ?>   & Từ khóa : <?php echo $this->params['tu-khoa']; ?>  </h4>
+                                <h4>KẾT QUẢ TÌM KIẾM  :  <?php if (!empty($this->params['khu-vuc'])): ?>Khu vực : <?php echo $this->params['khu-vuc']; ?> <?php endif; ?> <?php if (!empty($this->params['danh-muc'])): ?> - Danh mục : <?php echo $this->params['danh-muc']; ?> <?php endif; ?>  <?php if (!empty($this->params['tu-khoa'])): ?> - Từ khóa : <?php echo $this->params['tu-khoa']; ?> <?php endif; ?> </h4>
                             </header>
                             <div class="panel-body">
                                 <form class="form-horizontal search-result">
@@ -57,7 +57,7 @@
                                 <table class="table table-striped table-condensed table-hover cf">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Tiêu đề &amp; Nội dung</th>
+                                            <th class="text-center">Tiêu đề</th>
                                             <th class="text-center">Danh mục</th>
                                             <th class="text-center">Khu vực</th>
                                             <th class="text-center">Nhu cầu</th>
@@ -77,23 +77,23 @@
                                                     <td>
                                                         <div class="hidden-phone">
                                                             <h4><a href="<?php echo $this->serverUrl() . $this->Url('view-content', array('contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id'])) ?>"><?php echo strlen($arrContent['cont_title']) > 100 ? substr($arrContent['cont_title'], 0, 100) . '...' : $arrContent['cont_title']; ?></a></h4>
-                                                            <p style="white-space: pre-wrap"><?php echo strlen($arrContent['cont_detail_text']) > 400 ? substr(strip_tags($arrContent['cont_detail_text']), 0, 400) . '...' : $arrContent['cont_detail_text']; ?></p>
+                                                            <p><?php echo strlen($arrContent['cont_detail_text']) > 400 ? substr(strip_tags($arrContent['cont_detail_text']), 0, 400) . '...' : $arrContent['cont_detail_text']; ?></p>
                                                         </div>
                                                     </td>
                                                     <td class="text-center"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('categorySlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'categoryID' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
                                                     <td class="text-center"><?php echo (!empty($arrContent['dist_id'])) ? $arrDistrict[$arrContent['dist_id']]['cate_name'] : 'Toàn tỉnh'; ?></td>
-                                                    <td class="text-center">Cần mua</td>
+                                                    <td class="text-center"><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></td>
                                                     <td class="text-center"><?php echo $arrContent['cont_views']; ?></td>
                                                     <td class="text-center"><?php echo date('d.m.Y', $arrContent['created_date']); ?></td>
                                                     <td class="text-center">
-                                                        <a class="btn btn-info btn-sm" href="javascript:;" >
-                                                            <?php
-                                                            if (!empty($arrContent['user_created'])) {
-                                                                echo $this->arrUserList[$arrContent['user_created']]['user_fullname'];
-                                                            } else {
-                                                                echo $arrContent['user_info']['user_fullname'];
-                                                            }
-                                                            ?>
+                                                        <?php if (!empty($arrContent['user_created'])): ?>
+                                                            <a class="btn btn-info btn-sm" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>">
+                                                                <?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <a class="btn btn-info btn-sm" href="javascript:;" ><?php echo $arrContent['user_info']['user_fullname']; ?></a>
+                                                        <?php endif;
+                                                        ?>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -109,7 +109,6 @@
                                 </div>
                             </div>
                         </section>
-
                         <!-- page end-->
                     </section>
                 </section>

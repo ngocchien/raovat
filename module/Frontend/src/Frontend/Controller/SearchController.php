@@ -94,21 +94,32 @@ class SearchController extends MyController {
         $this->renderer->headMeta()->setProperty('og:description', $description);
 
         $arrUserList = [];
+        $arrPropertiesList = [];
         if (!empty($arrContentList)) {
             $arrIdList = [];
+            $arrPropertiesId = [];
             foreach ($arrContentList as $arrContent) {
+                $arrPropertiesId[] = $arrContent['prop_id'];
                 if (!empty($arrContent['user_created'])) {
                     $arrIdList[] = $arrContent['user_created'];
                 }
             }
             if (!empty($arrIdList)) {
                 $arrIdList = array_unique($arrIdList);
-                $serviceUser = $this->serviceLocator->get('My\Models\User');
-                $arrUserTemp = $serviceUser->getList(['in_user_id' => implode(',', $arrIdList)]);
+                $instaceSearchUser = new \My\Search\User();
+                $arrUserTemp = $instaceSearchUser->getList(['in_user_id' => $arrIdList]);
                 if (!empty($arrUserTemp)) {
                     foreach ($arrUserTemp as $arrUser) {
                         $arrUserList[$arrUser['user_id']] = $arrUser;
                     }
+                }
+            }
+            $arrPropertiesId = array_unique($arrPropertiesId);
+            $instaceSearchProperties = new \My\Search\Properties();
+            $arrPropertiesListTemp = $instaceSearchProperties->getList(['in_prop_id' => $arrPropertiesId]);
+            if (!empty($arrPropertiesListTemp)) {
+                foreach ($arrPropertiesListTemp as $value) {
+                    $arrPropertiesList[$value['prop_id']] = $value;
                 }
             }
         }
@@ -117,7 +128,8 @@ class SearchController extends MyController {
             'params' => $params,
             'arrContentList' => $arrContentList,
             'arrUserList' => $arrUserList,
-            'intTotal'=>$intTotal
+            'intTotal' => $intTotal,
+            'arrPropertiesList' => $arrPropertiesList
         ];
     }
 

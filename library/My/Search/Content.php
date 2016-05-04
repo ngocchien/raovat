@@ -224,6 +224,27 @@ class Content extends SearchAbstract {
         return false;
     }
 
+    public function setHighLight(\Elastica\Query $query) {
+        if (!$this->isHighlight()) {
+            return $query;
+        }
+
+        $arrParams = $this->getParams();
+        if ($arrParams['senderName']) {
+            $query->setHighlight(array(
+                'pre_tags' => array('<b style="background-color: #beedf9;">'),
+                'post_tags' => array('</b>'),
+                'fields' => array(
+                    'sender_name' => array(
+                        'fragment_size' => 200,
+                        'number_of_fragments' => 1,
+                    ),
+                ),
+            ));
+        }
+        return $query;
+    }
+
     public function __buildWhere($params, $boolQuery) {
 
         if (empty($params)) {
@@ -354,6 +375,12 @@ class Content extends SearchAbstract {
         if (!empty($params['more_expired_time'])) {
             $addQuery = new ESQuery\Range();
             $addQuery->addField('expired_time', array('gte' => $params['more_expired_time']));
+            $boolQuery->addMust($addQuery);
+        }
+
+        if (!empty($params['less_expired_time'])) {
+            $addQuery = new ESQuery\Range();
+            $addQuery->addField('expired_time', array('lte' => $params['less_expired_time']));
             $boolQuery->addMust($addQuery);
         }
 

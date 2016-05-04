@@ -30,8 +30,8 @@ class UserController extends MyController {
 
         $params = $this->params()->fromRoute();
 
-        $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $arrDetailUser = $serviceUser->getDetail(array('user_id' => CUSTOMER_ID));
+        $instanceSearchUser = new \My\Search\User();
+        $arrDetailUser = $instanceSearchUser->getDetail(array('user_id' => CUSTOMER_ID));
 
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
@@ -67,12 +67,12 @@ class UserController extends MyController {
             }
             if (empty($errors)) {
                 //Check Phone
-                $arrPhone = $serviceUser->getDetail(['user_phone' => $params['user_phone'], 'not_status' => -1, 'not_user_id' => CUSTOMER_ID]);
+                $arrPhone = $instanceSearchUser->getDetail(['user_phone' => $params['user_phone'], 'not_status' => -1, 'not_user_id' => CUSTOMER_ID]);
                 if (!empty($arrPhone)) {
                     $errors['user_phone'] = 'Số di động này đã tồn tại trong hệ thống của chúng tôi!';
                 } else {
                     //check email
-                    $arrEmail = $serviceUser->getDetail(['user_email' => $params['user_email'], 'not_status' => -1, 'not_user_id' => CUSTOMER_ID]);
+                    $arrEmail = $instanceSearchUser->getDetail(['user_email' => $params['user_email'], 'not_status' => -1, 'not_user_id' => CUSTOMER_ID]);
                     if (!empty($arrEmail)) {
                         $errors['user_email'] = 'Địa chỉ email này đã tồn tại trong hệ thống của chúng tôi!';
                     }
@@ -85,7 +85,8 @@ class UserController extends MyController {
                         'updated_date' => time(),
                         'user_fullname' => $params['user_fullname']
                     ];
-
+                    
+                    $serviceUser = $this->serviceLocator->get('My\Models\User');
                     $intResult = $serviceUser->edit($arrData, CUSTOMER_ID);
                     if ($intResult) {
                         //get lại thông tin User 
@@ -664,8 +665,8 @@ class UserController extends MyController {
         }
         $arrUserList = [];
         if (!empty($arrUserIdList)) {
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserTemp = $serviceUser->getList(['in_user_id' => implode(',', $arrUserIdList)]);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUserTemp = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
             if (!empty($arrUserTemp)) {
                 foreach ($arrUserTemp as $user) {
                     $arrUserList[$user['user_id']] = $user;
@@ -707,8 +708,8 @@ class UserController extends MyController {
                 $serviceMessages->edit(['is_view' => 1, 'updated_date' => time()], (int) $params['id']);
             }
 
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrMessges['user_created']]);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUserInfo = $instanceSearchUser->getDetail(['user_id' => $arrMessges['user_created']]);
 
             $template = 'frontend/user/get-messages';
             $viewModel = new ViewModel();
@@ -747,8 +748,8 @@ class UserController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Tin nhắn này không tồn tại trong hệ thống!</b></p>')));
             }
 
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrMessges['user_created']]);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUserInfo = $instanceSearchUser->getDetail(['user_id' => $arrMessges['user_created']]);
 
             $arrData = [
                 'mess_title' => $params['mess_title'],
@@ -874,8 +875,8 @@ class UserController extends MyController {
                     $arrUserIdList[] = $arrContent['user_created'];
                     $arrContentListFormat[$arrContent['cont_id']] = $arrContent;
                 }
-                $serviceUser = $this->serviceLocator->get('My\Models\User');
-                $arrUserList = $serviceUser->getList(['in_user_id' => implode(',', $arrUserIdList)]);
+                $instanceSearchUser = new \My\Search\User();
+                $arrUserList = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
                 $arrUserListFormat = [];
                 if (!empty($arrUserList)) {
                     foreach ($arrUserList as $user) {
@@ -942,8 +943,8 @@ class UserController extends MyController {
         if (empty($params['userId']) || !is_numeric($params['userId'])) {
             return $this->redirect()->toRoute('404', array());
         }
-        $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $arrUserDetail = $serviceUser->getDetail(['user_id' => (int) $params['userId']]);
+        $instanceSearchUser = new \My\Search\User();
+        $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId']]);
 
         if (empty($arrUserDetail)) {
             return $this->redirect()->toRoute('404', array());
@@ -978,8 +979,8 @@ class UserController extends MyController {
             foreach ($arrContentList as $prop) {
                 $arrIdList[] = $prop['prop_id'];
             }
-            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-            $arrPropertiesList = $serviceProperties->getList(['in_prop_id' => implode(',', $arrIdList)]);
+            $instaceSearchProperties = new \My\Search\Properties();
+            $arrPropertiesList = $instaceSearchProperties->getList(['in_prop_id' => $arrIdList]);
             if (!empty($arrPropertiesList)) {
                 foreach ($arrPropertiesList as $value) {
                     $arrPropertiesFormat[$value['prop_id']] = $value;

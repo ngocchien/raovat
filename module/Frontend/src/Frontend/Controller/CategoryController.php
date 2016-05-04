@@ -64,8 +64,8 @@ class CategoryController extends MyController {
         }
 
         //list properties
-        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-        $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
+        $instanceSearhProperties = new \My\Search\Properties();
+        $arrPropertiesList = $instanceSearhProperties->getList($arrConditionProperties);
 
         $arrPropertiesFormat = [];
         $propIdList = [];
@@ -107,8 +107,8 @@ class CategoryController extends MyController {
                 $arrUserId[] = $arrContent['user_created'];
             }
             $arrUserId = array_unique($arrUserId);
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserList = $serviceUser->getList(['in_user_id' => implode(',', $arrUserId)]);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUserList = $instanceSearchUser->getList(['in_user_id' => $arrUserId]);
             if (!empty($arrUserList)) {
                 foreach ($arrUserList as $value) {
                     $arrUserListFormat[$value['user_id']] = $value;

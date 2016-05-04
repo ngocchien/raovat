@@ -67,10 +67,265 @@ class ConsoleController extends MyController {
                 $this->__migrateDistrict($intIsCreateIndex);
                 break;
 
+            case 'category' :
+                $this->__migrateCategory($intIsCreateIndex);
+                break;
+
+            case 'properties' :
+                $this->__migrateProperties($intIsCreateIndex);
+                break;
+
+            case 'user' :
+                $this->__migrateUser($intIsCreateIndex);
+                break;
+
+            case 'district-to-search' :
+                $this->__migrateDistrictToSearch($intIsCreateIndex);
+                break;
+
+            case 'general' :
+                $this->__migrateGeneral($intIsCreateIndex);
+                break;
+
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
         }
+    }
+
+    public function __migrateGeneral($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\General');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\General();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'gene_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['gene_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
+    public function __migrateDistrictToSearch($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\District');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\District();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'dist_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['dist_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
+    public function __migrateUser($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\User');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\User();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'user_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['user_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
+    public function __migrateProperties($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\Properties');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\Properties();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'prop_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['prop_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+    }
+
+    public function __migrateCategory($intIsCreateIndex) {
+        $service = $this->serviceLocator->get('My\Models\Category');
+        $intLimit = 1000;
+        $instanceSearch = new \My\Search\Category();
+
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrList = $service->getListLimit([], $intPage, $intLimit, 'cate_id ASC');
+
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearch->createIndex();
+                } else {
+                    $result = $instanceSearch->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int) $arr['cate_id'];
+
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearch->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
     }
 
     //$arr = [
@@ -516,6 +771,74 @@ class ConsoleController extends MyController {
             }
         }
 
+        //stop job Messages
+        if ($params['stop'] === 'raovat-category') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-category' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-category is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job Messages
+        if ($params['stop'] === 'raovat-properties') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-properties' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-properties is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job Messages
+        if ($params['stop'] === 'raovat-user') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-user' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-user is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job general
+        if ($params['stop'] === 'raovat-general') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-general' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-general is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
         $worker = General::getWorkerConfig();
         //  die($params['type']);
         switch ($params['type']) {
@@ -665,6 +988,102 @@ class ConsoleController extends MyController {
 
                 break;
 
+            case 'raovat-category':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-category >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-category in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-category is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeCategory';
+                $methodHandler1 = '\My\Job\JobCategory::writeCategory';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editCategory';
+                $methodHandler2 = '\My\Job\JobCategory::editCategory';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                $funcName3 = SEARCH_PREFIX . 'multiEditCategory';
+                $methodHandler3 = '\My\Job\JobCategory::multiEditCategory';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-properties':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-properties >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-properties in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-properties is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeProperties';
+                $methodHandler1 = '\My\Job\JobProperties::writeProperties';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editProperties';
+                $methodHandler2 = '\My\Job\JobProperties::editProperties';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                $funcName3 = SEARCH_PREFIX . 'multiEditProperties';
+                $methodHandler3 = '\My\Job\JobProperties::multiEditProperties';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-user':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-user >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-user in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-user is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeUser';
+                $methodHandler1 = '\My\Job\JobUser::writeUser';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editUser';
+                $methodHandler2 = '\My\Job\JobUser::editUser';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                $funcName3 = SEARCH_PREFIX . 'multiEditUser';
+                $methodHandler3 = '\My\Job\JobUser::multiEditUser';
+                $worker->addFunction($funcName3, $methodHandler3, $this->serviceLocator);
+
+                break;
+
+            case 'raovat-general':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-general >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-general in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-general is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeGeneral';
+                $methodHandler1 = '\My\Job\JobGeneral::writeGeneral';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editGeneral';
+                $methodHandler2 = '\My\Job\JobGeneral::editGeneral';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                break;
+
             default:
                 return General::getColoredString("Invalid or not found function \n", 'light_cyan', 'red');
         }
@@ -766,6 +1185,105 @@ class ConsoleController extends MyController {
                 return;
             } else {
                 echo General::getColoredString("PHP process run job raovat-mail in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
+
+        //check job mail worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-category' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-category >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-category in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-category in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
+
+        //check job mail worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-properties' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-properties >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-properties in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-properties in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
+
+        //check job user worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-user' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-user >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-user in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-user in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
+
+        //check job user worker
+        exec("ps -ef | grep -v grep | grep 'type=raovat-general' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-general >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-general in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-general in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
+    }
+
+    public function crontabAction() {
+        $params = $this->request->getParams();
+
+        if (empty($params['type'])) {
+            return General::getColoredString("Unknown type or id \n", 'light_cyan', 'red');
+        }
+
+        switch ($params['type']) {
+
+            case 'update-vip-content':
+                $this->_jobUpdateVipContent();
+                break;
+
+            default:
+                echo General::getColoredString("Unknown type or id \n", 'light_cyan', 'red');
+
+                break;
+        }
+
+        return true;
+    }
+
+    protected function _jobUpdateVipContent() {
+        $str = '|| test';
+        $filename = PUBLIC_PATH . '/test.txt';
+        file_put_contents($filename, json_encode($str), FILE_APPEND);
+        return;
+        $instanceSearchContent = new \My\Search\Content();
+        $arrContentList = $instanceSearchContent->getList(['less_expired_time' => time()]);
+
+        if (!empty($arrContentList)) {
+            $serivceConent = $this->serviceLocator->get('My\Models\Content');
+            foreach ($arrContentList as $arrContent) {
+                $arrData = [
+                    'expired_time' => NULL,
+                    'is_vip' => NULL,
+                    'vip_type' => NULL
+                ];
+                $serivceConent->edit($arrContent, $arrContent['cont_id']);
             }
         }
     }

@@ -43,51 +43,6 @@ return array(
                             'action' => 'migrate'
                         ),
                     ),
-                ), 'crawler-keyword' => array(
-                    'options' => array(
-                        'route' => 'crawler-keyword  [isdev]',
-                        'defaults' => array(
-                            '__NAMESPACE__' => 'Backend\Controller',
-                            'controller' => 'console',
-                            'action' => 'crawlerKeywordMulti'
-                        ),
-                    ),
-                ), 'generate-sitemap' => array(
-                    'options' => array(
-                        'route' => 'generate-sitemap  [isdev]',
-                        'defaults' => array(
-                            '__NAMESPACE__' => 'Backend\Controller',
-                            'controller' => 'console',
-                            'action' => 'sitemap'
-                        ),
-                    ),
-                ), 'format-images' => array(
-                    'options' => array(
-                        'route' => 'format-images [--dataimages=] ',
-                        'defaults' => array(
-                            '__NAMESPACE__' => 'Backend\Controller',
-                            'controller' => 'console',
-                            'action' => 'formatImages'
-                        ),
-                    ),
-                ), 'sitemap' => array(
-                    'options' => array(
-                        'route' => 'keyword-sitemap  [isdev]',
-                        'defaults' => array(
-                            '__NAMESPACE__' => 'Backend\Controller',
-                            'controller' => 'console',
-                            'action' => 'keyword'
-                        ),
-                    ),
-                ), 'sitemap' => array(
-                    'options' => array(
-                        'route' => 'update-is-crawler  [isdev]',
-                        'defaults' => array(
-                            '__NAMESPACE__' => 'Backend\Controller',
-                            'controller' => 'console',
-                            'action' => 'updateIsCrawler'
-                        ),
-                    ),
                 ), 'check-worker-running' => array(
                     'options' => array(
                         'route' => 'check-worker-running',
@@ -104,6 +59,16 @@ return array(
                             '__NAMESPACE__' => 'Backend\Controller',
                             'controller' => 'console',
                             'action' => 'worker'
+                        ),
+                    ),
+                ),
+                'crontab' => array(
+                    'options' => array(
+                        'route' => 'crontab [--type=]',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Backend\Controller',
+                            'controller' => 'console',
+                            'action' => 'crontab'
                         ),
                     ),
                 )

@@ -59,12 +59,11 @@ class ContentController extends MyController {
         //Lay thong tin người đăng
         $arrUser = [];
         if (!empty($arrContent['user_created'])) {
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUser = $serviceUser->getDetail(array('user_id' => $arrContent['user_created']));
+            $instanceSearchUser = new \My\Search\User();
+            $arrUser = $instanceSearchUser->getDetail(['user_id' => $arrContent['user_created']]);
         } else {
             $arrUser = json_decode($arrContent['user_info'], true);
         }
-
 
         $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
         $metaKeyword = $arrContent['meta_keyword'] ? $arrContent['meta_keyword'] : $arrContent['cont_title'];
@@ -120,9 +119,8 @@ class ContentController extends MyController {
 
             $intProperties = (int) $params['properties'];
             if ($intProperties) {
-                $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-                $arrProperties = $serviceProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
-
+                $instanceSearchProperties = new \My\Search\Properties();
+                $arrProperties = $instanceSearchProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
                 if (empty($arrProperties)) {
                     $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
                 } else {
@@ -267,8 +265,8 @@ class ContentController extends MyController {
             $arrCategoryList = unserialize(ARR_CATEGORY);
             $propertiesId = $arrCategoryList[$arrCategoryList[$params['category']]['parent_id']]['prop_id'];
             if ($propertiesId) {
-                $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+                $instanceSearchProperties = new \My\Search\Properties();
+                $arrPropertiesList = $instanceSearchProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
             }
         }
 
@@ -745,7 +743,7 @@ class ContentController extends MyController {
 
             $instanceSearchContent = new \My\Search\Content();
             $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'status' => 1]);
-            
+
             if (empty($arrContent)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></p>')));
             }
@@ -753,7 +751,7 @@ class ContentController extends MyController {
             $instanceSearchFavourite = new \My\Search\Favourite();
             $arrFavourite = $instanceSearchFavourite->getDetail(['user_id' => CUSTOMER_ID, 'cont_id' => $arrContent['cont_id']]);
             $serviceFavourite = $this->serviceLocator->get('My\Models\Favourite');
-            
+
             if (empty($arrFavourite)) {
                 $arrData = [
                     'user_id' => CUSTOMER_ID,
