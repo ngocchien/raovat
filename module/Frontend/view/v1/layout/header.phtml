@@ -1,6 +1,8 @@
 <?php
 $paramsRouter = $this->getHelperPluginManager()->getServiceLocator()->get('Application')->getMvcEvent()->getRouteMatch()->getParams();
+$routeName = $this->getHelperPluginManager()->getServiceLocator()->get('Application')->getMvcEvent()->getRouteMatch();
 $controller = $paramsRouter['__CONTROLLER__'];
+$action = $paramsRouter['action'];
 ?>
 <section id="header">
     <header>
@@ -10,7 +12,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                     <div class="col-sm-6 responsive-width-top">
                         <div class="social">
                             <div class="social-icon">
-                                <a href="https://www.facebook.com/quynhonchotot"><i class="fa fa-facebook"></i></a>
+                                <a href="<?php echo My\General::SOCIAL_FACEBOOK_URL; ?>"><i class="fa fa-facebook"></i></a>
                                 <a href="https://twitter.com/chototquynhon"><i class="fa fa-twitter"></i></a>
                                 <a href="https://plus.google.com/u/0/110877749133479386855/posts"><i class="fa fa-google-plus"></i></a>
                                 <a href="#"><i class="fa fa-linkedin"></i></a>
@@ -20,13 +22,13 @@ $controller = $paramsRouter['__CONTROLLER__'];
                     </div>
                     <div class="col-sm-6 responsive-width-top">
                         <div class="links text-right">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('addcontent', array('controller' => 'content', 'action' => 'add')) ?>"> <i class="fa fa-pencil-square-o"></i> Đăng rao vặt</a>
+                            <a class="btn btn-sm btn-warning" href="<?php echo $this->serverUrl() . $this->Url('addcontent', array('controller' => 'content', 'action' => 'add')) ?>"> <i class="fa fa-pencil-square-o"></i> ĐĂNG TIN NHANH</a>
                             <?php if (CUSTOMER_ID == 0): ?>
                                 <a id="loginRegister" href="javascript:;"><i class="fa fa-user-plus"></i> Đăng ký</a>
                                 <a id="loginButton" href="javascript:;"><i class="fa fa-sign-in"></i> Login</a>
                             <?php else: ?>
-                                <a href="<?php echo $this->serverUrl() . $this->Url('user-profile') ?>"><i class="fa fa-user"></i> Tài khoản</a>
-                                <a href="<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'logout')) ?>"><i class="fa fa-sign-out"></i> Signout</a>
+                                <a class="btn btn-sm btn-warning" href="<?php echo $this->serverUrl() . $this->Url('user-profile') ?>"><i class="fa fa-user"></i> Tài khoản</a>
+                                <a class="btn btn-sm btn-warning"href="<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'logout')) ?>"><i class="fa fa-sign-out"></i> Thoát</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -57,12 +59,12 @@ $controller = $paramsRouter['__CONTROLLER__'];
                             <!-- Collection of nav links and other content for toggling -->
                             <div id="navbarCollapse" class="collapse navbar-collapse">
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li class="active dropdown">
-                                        <a class="dropdown-toggle" href="<?php echo $this->serverUrl(); ?>">Trang chủ</a>
+                                    <li class="<?php if ($controller == 'index' && $action == 'index'): ?>active<?php endif; ?> dropdown">
+                                        <a class="dropdown-toggle" href="<?php echo $this->serverUrl(); ?>"><b>Trang chủ</b></a>
                                     </li>
-                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('general', array('controller' => 'general', 'action' => 'index', 'title' => $arrGeneral[13]['gene_slug'], 'id' => 13)) ?>">Giới thiệu</a></li>
-                                    <li class="dropdown">
-                                        <a href="javascript:;">Danh mục</a>
+                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('general', array('controller' => 'general', 'action' => 'index', 'title' => $arrGeneral[13]['gene_slug'], 'id' => 13)) ?>"><b>Giới thiệu</b></a></li>
+                                    <li class="<?php if ($controller == 'category'): ?>active<?php endif; ?> dropdown">
+                                        <a href="javascript:;"><b>Danh mục</b></a>
                                         <ul class="dropdown-menu sub-menu">
                                             <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
                                                 <li><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?></a></li>
@@ -70,8 +72,8 @@ $controller = $paramsRouter['__CONTROLLER__'];
                                         </ul>
                                     </li>
 
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" href="javascript:;">Thông tin khác</a>
+                                    <li class="<?php if ($controller == 'general' && $action != 'contact'): ?>active<?php endif; ?> dropdown">
+                                        <a class="dropdown-toggle" href="javascript:;"><b>Thông tin khác</b></a>
                                         <ul class="dropdown-menu sub-menu">
                                             <li><a href="detail-page.html">Hướng dẫn</a></li>
                                             <li><a href="faq.html">FAQ</a></li>
@@ -79,7 +81,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                                             <li><a href="detail-page.html">Chi tiêt trang</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('add-contact') ?>">Liên hệ</a></li>
+                                    <li class="<?php if ($controller == 'general' && $action == 'contact'): ?>active<?php endif; ?>"><a href="<?php echo $this->serverUrl() . $this->Url('add-contact') ?>"><b>Liên hệ</b></a></li>
                                 </ul>
                             </div>
                         </nav><!--end nav-->
@@ -98,28 +100,26 @@ $controller = $paramsRouter['__CONTROLLER__'];
                 <div class="col-md-12">
                     <form method="GET" action="<?php echo $this->serverUrl() . $this->Url('search') ?>">
                         <div class="col-md-3">
-                            <div class="label">
-                                <select class="select form-control" name="khu-vuc">
-                                    <option value="toan-tinh">Chọn khu vực</option>
-                                    <option value="toan-tinh">Toàn tỉnh</option>
-                                    <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
-                                        <option value="<?php echo $value['dist_slug'] ?>"><?php echo $value['dist_name']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                            <select class="select form-control" name="khu-vuc">
+                                <option value="toan-tinh">Chọn khu vực</option>
+                                <option value="toan-tinh">Toàn tỉnh</option>
+                                <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
+                                    <option value="<?php echo $value['dist_slug'] ?>"><?php echo $value['dist_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="col-md-3">
-                            <div class="label">
-                                <select class="select form-control" name="danh-muc">
-                                    <option value="tat-ca-danh-muc">Chọn danh mục</option>
-                                    <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
-                                        <option value="<?php echo $value['cate_slug'] ?>"><?php echo $value['cate_name']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                            <select class="select form-control" name="danh-muc">
+                                <option value="tat-ca-danh-muc">Chọn danh mục</option>
+                                <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
+                                    <option value="<?php echo $value['cate_slug'] ?>"><?php echo $value['cate_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="col-md-4">
-                            <input class="keyword" type="text" name="tu-khoa" placeholder="Nhập từ khóa...">
+                            <div class="label">
+                                <input class="keyword" type="text" name="tu-khoa" placeholder="Nhập từ khóa...">
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="search-btn"><i class="fa fa-search"></i> Tìm kiếm</button>

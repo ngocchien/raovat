@@ -371,6 +371,13 @@ class Content extends SearchAbstract {
             $addQuery->setTerm('vip_type', $params['vip_type']);
             $boolQuery->addMust($addQuery);
         }
+        
+        if (!empty($params['not_type_vip'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('vip_type', $params['not_type_vip']);
+            $boolQuery->addMustNot($addQuery);
+        }
+        
 
         if (!empty($params['more_expired_time'])) {
             $addQuery = new ESQuery\Range();

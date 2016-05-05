@@ -41,6 +41,9 @@ class General {
     const TRANS_INPUT = 1;
     const TRANS_OUTPUT = 2;
     const SEND_MAIL_MESSAGES = 1;
+    //define social url
+    const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/quynhon247/';
+    
     
     const VIP_ALL_PAGE = 3;
     const VIP_CATE_PAGE = 2;
@@ -356,7 +359,7 @@ class General {
                 case 'content':
                     return array('150x100', '224x224', '291x250', '490x294');
                 case 'user':
-                    return array('150x150', '30x30','120x120');
+                    return array('150x150', '30x30', '120x120');
                 default:
                     return array();
             }

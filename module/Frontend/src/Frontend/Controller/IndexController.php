@@ -43,9 +43,10 @@ class IndexController extends MyController {
         $intLimit = 30;
         $arrConditionNewContent = [
             'cont_status' => 1,
-            'less_expired_time' => time()
+            'not_type_vip' => \My\General::VIP_ALL_PAGE
         ];
-        $arrNewContent = $instaceSearchContent->getListLimit($arrConditionNewContent, $intPage, $intLimit, ['updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
+        $arrNewContent = $instaceSearchContent->getListLimit($arrConditionNewContent, $intPage, $intLimit, ['vip_type' => ['order' => 'desc'], 'updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
+
         $intTotal = $instaceSearchContent->getTotal($arrConditionContent);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'category', $params);
