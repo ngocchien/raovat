@@ -71,7 +71,6 @@
                                     <div class="row">
                                         <div class="col-md-12 border-buttom">
                                             <div class="col-md-12">
-
                                                 <a class="btn <?php if ($this->arrCategoryDetail['parent_id'] == 0): ?>btn-info<?php endif; ?> btn-xs" style="margin-bottom: 3px; margin-right: 10px; font-weight: bold" href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $this->arrCategoryParent['cate_slug'], 'cateId' => $this->arrCategoryParent['cate_id']]); ?>">
                                                     Tất cả
                                                 </a>
@@ -83,28 +82,30 @@
                                             </div>
                                         </div>
                                         <hr/>
-                                        <div class="col-md-12" style="margin-bottom: 10px">
-                                            <div class="col-md-12">
-                                                <?php
-                                                $distSlectName = 'toan-tinh';
-                                                $distSlectId = 0;
-                                                if (!empty($this->params['distId'])) {
-                                                    $distSlectName = $arrLocation[$this->params['distId']]['dist_slug'];
-                                                    $distSlectId = $arrLocation[$this->params['distId']]['dist_id'];
-                                                }
-                                                ?>
-                                                <a class="btn <?php if (empty($this->params['propId'])): ?>btn-warning<?php endif; ?> btn-xs" style="margin-right: 10px; font-weight: bold" href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $this->arrCategoryDetail['cate_slug'], 'cateId' => $this->arrCategoryDetail['cate_id'], 'dist' => $distSlectName, 'distId' => $distSlectId]) ?>">
-                                                    Tất cả
-                                                </a>
-                                                <?php
-                                                foreach ($this->arrPropertiesList as $prop):
+                                        <?php if (!empty($this->arrPropertiesList)): ?>
+                                            <div class="col-md-12" style="margin-bottom: 10px">
+                                                <div class="col-md-12">
+                                                    <?php
+                                                    $distSlectName = 'toan-tinh';
+                                                    $distSlectId = 0;
+                                                    if (!empty($this->params['distId'])) {
+                                                        $distSlectName = $arrLocation[$this->params['distId']]['dist_slug'];
+                                                        $distSlectId = $arrLocation[$this->params['distId']]['dist_id'];
+                                                    }
                                                     ?>
-                                                    <a class="btn <?php if (!empty($this->params['propId']) && $this->params['propId'] == $prop['prop_id']): ?>btn-warning<?php endif; ?> btn-xs" style="margin-right: 10px; font-weight: bold" href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $this->arrCategoryDetail['cate_slug'], 'cateId' => $this->arrCategoryDetail['cate_id'], 'dist' => $distSlectName, 'distId' => $distSlectId, 'propSlug' => $prop['prop_slug'], 'propId' => $prop['prop_id']]) ?>">
-                                                        <?php echo $prop['prop_name']; ?>
+                                                    <a class="btn <?php if (empty($this->params['propId'])): ?>btn-warning<?php endif; ?> btn-xs" style="margin-right: 10px; font-weight: bold" href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $this->arrCategoryDetail['cate_slug'], 'cateId' => $this->arrCategoryDetail['cate_id'], 'dist' => $distSlectName, 'distId' => $distSlectId]) ?>">
+                                                        Tất cả
                                                     </a>
-                                                <?php endforeach; ?>
+                                                    <?php
+                                                    foreach ($this->arrPropertiesList as $prop):
+                                                        ?>
+                                                        <a class="btn <?php if (!empty($this->params['propId']) && $this->params['propId'] == $prop['prop_id']): ?>btn-warning<?php endif; ?> btn-xs" style="margin-right: 10px; font-weight: bold" href="<?php echo $this->serverUrl() . $this->Url('category', ['cateSlug' => $this->arrCategoryDetail['cate_slug'], 'cateId' => $this->arrCategoryDetail['cate_id'], 'dist' => $distSlectName, 'distId' => $distSlectId, 'propSlug' => $prop['prop_slug'], 'propId' => $prop['prop_id']]) ?>">
+                                                            <?php echo $prop['prop_name']; ?>
+                                                        </a>
+                                                    <?php endforeach; ?>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </section><!--end main page heading-->
@@ -117,7 +118,7 @@
                                                     <tr>
                                                         <th class="text-center"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Tiêu đề</th>
                                                         <th class="text-center" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
-                                                        <th class="text-center" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
+                                                        <?php if (!empty($this->arrPropertiesList)): ?><th class="text-center" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th><?php endif; ?>
                                                         <th class="text-center" width="57px"><i class="fa fa-eye" aria-hidden="true"></i> Xem</th>
                                                         <th class="text-center" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
                                                     </tr>
@@ -130,7 +131,7 @@
                                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                                 <td style="vertical-align: middle">
                                                                     <div class="col-md-1">
-                                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname'];?>">
+                                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                                             <img src="http://dev.st.raovat.vn/uploads/user/2016/05/01/thumbs/150x150/1462115823.285.jpg" style="width: 30px; height: 30px"></a>
                                                                     </div>
                                                                     <div class="col-md-11" style="margin-top: 5px">
@@ -142,15 +143,17 @@
                                                                 <td class="text-center" style="vertical-align: middle">
                                                                     <a href="javascript:;" style="text-decoration: none;color: #69A467"><b><?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $this->arrLocation[$arrContent['dist_id']]['dist_name']; ?></b></a>
                                                                 </td>
-                                                                <td class="text-center" style="vertical-align: middle">
-                                                                    <a href="#" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
-                                                                </td>
+                                                                <?php if (!empty($this->arrPropertiesList)): ?>
+                                                                    <td class="text-center" style="vertical-align: middle">
+                                                                        <a href="#" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
+                                                                    </td>
+                                                                <?php endif; ?>
 
                                                                 <td class="text-center" style="vertical-align: middle">
                                                                     <?php echo $arrContent['cont_views']; ?>
                                                                 </td>
                                                                 <td class="text-center" style="vertical-align: middle">
-                                                                    <?php echo My\General::formatDateString($arrContent['created_date']);?>
+                                                                    <?php echo My\General::formatDateString($arrContent['created_date']); ?>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; ?>

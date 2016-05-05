@@ -2,8 +2,7 @@
     <div class="container">
         <div class="row col-md-12">
             <div class="page-heading">
-                <h1>ĐĂNG RAO VẶT </h1>
-                <h4>Đơn giản và chỉnh sửa dễ dàng</h4>
+                <h2>ĐĂNG RAO VẶT </h2>
             </div>
         </div>
     </div>
@@ -82,7 +81,7 @@
                                                 <div class="col-sm-12 padding-control">
                                                     <div class="col-sm-6 input-pad">
                                                         <b>Chọn Khu vực</b>
-                                                        <select class="form-control category" name="location">
+                                                        <select class="form-control" name="location">
                                                             <option value="0"> Toàn tỉnh</option>
                                                             <?php
                                                             $arrDistrict = unserialize(ARR_DISTRICT);
@@ -171,7 +170,9 @@
                                                         <input class="form-control" type="password" name="password" placeholder="Nhập mật khẩu để sửa tin khi cần" value='<?php echo empty($params['password']) ? '' : $params['password']; ?>'>
                                                     </div>
                                                 <?php endif; ?>
-                                                <input type="submit" value="ĐĂNG RAO VẶT">
+                                                <div class="col-md-12 text-center" style="margin-bottom: 10px">
+                                                    <button type="submit" class="btn btn-success"><i class="fa fa-send"></i> ĐĂNG RAO VẶT</button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>

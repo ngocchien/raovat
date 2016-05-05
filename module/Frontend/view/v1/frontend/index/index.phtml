@@ -158,7 +158,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                                 <img src="<?php echo $avatar; ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php else: ?>
-                                                            <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo $arrContent['user_info']['user_fullname']; ?>">
+                                                        <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'],true)['user_fullname']; ?>">
                                                                 <img src="<?php echo STATIC_URL . '/f/v1/images/noavatar.jpg' ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php endif; ?>

@@ -30,7 +30,7 @@ class storageCategory extends AbstractTableGateway {
             $sql = new Sql($adapter);
             $select = $sql->Select($this->table)
                     ->where('1=1' . $strWhere)
-                    ->order(array('cate_sort ASC' , 'cate_slug ASC' ));
+                    ->order(array('cate_sort ASC', 'cate_slug ASC'));
             $query = $sql->getSqlStringForSqlObject($select);
             return $adapter->query($query, $adapter::QUERY_MODE_EXECUTE)->toArray();
         } catch (\Zend\Http\Exception $exc) {
@@ -44,7 +44,7 @@ class storageCategory extends AbstractTableGateway {
             return array();
         }
     }
-    
+
     public function getListLimit($arrCondition, $intPage, $intLimit, $strOrder) {
         try {
             $strWhere = $this->_buildWhere($arrCondition);
@@ -108,6 +108,9 @@ class storageCategory extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
+                $p_arrParams['cate_id'] = $result;
+                $instanceJob = new \My\Job\JobCategory();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeCategory', $p_arrParams);
             }
             return $result;
         } catch (\Exception $exc) {
@@ -124,11 +127,18 @@ class storageCategory extends AbstractTableGateway {
 
     public function edit($p_arrParams, $intCateID) {
         try {
-            $result = array();
             if (!is_array($p_arrParams) || empty($p_arrParams) || empty($intCateID)) {
-                return $result;
+                return false;
             }
-            return $this->update($p_arrParams, 'cate_id=' . $intCateID);
+
+            $result = $this->update($p_arrParams, 'cate_id=' . $intCateID);
+
+            if ($result) {
+                $p_arrParams['cate_id'] = $intCateID;
+                $instanceJob = new \My\Job\JobCategory();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editCategory', $p_arrParams);
+            }
+            return $result;
         } catch (\Zend\Http\Exception $exc) {
             if (APPLICATION_ENV !== 'production') {
                 die($exc->getMessage());
@@ -136,7 +146,7 @@ class storageCategory extends AbstractTableGateway {
             return false;
         }
     }
-    
+
     public function updateTree($dataUpdate) {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
@@ -166,19 +176,19 @@ class storageCategory extends AbstractTableGateway {
         if (isset($arrCondition['cate_id'])) {
             $strWhere .= " AND cate_id=" . $arrCondition['cate_id'];
         }
-        
+
         if (isset($arrCondition['cate_status'])) {
             $strWhere .= " AND cate_status=" . $arrCondition['cate_status'];
         }
-        
+
         if (!empty($arrCondition['cate_name'])) {
             $strWhere .= " AND cate_name = '" . $arrCondition['cate_name'] . "'";
         }
-        
+
         if (!empty($arrCondition['cate_slug'])) {
             $strWhere .= " AND cate_slug = '" . $arrCondition['cate_slug'] . "'";
         }
-        
+
         if (isset($arrCondition['cate_parent'])) {
             $strWhere .= " AND cate_parent=" . $arrCondition['cate_parent'];
         }
@@ -186,20 +196,20 @@ class storageCategory extends AbstractTableGateway {
         if (isset($arrCondition['cate_type'])) {
             $strWhere .= " AND cate_type=" . $arrCondition['cate_type'];
         }
-        
+
         if (isset($arrCondition['not_cate_status'])) {
             $strWhere .= " AND cate_status !=" . $arrCondition['not_cate_status'];
         }
-        
+
         if (isset($arrCondition['not_cate_id'])) {
             $strWhere .= " AND cate_id !=" . $arrCondition['not_cate_id'];
         }
-        
+
         if (isset($arrCondition['parent_id'])) {
             $strWhere .= " AND parent_id =" . $arrCondition['parent_id'];
         }
-        
-        
+
+
 
         return $strWhere;
     }

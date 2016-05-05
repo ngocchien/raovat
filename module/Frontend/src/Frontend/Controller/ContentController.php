@@ -65,6 +65,10 @@ class ContentController extends MyController {
             $arrUser = json_decode($arrContent['user_info'], true);
         }
 
+        //lấy thuộc tính
+        $instanceSearchProperties = new \My\Search\Properties();
+        $arrProperties = $instanceSearchProperties->getDetail(['prop_id' => $arrContent['prop_id']]);
+
         $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
         $metaKeyword = $arrContent['meta_keyword'] ? $arrContent['meta_keyword'] : $arrContent['cont_title'];
         $metaDescription = $arrContent['meta_description'] ? $arrContent['meta_description'] : $arrContent['cont_title'];
@@ -89,6 +93,7 @@ class ContentController extends MyController {
             $metaImage = json_decode(current(json_decode($arrContent['cont_image'])), true);
             $metaImage = $metaImage['thumbImage']['490x294'];
         }
+
         $this->renderer->headMeta()->setProperty('og:image', $metaImage);
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
@@ -97,7 +102,8 @@ class ContentController extends MyController {
             'params' => $params,
             'arrContent' => $arrContent,
             'arrCommentList' => $arrCommentList,
-            'arrUser' => $arrUser
+            'arrUser' => $arrUser,
+            'arrProperties' => $arrProperties
         );
     }
 
@@ -107,6 +113,7 @@ class ContentController extends MyController {
 
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
+
             if (empty($params['category'])) {
                 $errors['category'] = 'Chưa chọn danh mục cho tin rao vặt !';
             } else {
@@ -154,7 +161,7 @@ class ContentController extends MyController {
                 if (empty($params['email'])) {
                     $errors['userInfo']['email'] = 'Vui lòng nhập email liên lạc';
                 } else {
-                    $validatorEmail = new Zend\Validator\EmailAddress();
+                    $validatorEmail = new \Zend\Validator\EmailAddress();
                     if (!$validatorEmail->isValid($params['email'])) {
                         $errors['userInfo']['email'] = 'Địa chỉ email không hợp lệ!';
                     }
@@ -163,11 +170,11 @@ class ContentController extends MyController {
                 if (empty($params['phone'])) {
                     $errors['userInfo']['phone'] = 'Vui lòng nhập số điện thoại liên lạc';
                 } else {
-                    $validationPhone = new Zend\I18n\Validator\IsInt;
+                    $validationPhone = new \Zend\Validator\Digits();
                     if (!$validationPhone->isValid($params['phone'])) {
                         $errors['userInfo']['phone'] = 'Số điện thoại không hợp lệ';
                     } else {
-                        $validBetween = new Zend\Validator\Between(array('min' => 8, 'max' => 12));
+                        $validBetween = new \Zend\Validator\StringLength(array('min' => 8, 'max' => 12));
                         if (!$validBetween->isValid($params['phone'])) {
                             $errors['userInfo']['phone'] = 'Số điện thoại phải từ 8 đến 12 số';
                         }
@@ -212,6 +219,7 @@ class ContentController extends MyController {
                         $errors['total'] = 'Bạn đã đăng tin này trong danh mục này! Vui lòng kiểm tra lại danh sách tin đã đăng!';
                     }
                 }
+
                 if (empty($errors)) {
                     $arrData = array(
                         'cont_title' => trim($params['content_title']),
@@ -224,7 +232,10 @@ class ContentController extends MyController {
                         'prop_id' => $intProperties,
                         'created_date' => time(),
                         'ip_address' => $this->getRequest()->getServer('REMOTE_ADDR'),
-                        'dist_id' => (int) $params['location']
+                        'dist_id' => (int) $params['location'],
+                        'cont_status' => 1,
+                        'cont_views' => 1,
+                        'updated_date' => time()
                     );
                     if (empty(CUSTOMER_ID)) {
                         $arrData['user_info'] = json_encode([
@@ -245,12 +256,14 @@ class ContentController extends MyController {
                         //update tổng số rao vặt danh mục cha
                         $serviceCategory->edit(array('total_content' => $arrCategoryParent['total_content'] + 1), $arrCategoryParent['cate_id']);
 
-                        $completeSession = new Container('contentComplete');
-                        $completeSession->complete = true;
-                        $completeSession->type = 'add';
-                        $completeSession->id = $intResult;
-                        $completeSession->title = $params['content_title'];
-                        $completeSession->title_slug = General::getSlug(trim($params['content_title']));
+                        $arrSession = [
+                            'type' => 'add',
+                            'title' => $params['content_title'],
+                            'id' => $intResult,
+                            'title_slug' => General::getSlug(trim($params['content_title']))
+                        ];
+
+                        $_SESSION['complete'] = $arrSession;
 
                         return $this->redirect()->toRoute('add-content-complete');
                     }
@@ -292,11 +305,11 @@ class ContentController extends MyController {
             $instaceSearchContent = new \My\Search\Content();
             $arrContent = $instaceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'not_cont_status' => -1]);
 
-            if (!empty($arrContent) || !empty($arrContent['user_created'])) {
+            if (empty($arrContent)) {
                 return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b style="color:red">Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></center>']));
             }
 
-            if ($arrContent['user_info']['password'] != trim($params['cont_pass'])) {
+            if (json_decode($arrContent['user_info'], true)['password'] != trim($params['cont_pass'])) {
                 return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b style="color:red">Nhập mật khẩu sửa tin không chính xác!</b></center>']));
             }
 
@@ -305,7 +318,6 @@ class ContentController extends MyController {
             if (!in_array($arrContent['cont_id'], $arrPass)) {
                 array_push($arrPass, $arrContent['cont_id']);
             }
-
             $_SESSION['arrContentPass'] = $arrPass;
             return $this->getResponse()->setContent(json_encode(['st' => 1, 'url' => $this->url()->fromRoute('edit-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']])]));
         }
@@ -385,7 +397,7 @@ class ContentController extends MyController {
                 if (empty($params['email'])) {
                     $errors['userInfo']['email'] = 'Vui lòng nhập email liên lạc';
                 } else {
-                    $validatorEmail = new Zend\Validator\EmailAddress();
+                    $validatorEmail = new \Zend\Validator\EmailAddress();
                     if (!$validatorEmail->isValid($params['email'])) {
                         $errors['userInfo']['email'] = 'Địa chỉ email không hợp lệ!';
                     }
@@ -394,11 +406,11 @@ class ContentController extends MyController {
                 if (empty($params['phone'])) {
                     $errors['userInfo']['phone'] = 'Vui lòng nhập số điện thoại liên lạc';
                 } else {
-                    $validationPhone = new Zend\I18n\Validator\IsInt;
+                    $validationPhone = new \Zend\Validator\Digits();
                     if (!$validationPhone->isValid($params['phone'])) {
                         $errors['userInfo']['phone'] = 'Số điện thoại không hợp lệ';
                     } else {
-                        $validBetween = new Zend\Validator\Between(array('min' => 8, 'max' => 12));
+                        $validBetween = new \Zend\Validator\StringLength(array('min' => 8, 'max' => 12));
                         if (!$validBetween->isValid($params['phone'])) {
                             $errors['userInfo']['phone'] = 'Số điện thoại phải từ 8 đến 12 số';
                         }
@@ -464,12 +476,14 @@ class ContentController extends MyController {
                             }
                         }
 
-                        $completeSession = new Container('contentComplete');
-                        $completeSession->type = 'edit';
-                        $completeSession->complete = true;
-                        $completeSession->id = $arrContent['cont_id'];
-                        $completeSession->title = $params['content_title'];
-                        $completeSession->title_slug = General::getSlug(trim($params['content_title']));
+                        $arrSession = [
+                            'type' => 'edit',
+                            'title' => $params['content_title'],
+                            'id' => $intResult,
+                            'title_slug' => General::getSlug(trim($params['content_title']))
+                        ];
+
+                        $_SESSION['complete'] = $arrSession;
 
                         return $this->redirect()->toRoute('add-content-complete');
                     }
@@ -547,13 +561,13 @@ class ContentController extends MyController {
     }
 
     public function completeAction() {
-        $completeSession = new Container('contentComplete');
+        $completeSession = $_SESSION['complete'];
 
-        if ($completeSession->complete != true) {
+        if (empty($completeSession)) {
             return $this->redirect()->toRoute('home');
         }
+        unset($_SESSION['complete']);
 
-        $completeSession->getManager()->getStorage()->clear('contentComplete');
         return [
             'completeSession' => $completeSession
         ];
@@ -650,6 +664,7 @@ class ContentController extends MyController {
     public function addCommentAction() {
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
+
             $errors = [];
 
             if ((int) CUSTOMER_ID < 1) {
@@ -685,7 +700,7 @@ class ContentController extends MyController {
                 }
             }
 
-            if (empty($params['captcha']) || strlen($params['captcha'] != 6 || $params['captcha'] != $_SESSION['captcha'])) {
+            if (empty($params['captcha']) || strlen($params['captcha']) != 6 || $params['captcha'] != $_SESSION['captcha']) {
                 $errors['captcha'] = 'Nhập mã xác nhận chưa chính xác!';
             }
 

@@ -117,6 +117,10 @@ var Content = {
                         success: function (rs) {
                             $('#loading-mask').hide();
                             if (rs.st == 1) {
+                                bootbox.alert(rs.ms);
+                                Captcha();
+                                $('textarea[name=comment-content]').val('');
+                                $('input[name=captcha]').val('');
                                 $('.comment-list-post').prepend(rs.html);
                             } else {
                                 var html = '<div class="">';

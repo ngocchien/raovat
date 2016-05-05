@@ -17,7 +17,7 @@
             <div class="col-md-8">
                 <div class="ads-detail">
                     <?php
-                    if (!empty($this->arrContent['cont_image'])):
+                    if (!empty($this->arrContent['cont_image']) && $this->arrContent['cont_image'] != 'null'):
                         $arrImage = json_decode($this->arrContent['cont_image']);
                         ?>
                         <div class="row">
@@ -60,10 +60,10 @@
                                         $avatar = json_decode($this->arrUser['user_avatar'], true)[0]['thumbImage']['120x120'];
                                     }
                                     ?>
-                                    <img src="<?php echo $avatar;?>" alt="author avatar">
+                                    <img src="<?php echo $avatar; ?>" alt="author avatar">
                                 </div>
                                 <div class="author-name">
-                                    <p><?php echo $this->arrUser['user_fullname'] ?></p>
+                                    <a style="text-decoration: none;" href=""><p><?php echo $this->arrUser['user_fullname'] ?></p></a>
                                 </div>
                             </div>
                             <div class="col-sm-9">
@@ -113,12 +113,13 @@
                 </div>
                 <?php
                 $category_parent = unserialize(ARR_CATEGORY)[unserialize(ARR_CATEGORY)[$this->arrContent['cate_id']]['parent_id']];
+                $arrCategory = unserialize(ARR_CATEGORY)[$this->arrContent['cate_id']];
                 ?>
                 <div class="ad-detail">
 
                     <div class="ad-detail-head">
                         <i class="fa <?php echo str_replace('icon', 'fa', $category_parent['cate_icon']); ?> fa-2x"></i>
-                        <h4 class="ad-cat"> Danh mục : <?php echo $category_parent['cate_name'] ?></h4>
+                        <h4 class="ad-cat"><a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $arrCategory['cate_slug'], 'cateId' => $arrCategory['cate_id'])) ?>"><?php echo $arrCategory['cate_name'] ?></a></h4>
                     </div>
 
                     <div class="ad-detail-info clearfix">
@@ -128,8 +129,15 @@
 
                     <div class="ad-detail-info clearfix">
                         <p class="pull-left"> <i class="fa fa-globe" aria-hidden="true"></i>  Khu vực :</p>
-                        <p class="pull-right light"><a href="" style="text-decoration: none; font-weight: bold;"><?php echo (!empty($this->arrContent['dist_id'])) ? unserialize(ARR_DISTRICT)[$this->arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></a></p>
+                        <p class="pull-right light"><a href="javascript:;" style="text-decoration: none; font-weight: bold;"><?php echo (!empty($this->arrContent['dist_id'])) ? unserialize(ARR_DISTRICT)[$this->arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></a></p>
                     </div>
+
+                    <?php if (!empty($this->arrProperties)): ?>
+                        <div class="ad-detail-info clearfix">
+                            <p class="pull-left"> <i class="fa fa-shopping-cart" aria-hidden="true"></i>  Nhu cầu :</p>
+                            <p class="pull-right light"><a href="javascript:;" style="text-decoration: none; font-weight: bold;"><?php echo $this->arrProperties['prop_name']; ?></a></p>
+                        </div>
+                    <?php endif; ?>
 
                     <div class="ad-detail-info clearfix">
                         <p class="pull-left"><i class="fa fa-clock-o"></i> Đăng lúc :</p>
@@ -177,17 +185,17 @@
                         <!--<input type="text" name="humantest">-->
                     </form>
                     <div class="row">
-                        <div class="col-md-2 control-label">
+                        <div class="col-md-2 col-xs-2 control-label">
                             <img class="img-captcha form-control" src=""/>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-xs-6">
                             <input name="captcha" type="text" class="form-control" placeholder="Nhập mã bên cạnh">
                             <span class="comment-error-captcha" style="color: red; display: none"></span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-xs-2">
                             <a class="btn refresh-captcha" data-toggle="tooltip" title="Lấy mã mới"><i class="fa fa-2x fa-refresh"></i></a>
                         </div>
-                        <div class="col-md-2"><button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button></div>
+                        <div class="col-md-2 col-xs-2"><button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button></div>
                     </div>
                 </div>
                 <!--end form submission-->
@@ -197,7 +205,7 @@
                         <?php
                         if (!empty($this->arrCommentList)):
                             foreach ($this->arrCommentList as $comment):
-                                $avatar = empty($comment['user_avatar']) ? STATIC_URL . '/f/v1/images/no_avatar_male.jpg' : $comment['user_avatar'];
+                                $avatar = empty($comment['user_avatar']) ? STATIC_URL . '/f/v1/images/noavatar.jpg' : $comment['user_avatar'];
                                 ?>
                                 <article class="row">
                                     <div class="col-md-2 col-sm-2 hidden-xs">
@@ -235,7 +243,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                         ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                                     ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">

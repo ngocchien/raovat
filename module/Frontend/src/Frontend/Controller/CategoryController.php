@@ -64,15 +64,22 @@ class CategoryController extends MyController {
         }
 
         //list properties
-        $instanceSearhProperties = new \My\Search\Properties();
-        $arrPropertiesList = $instanceSearhProperties->getList($arrConditionProperties);
+        $arrPropertiesList = [];
+        if (!empty($arrConditionProperties['parent_id'])) {
+            $instanceSearhProperties = new \My\Search\Properties();
+            $arrPropertiesList = $instanceSearhProperties->getList($arrConditionProperties);
+        }
 
         $arrPropertiesFormat = [];
         $propIdList = [];
-        foreach ($arrPropertiesList as $prop) {
-            $propIdList[] = $prop['prop_id'];
-            $arrPropertiesFormat[$prop['prop_id']] = $prop;
+
+        if (!empty($arrPropertiesList)) {
+            foreach ($arrPropertiesList as $prop) {
+                $propIdList[] = $prop['prop_id'];
+                $arrPropertiesFormat[$prop['prop_id']] = $prop;
+            }
         }
+
 
         if (!empty($params['propId'])) {
             //kiểm tra properties có nằm trong danh mục
@@ -95,6 +102,7 @@ class CategoryController extends MyController {
         //list content 15
         $instanceSearchContent = new \My\Search\Content();
         $arrContentList = $instanceSearchContent->getListLimit($arrConditionContent, $intPage, $intLimit, ['vip_type' => ['order' => 'desc'], 'updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
+
         $intTotal = $instanceSearchContent->getTotal($arrConditionContent);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'category', $params);
