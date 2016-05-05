@@ -1,4 +1,6 @@
 0914100582
 */30 * * * * php /var/www/raovat/html/public/index.php crontab --type=update-vip-content
+*/2 * * * * php /var/www/raovat/html/public/index.php crontab --type=update-vip-content
+*/2 * * * * php /var/www/raovat/html/public/index.php check-worker-running
 
 remove cache folder config/config-cache
