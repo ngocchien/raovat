@@ -102,6 +102,9 @@ class storageProperties extends AbstractTableGateway {
             $result = $this->insert($p_arrParams);
             if ($result) {
                 $result = $this->lastInsertValue;
+                $p_arrParams['prop_id'] = $result;
+                $instanceJob = new \My\Job\JobProperties();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeProperties', $p_arrParams);
             }
             return $result;
         } catch (\Zend\Http\Exception $exc) {
@@ -118,15 +121,12 @@ class storageProperties extends AbstractTableGateway {
         }
 
         try {
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            //print_r($p_arrParams);die;
-            $query = $sql->update($this->table)->set($p_arrParams)->where('1=1 AND prop_id = ' . $intPropertiID);
-            $query = $sql->getSqlStringForSqlObject($query);
-            $result = $adapter->query($query, $adapter::QUERY_MODE_EXECUTE);
-            $resultSet = new \Zend\Db\ResultSet\ResultSet();
-            $resultSet->initialize($result);
-            $result = $resultSet->count() ? true : false;
+            $result = $this->update($p_arrParams, 'prop_id=' . $intPropertiID);
+            if ($result) {
+                $p_arrParams['prop_id'] = $intPropertiID;
+                $instanceJob = new \My\Job\JobProperties();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editProperties', $p_arrParams);
+            }
             return $result;
         } catch (\Exception $exc) {
             echo '<pre>';
@@ -171,7 +171,7 @@ class storageProperties extends AbstractTableGateway {
         if ($arrCondition['prop_id'] !== '' && $arrCondition['prop_id'] !== NULL) {
             $strWhere .= " AND prop_id=" . $arrCondition['prop_id'];
         }
-        
+
         if ($arrCondition['not_prop_id'] !== '' && $arrCondition['not_prop_id'] !== NULL) {
             $strWhere .= " AND prop_id !=" . $arrCondition['not_prop_id'];
         }
@@ -186,7 +186,7 @@ class storageProperties extends AbstractTableGateway {
         if ($arrCondition['parent_id'] !== '' && $arrCondition['parent_id'] !== NULL) {
             $strWhere .= " AND parent_id=" . $arrCondition['parent_id'];
         }
-        
+
         if ($arrCondition['not_parent_id'] !== '' && $arrCondition['not_parent_id'] !== NULL) {
             $strWhere .= " AND parent_id !=" . $arrCondition['not_parent_id'];
         }
@@ -194,11 +194,11 @@ class storageProperties extends AbstractTableGateway {
         if ($arrCondition['prop_status'] !== '' && $arrCondition['prop_status'] !== NULL) {
             $strWhere .= " AND prop_status=" . $arrCondition['prop_status'];
         }
-        
+
         if ($arrCondition['not_prop_sort'] !== '' && $arrCondition['not_prop_sort'] !== NULL) {
             $strWhere .= " AND prop_sort !=" . $arrCondition['not_prop_sort'];
         }
-        
+
         if ($arrCondition['not_prop_status'] !== '' && $arrCondition['not_prop_status'] !== NULL) {
             $strWhere .= " AND prop_status !=" . $arrCondition['not_prop_status'];
         }

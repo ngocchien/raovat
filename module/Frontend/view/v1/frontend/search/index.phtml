@@ -44,7 +44,7 @@
                         <!-- page start-->
                         <section class="panel panel-success">
                             <header class="panel-heading">
-                                <h4>KẾT QUẢ TÌM KIẾM  :  <?php if (!empty($this->params['khu-vuc'])): ?>Khu vực : <?php echo $this->params['khu-vuc']; ?> <?php endif; ?> <?php if (!empty($this->params['danh-muc'])): ?> - Danh mục : <?php echo $this->params['danh-muc']; ?> <?php endif; ?>  <?php if (!empty($this->params['tu-khoa'])): ?> - Từ khóa : <?php echo $this->params['tu-khoa']; ?> <?php endif; ?> </h4>
+                                <h4>KẾT QUẢ TÌM KIẾM  :  Khu vực : <span style="color: blue"><?php echo $this->distName; ?></span> - Danh mục : <span style="color: blue"><?php echo $this->cateName; ?></span> <?php if (!empty($this->params['tu-khoa'])): ?> - Từ khóa : <span style="color: blue"><?php echo $this->params['tu-khoa']; ?> <?php endif; ?> </span></h4>
                             </header>
                             <div class="panel-body">
                                 <form class="form-horizontal search-result">
@@ -54,21 +54,21 @@
                                         </div>
                                     </div>
                                 </form>
-                                <table class="table table-striped table-condensed table-hover cf">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Tiêu đề</th>
-                                            <th class="text-center">Danh mục</th>
-                                            <th class="text-center">Khu vực</th>
-                                            <th class="text-center">Nhu cầu</th>
-                                            <th class="text-center">Xem</th>
-                                            <th class="text-center">Ngày</th>
-                                            <th class="text-center">Người đăng</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if (!empty($this->arrContentList)):
+                                <?php if (!empty($this->arrContentList)): ?>
+                                    <table class="table table-striped table-condensed table-hover cf">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Tiêu đề</th>
+                                                <th class="text-center" width="80px" style="color: #69A467">Danh mục</th>
+                                                <th class="text-center" width="95px">Khu vực</th>
+                                                <th class="text-center" width="70px">Nhu cầu</th>
+                                                <th class="text-center">Xem</th>
+                                                <th class="text-center">Ngày</th>
+                                                <th class="text-center" width="120">Người đăng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
                                             $arrCategorList = unserialize(ARR_CATEGORY);
                                             $arrDistrict = unserialize(ARR_DISTRICT);
                                             foreach ($this->arrContentList as $arrContent):
@@ -80,18 +80,18 @@
                                                             <p><?php echo strlen($arrContent['cont_detail_text']) > 400 ? substr(strip_tags($arrContent['cont_detail_text']), 0, 400) . '...' : $arrContent['cont_detail_text']; ?></p>
                                                         </div>
                                                     </td>
-                                                    <td class="text-center"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('categorySlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'categoryID' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
-                                                    <td class="text-center"><?php echo (!empty($arrContent['dist_id'])) ? $arrDistrict[$arrContent['dist_id']]['cate_name'] : 'Toàn tỉnh'; ?></td>
+                                                    <td class="text-center"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'cateId' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold;color: #69A467"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
+                                                    <td class="text-center"><?php echo (!empty($arrContent['dist_id'])) ? $arrDistrict[$arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></td>
                                                     <td class="text-center"><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></td>
                                                     <td class="text-center"><?php echo $arrContent['cont_views']; ?></td>
-                                                    <td class="text-center"><?php echo date('d.m.Y', $arrContent['created_date']); ?></td>
+                                                    <td class="text-center"><?php echo date('d.m.y', $arrContent['created_date']); ?></td>
                                                     <td class="text-center">
                                                         <?php if (!empty($arrContent['user_created'])): ?>
-                                                            <a class="btn btn-info btn-sm" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>">
-                                                                <?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>
+                                                            <a style="text-decoration: none; font-size: 11px" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>">
+                                                                <b><?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?></b>
                                                             </a>
                                                         <?php else : ?>
-                                                            <a class="btn btn-info btn-sm" href="javascript:;" ><?php echo $arrContent['user_info']['user_fullname']; ?></a>
+                                                            <a style="text-decoration: none; font-size: 11px" href="javascript:;" ><?php echo $arrContent['user_info']['user_fullname']; ?></a>
                                                         <?php endif;
                                                         ?>
                                                         </a>
@@ -99,11 +99,10 @@
                                                 </tr>
                                                 <?php
                                             endforeach;
-                                        endif;
-                                        ?>
-                                    </tbody>
-                                </table>
-
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                <?php endif; ?>
                                 <div class="text-center">
                                     <?php echo $this->paging; ?>
                                 </div>

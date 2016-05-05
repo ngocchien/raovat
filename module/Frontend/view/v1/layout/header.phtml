@@ -103,7 +103,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                                     <option value="toan-tinh">Chọn khu vực</option>
                                     <option value="toan-tinh">Toàn tỉnh</option>
                                     <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
-                                        <option value="<?php echo $value['dist_id'] ?>"><?php echo $value['dist_name']; ?></option>
+                                        <option value="<?php echo $value['dist_slug'] ?>"><?php echo $value['dist_name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -112,9 +112,8 @@ $controller = $paramsRouter['__CONTROLLER__'];
                             <div class="label">
                                 <select class="select" name="danh-muc">
                                     <option value="tat-ca-danh-muc">Chọn danh mục</option>
-                                    <option value="tat-ca-danh-muc">Tất cả danh mục</option>
                                     <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
-                                        <option value="<?php echo $value['cate_id'] ?>"><?php echo $value['cate_name']; ?></option>
+                                        <option value="<?php echo $value['cate_slug'] ?>"><?php echo $value['cate_name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

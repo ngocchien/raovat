@@ -54,10 +54,16 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="author-avatar">
-                                    <img src="<?php echo STATIC_URL; ?>/f/v1/images/images/author-avatar_03.png" alt="author avatar">
+                                    <?php
+                                    $avatar = STATIC_URL . '/f/v1/images/noavatar.jpg';
+                                    if (!empty($this->arrUser['user_avatar'])) {
+                                        $avatar = json_decode($this->arrUser['user_avatar'], true)[0]['thumbImage']['120x120'];
+                                    }
+                                    ?>
+                                    <img src="<?php echo $avatar;?>" alt="author avatar">
                                 </div>
                                 <div class="author-name">
-                                    <p>John Terry</p>
+                                    <p><?php echo $this->arrUser['user_fullname'] ?></p>
                                 </div>
                             </div>
                             <div class="col-sm-9">
@@ -229,7 +235,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                       ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                         ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">

@@ -103,9 +103,14 @@ class storageUser extends AbstractTableGateway {
                 return false;
             }
             $result = $this->insert($p_arrParams);
+
             if ($result) {
                 $result = $this->lastInsertValue;
+                $p_arrParams['user_id'] = $result;
+                $instanceJob = new \My\Job\JobUser();
+                $instanceJob->addJob(SEARCH_PREFIX . 'writeUser', $p_arrParams);
             }
+
             return $result;
         } catch (\Exception $exc) {
             echo '<pre>';
@@ -120,14 +125,15 @@ class storageUser extends AbstractTableGateway {
             return false;
         }
         try {
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $query = $sql->update($this->table)->set($p_arrParams)->where('1=1 AND user_id = ' . $intUserID);
-            $query = $sql->getSqlStringForSqlObject($query);
-            $result = $adapter->query($query, $adapter::QUERY_MODE_EXECUTE);
-            $resultSet = new \Zend\Db\ResultSet\ResultSet();
-            $resultSet->initialize($result);
-            $result = $resultSet->count() ? true : false;
+            if (!is_array($p_arrParams) || empty($p_arrParams) || empty($intUserID)) {
+                return false;
+            }
+            $result = $this->update($p_arrParams, 'user_id=' . $intUserID);
+            if ($result) {
+                $p_arrParams['user_id'] = $intUserID;
+                $instanceJob = new \My\Job\JobUser();
+                $instanceJob->addJob(SEARCH_PREFIX . 'editUser', $p_arrParams);
+            }
             return $result;
         } catch (\Exception $exc) {
             echo '<pre>';
