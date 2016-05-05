@@ -146,7 +146,6 @@ class CategoryController extends MyController {
             'arrLocation' => $arrLocation,
             'arrUserList' => $arrUserListFormat,
             'arrCategoryParent' => $arrCategoryParent
-//            'arrProductVipList' => $arrProductVipList
         );
     }
 

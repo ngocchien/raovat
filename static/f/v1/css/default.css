@@ -172,7 +172,7 @@ h5,h6{
 ===========================================================================*/
 #searchBar{
     padding: 5px 0;
-    background: #3f3d59;
+    background: #D9D9D9;
     margin: 0 0 0 0;
 }
 #searchBar form .keyword{
@@ -289,10 +289,11 @@ h5,h6{
 #searchBar form .search-btn{
     width: 150px;
     height: 48px;
-    background: transparent;
+    background: #e65711;
     border: 1px solid #ffffff;
     color: #ffffff;
     transition: all 0.5s ease;
+    font-weight: bold
 }
 #searchBar form .search-btn:hover{
     background: #a0ce4e;
@@ -577,14 +578,14 @@ h5,h6{
 ===========================================================================*/
 #footer footer{
     padding: 10px 0;
-    background: #3f3d59;
-    color: #ffffff;
+    background: #eee;
+    color: #000;
 }
 #footer footer .widget{
     margin-bottom: 15px;
 }
 #footer footer .widget h4{
-    color: #ffffff;
+    color: #575757;
     background: url("../images/footersep.png") no-repeat left bottom;
     padding: 0 0 20px 0;
     margin: 0 0 30px 0;
@@ -628,12 +629,12 @@ h5,h6{
 }
 #footer footer .widget a{
     text-decoration: none;
-    color: #ffffff;
+    color: #6a6a6a;
     vertical-align: top;
     font-size: 14px;
 }
 #footer footer .widget a:hover{
-    color: #a0ce4e;
+    color: #e65711;
 }
 #footer footer .widget ul{
     list-style: none;
@@ -669,9 +670,10 @@ h5,h6{
 }
 
 #footer footer .copyright{
-    color: #ffffff;
+    color: #6a6a6a;
     margin: 10px 0 0 0;
 }
+
 /*=========================================================================
 // back to top
 ===========================================================================*/

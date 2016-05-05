@@ -337,7 +337,7 @@ class ContentController extends MyController {
                 return $this->redirect()->toRoute('home');
             }
         }
-
+        $instanceSearchProperties = new \My\Search\Properties();
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
 
@@ -353,8 +353,7 @@ class ContentController extends MyController {
 
             $intProperties = (int) $params['properties'];
             if ($intProperties) {
-                $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-                $arrProperties = $serviceProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
+                $arrProperties = $instanceSearchProperties->getDetail(['prop_id' => $intProperties, 'prop_status' => 1]);
 
                 if (empty($arrProperties)) {
                     $errors['properties'] = 'Nhu cầu rao vặt bạn chọn không tồn tại trong hệ thống !';
@@ -464,10 +463,6 @@ class ContentController extends MyController {
                                 }
                             }
                         }
-                        //update tổng số rao vặt trong danhmục
-//                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
-                        //update tổng số rao vặt danh mục cha
-//                        $serviceCategory->edit(array('cate_total_product' => $arrCategory[$arrCategoryDetail['cate_parent']]['cate_total_product'] + 1), $arrCategoryDetail['cate_parent']);
 
                         $completeSession = new Container('contentComplete');
                         $completeSession->type = 'edit';
@@ -485,20 +480,17 @@ class ContentController extends MyController {
 
         $arrPropertiesList = [];
         $arrCategoryList = unserialize(ARR_CATEGORY);
-        $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
         if (!empty($params['category'])) {
             $propertiesId = $arrCategoryList[$arrCategoryList[$params['category']]['parent_id']]['prop_id'];
             if ($propertiesId) {
-                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+                $arrPropertiesList = $instanceSearchProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
             }
         } else {
             $propertiesId = $arrCategoryList[$arrCategoryList[$arrContent['cate_id']]['parent_id']]['prop_id'];
             if ($propertiesId) {
-                $arrPropertiesList = $serviceProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
+                $arrPropertiesList = $instanceSearchProperties->getList(['parent_id' => $propertiesId, 'prop_status' => 1]);
             }
         }
-//        arrPropertiesList
-//        $instanceSearchContent = $this->serviceLocator->get('My\Models\Product');
 
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headTitle(html_entity_decode('Rao vặt - Chỉnh sửa rao vặt') . General::TITLE_META);
@@ -538,7 +530,6 @@ class ContentController extends MyController {
             if (empty($params['cont_id'])) {
                 return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau  giây lát!</b></center>']));
             }
-            $instanceSearchContent = new \My\Search\Content();
             $arrContent = $instanceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'user_created' => CUSTOMER_ID, 'not_cont_status' => -1]);
 
             if (empty($arrContent)) {
@@ -562,7 +553,7 @@ class ContentController extends MyController {
             return $this->redirect()->toRoute('home');
         }
 
-//        $completeSession->getManager()->getStorage()->clear('contentComplete');
+        $completeSession->getManager()->getStorage()->clear('contentComplete');
         return [
             'completeSession' => $completeSession
         ];
@@ -611,8 +602,8 @@ class ContentController extends MyController {
                 'prop_status' => 1
             ];
 
-            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-            $arrPropertiesList = $serviceProperties->getList($arrConditionProperties);
+            $instanceSearchProperties = new \My\Search\Properties();
+            $arrPropertiesList = $instanceSearchProperties->getList($arrConditionProperties);
 
             if (empty($propertiesId)) {
                 $arrResult = [
@@ -783,7 +774,7 @@ class ContentController extends MyController {
     public function sendMessagesAction() {
         if ($this->request->isPost()) {
             if (!CUSTOMER_ID) {
-                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng đăng nhập trước khi lưu tin!</b></p>')));
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Vui lòng đăng nhập trước khi gửi tin nhắn đến người này!</b></p>')));
             }
             $params = $this->params()->fromPost();
 
@@ -822,8 +813,8 @@ class ContentController extends MyController {
                 $arrData['mess_id'] = $intResult;
                 $arrUserInfo = [];
                 if (!empty($arrContent['user_created'])) {
-                    $serviceUser = $this->serviceLocator->get('My\Models\User');
-                    $arrUserInfo = $serviceUser->getDetail(['user_id' => $arrContent['user_created']]);
+                    $instanceSearchUser = new \My\Search\User();
+                    $arrUserInfo = $instanceSearchUser->getDetail(['user_id' => $arrContent['user_created']]);
                 }
                 //send mail
                 $template = 'frontend/email-messages';

@@ -99,7 +99,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                     <form method="GET" action="<?php echo $this->serverUrl() . $this->Url('search') ?>">
                         <div class="col-md-3">
                             <div class="label">
-                                <select class="select" name="khu-vuc">
+                                <select class="select form-control" name="khu-vuc">
                                     <option value="toan-tinh">Chọn khu vực</option>
                                     <option value="toan-tinh">Toàn tỉnh</option>
                                     <?php foreach (unserialize(ARR_DISTRICT) as $value): ?>
@@ -110,7 +110,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                         </div>
                         <div class="col-md-3">
                             <div class="label">
-                                <select class="select" name="danh-muc">
+                                <select class="select form-control" name="danh-muc">
                                     <option value="tat-ca-danh-muc">Chọn danh mục</option>
                                     <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
                                         <option value="<?php echo $value['cate_slug'] ?>"><?php echo $value['cate_name']; ?></option>
@@ -122,7 +122,7 @@ $controller = $paramsRouter['__CONTROLLER__'];
                             <input class="keyword" type="text" name="tu-khoa" placeholder="Nhập từ khóa...">
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="search-btn">Tìm kiếm</button>
+                            <button type="submit" class="search-btn"><i class="fa fa-search"></i> Tìm kiếm</button>
                         </div>
                     </form>
                 </div>
