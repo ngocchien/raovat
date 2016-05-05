@@ -24,8 +24,8 @@ $action = $paramsRouter['action'];
                         <div class="links text-right">
                             <a class="btn btn-sm btn-warning" href="<?php echo $this->serverUrl() . $this->Url('addcontent', array('controller' => 'content', 'action' => 'add')) ?>"> <i class="fa fa-pencil-square-o"></i> ĐĂNG TIN NHANH</a>
                             <?php if (CUSTOMER_ID == 0): ?>
-                                <a id="loginRegister" href="javascript:;"><i class="fa fa-user-plus"></i> Đăng ký</a>
-                                <a id="loginButton" href="javascript:;"><i class="fa fa-sign-in"></i> Login</a>
+                                <a class="btn btn-sm btn-warning" id="loginRegister" href="javascript:;"><i class="fa fa-user-plus"></i> Đăng ký</a>
+                                <a class="btn btn-sm btn-warning" id="loginButton" href="javascript:;"><i class="fa fa-sign-in"></i> Đăng nhập</a>
                             <?php else: ?>
                                 <a class="btn btn-sm btn-warning" href="<?php echo $this->serverUrl() . $this->Url('user-profile') ?>"><i class="fa fa-user"></i> Tài khoản</a>
                                 <a class="btn btn-sm btn-warning"href="<?php echo $this->serverUrl() . $this->Url('auth', array('controller' => 'auth', 'action' => 'logout')) ?>"><i class="fa fa-sign-out"></i> Thoát</a>

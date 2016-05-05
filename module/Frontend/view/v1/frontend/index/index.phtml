@@ -96,7 +96,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                             if (!empty($arrCategoryByParent[$value['cate_id']])):
                                 foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
                                     ?>
-                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo $valueChildren['cate_total_product']; ?> )</a></p>
+                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int)$valueChildren['total_content']; ?> )</a></p>
                                     <?php
                                 endforeach;
                             endif;
