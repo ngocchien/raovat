@@ -83,6 +83,7 @@ class Category extends SearchAbstract {
             'cate_status' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'cate_grade' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'prop_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'total_content' => ['type' => 'integer', 'index' => 'not_analyzed'],
         ]);
         $mapping->send();
     }
@@ -174,7 +175,7 @@ class Category extends SearchAbstract {
         $query = new ESQuery();
 
         $total = $this->getTotal($params);
-        if(empty($sort)){
+        if (empty($sort)) {
             $sort = $this->setSort($params);
         }
         $query->setSize($total)

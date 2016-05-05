@@ -253,7 +253,6 @@ class Properties extends SearchAbstract {
             $boolQuery->addMust($addQuery);
         }
 
-
         return $boolQuery;
     }
 

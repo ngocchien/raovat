@@ -40,12 +40,12 @@ class IndexController extends MyController {
         $arrContentList = $instaceSearchContent->getList($arrConditionContent, ['created_date' => ['order' => 'desc']]);
 
         $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
-        $intLimit = 20;
+        $intLimit = 30;
         $arrConditionNewContent = [
             'cont_status' => 1,
             'less_expired_time' => time()
         ];
-        $arrNewContent = $instaceSearchContent->getListLimit($arrConditionNewContent, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
+        $arrNewContent = $instaceSearchContent->getListLimit($arrConditionNewContent, $intPage, $intLimit, ['updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
         $intTotal = $instaceSearchContent->getTotal($arrConditionContent);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'category', $params);
@@ -74,29 +74,30 @@ class IndexController extends MyController {
         $arrPropertiesList = [];
 
         if (!empty($arrUserIdList)) {
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUserListTemp = $serviceUser->getList(['in_user_id' => implode(',', $arrUserIdList)]);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUserListTemp = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
 
             if (!empty($arrUserListTemp)) {
                 foreach ($arrUserListTemp as $value) {
                     $arrUserList[$value['user_id']] = $value;
                 }
             }
-            unset($serviceUser);
+            unset($instanceSearchUser);
+            unset($arrUserListTemp);
         }
 
         if (!empty($arrPropIdList)) {
-            $serviceProperties = $this->serviceLocator->get('My\Models\Properties');
-            $arrPropertiesListTemp = $serviceProperties->getList(['in_prop_id' => implode(',', $arrPropIdList)]);
+            $instaceSearchProperties = new \My\Search\Properties();
+            $arrPropertiesListTemp = $instaceSearchProperties->getList(['in_prop_id' => $arrPropIdList]);
 
             foreach ($arrPropertiesListTemp as $value) {
                 $arrPropertiesList[$value['prop_id']] = $value;
             }
-            unset($serviceProperties);
+            unset($instaceSearchProperties);
             unset($arrPropertiesListTemp);
         }
 
-        return array(
+        return [
             'param' => $params,
             'arrCategoryParentList' => $arrCategoryParentList,
             'arrCategoryByParent' => $arrCategoryByParent,
@@ -106,7 +107,7 @@ class IndexController extends MyController {
             'arrPropertiesList' => $arrPropertiesList,
             'arrNewContentList' => $arrNewContent,
             'paging' => $paging
-        );
+        ];
     }
 
 }

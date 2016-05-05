@@ -114,6 +114,9 @@ class ContentController extends MyController {
                 $arrCategoryList = unserialize(ARR_CATEGORY);
                 if (empty($arrCategoryList[$intCategoryId]) || empty($arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']])) {
                     $errors['category'] = 'Danh mục không tồn tại trong hệ thống !';
+                } else {
+                    $arrCategory = $arrCategoryList[$intCategoryId];
+                    $arrCategoryParent = $arrCategoryList[$arrCategoryList[$intCategoryId]['parent_id']];
                 }
             }
 
@@ -237,9 +240,10 @@ class ContentController extends MyController {
 
                     if ($intResult > 0) {
                         //update tổng số rao vặt trong danhmục
-//                        $serviceCategory->edit(array('cate_total_product' => $arrCategoryDetail['cate_total_product'] + 1), $arrCategoryDetail['cate_id']);
+                        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+                        $serviceCategory->edit(array('total_content' => $arrCategory['total_content'] + 1), $arrCategory['cate_id']);
                         //update tổng số rao vặt danh mục cha
-//                        $serviceCategory->edit(array('cate_total_product' => $arrCategory[$arrCategoryDetail['cate_parent']]['cate_total_product'] + 1), $arrCategoryDetail['cate_parent']);
+                        $serviceCategory->edit(array('total_content' => $arrCategoryParent['total_content'] + 1), $arrCategoryParent['cate_id']);
 
                         $completeSession = new Container('contentComplete');
                         $completeSession->complete = true;
