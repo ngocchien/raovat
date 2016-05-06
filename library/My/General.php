@@ -4,9 +4,9 @@ namespace My;
 
 class General {
 
-    const TITLE_META = " || QuyNhon247.com";
-    const SITE_AUTH = "QuyNhon247.com";
-    const SITE_DOMAIN = 'quynhon247.com';
+    const TITLE_META = " || Bestquynhon.com";
+    const SITE_AUTH = "Bestquynhon.com";
+    const SITE_DOMAIN = 'Bestquynhon.com';
     const SITE_SLOGAN = 'Mạng rao vặt - mua bán Quy Nhơn - Bình Định';
     const SITE_HOTLINE = '097 353 16 18';
     const SITE_LOCATION = "";
@@ -43,8 +43,6 @@ class General {
     const SEND_MAIL_MESSAGES = 1;
     //define social url
     const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/quynhon247/';
-    
-    
     const VIP_ALL_PAGE = 3;
     const VIP_CATE_PAGE = 2;
 
