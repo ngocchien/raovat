@@ -1548,10 +1548,10 @@ input[type="radio"]{
     background: #3c599b;
 }
 #loginForm .social-accounts a:nth-of-type(2){
-    background: #5ea9dd;
+    background: #d95232;
 }
 #loginForm .social-accounts a:nth-of-type(3){
-    background: #d95232;
+    background: #5ea9dd;
 }
 #loginForm .social-accounts a i{
     color: #ffffff;
@@ -1563,10 +1563,10 @@ input[type="radio"]{
     background: #3c599b;
 }
 #formRegister .social-accounts a:nth-of-type(2){
-    background: #5ea9dd;
+    background: #d95232;
 }
 #formRegister .social-accounts a:nth-of-type(3){
-    background: #d95232;
+    background: #5ea9dd;
 }
 
 #formRegister .social-accounts a i{

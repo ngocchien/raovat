@@ -10,7 +10,7 @@ ob_start('mb_output_handler');
 chdir(dirname(__DIR__));
 defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 APPLICATION_ENV === 'production' ? $staticURL = 'http://bestquynhon.com' : $staticURL = 'http://static.bestquynhon.com';
-APPLICATION_ENV === 'production' ? $baseURL = 'http://dev.bestquynhon.com' : $baseURL = 'http://' . APPLICATION_ENV . '.bestquynhon.com';
+APPLICATION_ENV === 'production' ? $baseURL = 'http://static.bestquynhon.com' : $baseURL = 'http://static.bestquynhon.com';
 //define variable
 defined('WEB_ROOT') || define('WEB_ROOT', realpath(dirname(dirname(__FILE__))));
 define('FRONTEND_TEMPLATE', 'v1');
