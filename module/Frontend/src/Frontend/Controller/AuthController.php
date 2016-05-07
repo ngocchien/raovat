@@ -232,7 +232,7 @@ class AuthController extends MyController {
             if ($intResult) {
                 $general = new General();
                 //tiêu đề Email
-                $strTitle = '[dev.raovat.vn] - Reset Mật khẩu !';
+                $strTitle = General::SITE_AUTH . ' - Lấy lại mật khẩu!';
                 //Nội dung email
                 $template = 'frontend/auth/reset-password';
                 $viewModel = new ViewModel();

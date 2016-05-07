@@ -52,8 +52,13 @@ class ContentController extends MyController {
             'cont_views' => $arrContent['cont_views'] + 1,
             'modified_date' => time()
         ];
+        try {
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+        } catch (\Exception $exc) {
+            echo $exc->getMessage();die;
+        }
 
-        $serviceContent = $this->serviceLocator->get('My\Models\Content');
+        
         $serviceContent->edit($arrUpdate, $cont_id);
 
         //Lay thong tin người đăng
