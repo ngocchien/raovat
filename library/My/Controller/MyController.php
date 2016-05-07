@@ -154,6 +154,10 @@ class MyController extends AbstractActionController {
             define('CUSTOMER_BALANCE', $arrUserData['user_balance'] ? (int) $arrUserData['user_balance'] : 0);
 
             if (empty(CUSTOMER_ID) && $arrData['controller'] != 'user' && $arrData['action'] != 'social') {
+                echo '<pre>';
+                print_r('toi cmnr');
+                echo '</pre>';
+                die();
                 /*
                  * Oauth Google API;
                  */
