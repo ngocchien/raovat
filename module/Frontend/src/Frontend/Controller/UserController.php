@@ -473,8 +473,8 @@ class UserController extends MyController {
                 
                 try {
                     $accessToken = $helper->getAccessToken();
-                } catch (\Exception $exc) {
-                    echo $exc->getMessage();
+                } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+                    echo $e->getMessage();
                     DIE();
                 }
 
