@@ -50,7 +50,7 @@ class General {
     static $fbConfig = [
         'appId' => '1697339473867169',
         'secret' => 'b8db461aceec01487b234135a3b44f30',
-        'redirect_uri' => 'http://dev.raovat.vn/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
+        'redirect_uri' => 'http://bestquynhon.com/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
         'field_profile' => 'fields=id,name,email,locale,link,cover,picture'
     ];
     static $ggConfig = [
