@@ -1,0 +1,6 @@
+Thông tin đăng nhập vào hệ thống: 
+
+Tên dịch vụ: VPS#1 - CentOS 6.7
+Server Ip: 123.30.250.45 - SSH Port: 7878
+Username: root
+Password: @PburoGWK@ || HueLinh@1009

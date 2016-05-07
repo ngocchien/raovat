@@ -262,7 +262,7 @@ class General {
                         mkdir($thumbFileDir, 0777, true);
                         chmod($thumbFileDir, 0777);
                     }
-                    $image = $serviceImage->make($strFolderByDate . $newFileName)->resize($width, $height);
+                    $image = $serviceImage->make($strFolderByDate . $newFileName)->fit($width, $height);
                     $resultThumb = $image->save($thumbFileDir . $newFileName);
 
                     if ($resultThumb) {
