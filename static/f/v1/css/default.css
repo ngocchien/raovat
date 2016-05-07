@@ -207,8 +207,8 @@ h5,h6{
     cursor: pointer;
     position: relative;
     outline:none;
-/*    -webkit-appearance:none;
-    -moz-appearance:none;*/
+    /*    -webkit-appearance:none;
+        -moz-appearance:none;*/
     appearance:none;
     font-weight: 400;
     font-size: 14px;
@@ -2164,8 +2164,14 @@ ul.inbox-pagination li {
     text-align: left;
 }
 
+.vip2 {
+    color: #D029D6
+}
+
 .red-tooltip + .tooltip > .tooltip-inner {background-color: #FCF8E3;color: #000000;max-width: 550px; font-size: 14px}
 
 .padding-0{
     padding: 0px
 }
+#chiase {position:fixed; top:35%; left:0%; background-color:#2AA4CF;padding:2px;z-index:10;border-bottom-right-radius:5px;border-top-right-radius:5px;}
+#chiase .nut {float:left;clear:both;}

@@ -96,7 +96,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                             if (!empty($arrCategoryByParent[$value['cate_id']])):
                                 foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
                                     ?>
-                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int)$valueChildren['total_content']; ?> )</a></p>
+                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int) $valueChildren['total_content']; ?> )</a></p>
                                     <?php
                                 endforeach;
                             endif;
@@ -158,14 +158,14 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                                 <img src="<?php echo $avatar; ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php else: ?>
-                                                        <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'],true)['user_fullname']; ?>">
+                                                            <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
                                                                 <img src="<?php echo STATIC_URL . '/f/v1/images/noavatar.jpg' ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php endif; ?>
                                                     </div>
                                                     <div class="col-md-11" style="margin-top: 5px;">
-                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip" style="text-decoration: none;">
-                                                            <?php echo $arrContent['cont_title']; ?>
+                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip vip2" style="text-decoration: none;">
+                                                            <?php echo $arrContent['cont_title']; ?><?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>"><?php endif; ?> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>">
                                                         </a>
                                                     </div>
                                                 </td>

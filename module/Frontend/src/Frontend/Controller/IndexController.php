@@ -23,48 +23,6 @@ class IndexController extends MyController {
     }
 
     public function indexAction() {
-
-        $username = 'nguyenngocchien0104';
-        $password = 'chien123';
-        $loginUrl = 'http://vlbinhdinh.vieclamvietnam.gov.vn/Login/tabid/10176/Default.aspx?returnurl=%2fTrangChu.aspx';
-
-//init curl
-        $ch = curl_init();
-//Set the URL to work with
-        curl_setopt($ch, CURLOPT_URL, $loginUrl);
-// ENABLE HTTP POST
-        curl_setopt($ch, CURLOPT_POST, 1);
-//Set the post parameters
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'dnn$ctr13373$Main$Login$Login_DNN$txtUsername=' . $username . '&dnn$ctr13373$Main$Login$Login_DNN$txtPassword=' . $password);
-
-//Handle cookies for the login
-        curl_setopt($ch, CURLOPT_COOKIEJAR, PUBLIC_PATH . 'cookie.txt');
-
-//Setting CURLOPT_RETURNTRANSFER variable to 1 will force cURL
-//not to print out the results of its query.
-//Instead, it will return the results as a string return value
-//from curl_exec() instead of the usual true/false.
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-//execute the request (the login)
-        $store = curl_exec($ch);
-
-//the login is now done and you can continue to get the
-//protected content.
-//set the URL to the protected file
-        curl_setopt($ch, CURLOPT_URL, 'http://vlbinhdinh.vieclamvietnam.gov.vn/thongtintuyendung.aspx?tuyendungId=ec10b8bf-5766-4ead-9a01-b3f5872bfd17');
-
-//execute the request
-        $content = curl_exec($ch);
-        echo '<pre>';
-        print_r($content);
-        echo '</pre>';
-        die();
-//save the data to disk
-        file_put_contents('~/download.zip', $content);
-
-
-        //
         $params = $this->params()->fromRoute();
 
         $arrCategoryParentList = unserialize(ARR_CATEGORY_PARENT);
