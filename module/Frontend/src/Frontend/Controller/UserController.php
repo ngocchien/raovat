@@ -505,10 +505,6 @@ class UserController extends MyController {
                 try {
                     $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
-                    echo '<pre>';
-                    print_r($userInfoFacebook);
-                    echo '</pre>';
-                    die();
                 } catch (\Exception $exc) {
                         echo $exc->getMessage();
                         die();
