@@ -484,7 +484,7 @@ class UserController extends MyController {
 //                    print_r($e);
 //                    echo '</pre>';
 //                    die();
-                    return $this->response->redirect("user/login");
+//                    return $this->response->redirect("user/login");
                 } catch (\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
                     echo 'Facebook SDK returned an error: ' . $e->getMessage();
@@ -492,7 +492,7 @@ class UserController extends MyController {
                     /*
                      * catch return to register
                      */
-                    return $this->response->redirect("user/register");
+//                    return $this->response->redirect("user/register");
                 }
                 echo '<pre>';
                 print_r('a');
