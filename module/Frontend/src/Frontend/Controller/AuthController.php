@@ -251,7 +251,7 @@ class AuthController extends MyController {
 
     public function confirmResetPasswordAction() {
         if (CUSTOMER_ID) {
-            return $this->redirect()->toRoute('auth', array('controller' => 'auth', 'action' => 'detail'));
+            return $this->redirect()->toRoute('user-profile');
         }
         $params = $this->params()->fromRoute();
         $errors = [];

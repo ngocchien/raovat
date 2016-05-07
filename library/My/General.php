@@ -48,18 +48,18 @@ class General {
 
     private $headlink;
     static $fbConfig = [
-        'appId' => '1697339473867169',
-        'secret' => 'b8db461aceec01487b234135a3b44f30',
-        'redirect_uri' => 'http://dev.raovat.vn/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
+        'appId' => '272925143041233',
+        'secret' => '12af8416d358cbe1d5e6a64732603c19',
+        'redirect_uri' => 'http://bestquynhon.com/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
         'field_profile' => 'fields=id,name,email,locale,link,cover,picture'
     ];
     static $ggConfig = [
-        'application_name' => 'nhadat',
-        'client_id' => '616839698137-0297vqlcottd6stinf7d9o2rnem9o211.apps.googleusercontent.com',
-        'client_secret' => 'xkMI-2BixBMBgw8PCCddKJub',
+        'application_name' => 'bestquynhon',
+        'client_id' => '876918874392-m1fu367c3ad8qilktourlj315iaeknod.apps.googleusercontent.com',
+        'client_secret' => '5V0INPy4coQqMABnr-IhV4sL',
         'developer_key' => 'YOUR_DEVELOPER_KEY',
         'set_scopes' => 'https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile',
-        'redirect_uri' => 'http://dev.raovat.vn/thanh-vien/dang-nhap-bang-mang-xa-hoi-google.html',
+        'redirect_uri' => 'http://bestquynhon.com/thanh-vien/dang-nhap-bang-mang-xa-hoi-google.html',
         'api_map_key' => 'AIzaSyCoRSTyg5afMbwc9vbx-HItfQSndzlNQjs'
     ];
     static $foreground_colors = array(
