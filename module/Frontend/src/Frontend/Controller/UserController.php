@@ -473,10 +473,6 @@ class UserController extends MyController {
 
                 try {
                     $accessToken = $helper->getAccessToken();
-                    echo '<pre>';
-                    print_r($accessToken);
-                    echo '</pre>';
-                    die();
                 } catch (\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
                         echo 'Graph returned an error: ' . $e->getMessage();
@@ -492,7 +488,7 @@ class UserController extends MyController {
                 } catch (\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
                     echo 'Facebook SDK returned an error: ' . $e->getMessage();
-                    exit;
+                    die();
                     /*
                      * catch return to register
                      */
