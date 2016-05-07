@@ -477,11 +477,6 @@ class UserController extends MyController {
                     echo $exc->getMessage();
                     die();
                 }
-                echo '<pre>';
-                print_r('a');
-                echo '</pre>';
-                die();
-
 
                 try {
                     $accessToken = $helper->getAccessToken();
