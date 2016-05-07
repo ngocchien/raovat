@@ -494,7 +494,10 @@ class UserController extends MyController {
                      */
                     return $this->response->redirect("user/register");
                 }
-                
+                echo '<pre>';
+                print_r('a');
+                echo '</pre>';
+                die();
                 if (!isset($accessToken)) {
                     /*
                      * không tồn tại acess token thì redirect về trang register
