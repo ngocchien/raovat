@@ -470,6 +470,18 @@ class UserController extends MyController {
                     'default_graph_version' => 'v2.5'
                 ]);
                 $helper = $facebookClient->getRedirectLoginHelper();
+                
+                try {
+                    $accessToken = $helper->getAccessToken();
+                } catch (\Exception $exc) {
+                    echo $exc->getMessage();
+                    die();
+                }
+                echo '<pre>';
+                print_r('a');
+                echo '</pre>';
+                die();
+
 
                 try {
                     $accessToken = $helper->getAccessToken();
