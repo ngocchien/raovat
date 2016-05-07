@@ -473,10 +473,6 @@ class UserController extends MyController {
 
                 try {
                     $accessToken = $helper->getAccessToken();
-                    echo '<pre>';
-                    print_r($accessToken);
-                    echo '</pre>';
-                    die();
                 } catch (\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
                         echo 'Graph returned an error: ' . $e->getMessage();
@@ -498,10 +494,7 @@ class UserController extends MyController {
                      */
 //                    return $this->response->redirect("user/register");
                 }
-                echo '<pre>';
-                print_r('a');
-                echo '</pre>';
-                die();
+
                 if (!isset($accessToken)) {
                     /*
                      * không tồn tại acess token thì redirect về trang register
@@ -512,6 +505,10 @@ class UserController extends MyController {
                 try {
                     $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
+                    echo '<pre>';
+                    print_r($userInfoFacebook);
+                    echo '</pre>';
+                    die();
                 } catch (\Exception $exc) {
                         echo $exc->getMessage();
                         die();
