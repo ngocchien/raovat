@@ -441,6 +441,10 @@ class UserController extends MyController {
                         $completeSession->email = $fileContent['email'];
                     }
                 } catch (\Exception $exc) {
+                    echo '<pre>';
+                    print_r($exc);die;
+                    echo '</pre>';
+                    die();
                     /*
                      * return to page register
                      */
@@ -470,11 +474,15 @@ class UserController extends MyController {
                     $accessToken = $helper->getAccessToken();
                 } catch (\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-//                        echo 'Graph returned an error: ' . $e->getMessage();
-//                        exit;
+                        echo 'Graph returned an error: ' . $e->getMessage();
+                        die();
                     /*
                      * catch return to login
                      */
+//                    echo '<pre>';
+//                    print_r($e);
+//                    echo '</pre>';
+//                    die();
                     return $this->response->redirect("user/login");
                 } catch (\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
@@ -485,7 +493,7 @@ class UserController extends MyController {
                      */
                     return $this->response->redirect("user/register");
                 }
-
+                
                 if (!isset($accessToken)) {
                     /*
                      * không tồn tại acess token thì redirect về trang register
@@ -497,7 +505,8 @@ class UserController extends MyController {
                     $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
                 } catch (\Exception $exc) {
-//                        echo $exc->getMessage();
+                        echo $exc->getMessage();
+                        die();
                     /*
                      * catch return to register
                      */
