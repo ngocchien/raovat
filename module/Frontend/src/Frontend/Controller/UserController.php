@@ -476,59 +476,49 @@ class UserController extends MyController {
                     $accessToken = $helper->getAccessToken();
                 } catch (\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-                    echo 'Graph returned an error: ' . $e->getMessage();
-                    die();
+//                    echo 'Graph returned an error: ' . $e->getMessage();
+//                    die();
                     /*
                      * catch return to login
                      */
-//                    echo '<pre>';
-//                    print_r($e);
-//                    echo '</pre>';
-//                    die();
-//                    return $this->response->redirect("user/login");
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 } catch (\Facebook\Exceptions\FacebookSDKException $e) {
                     // When validation fails or other local issues
-                    echo 'Facebook SDK returned an error: ' . $e->getMessage();
-                    die();
+//                    echo 'Facebook SDK returned an error: ' . $e->getMessage();
+//                    die();
                     /*
                      * catch return to register
                      */
-//                    return $this->response->redirect("user/register");
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
 
                 if (!isset($accessToken)) {
-                    /*
-                     * không tồn tại acess token thì redirect về trang register
-                     */
-                    return $this->response->redirect("account/register");
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
 
                 try {
                     $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
                 } catch (\Exception $exc) {
-                    echo $exc->getMessage();
-                    die();
-                    /*
-                     * catch return to register
-                     */
-                    return $this->response->redirect("account/register");
+//                    echo $exc->getMessage();
+//                    die();
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
 
                 if (!isset($userInfoFacebook)) {
-                    /*
-                     * không tồn tại thông tin user thì redirect về trang Đăng ký
-                     */
-                    return $this->response->redirect("account/register");
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
 
                 $userEmail = $userInfoFacebook['email'];
 
                 if (empty($userEmail)) {
-                    /*
-                     * không tồn tại Email thì redirect về trang Đăng kys
-                     */
-                    return $this->response->redirect("user/register");
+                    $_SESSION['error_social'] = 'facebook';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
 
                 /*
@@ -565,10 +555,6 @@ class UserController extends MyController {
                 $completeSession->email = $userInfoFacebook['email'];
             }
         }
-        echo '<pre>';
-        print_r('aaaaaaaaaaaaaaaaaaaa');
-        echo '</pre>';
-        die();
         if ($this->request->isPost()) {
 
             $arrParams = $this->params()->fromPost();
@@ -637,22 +623,25 @@ class UserController extends MyController {
                 }
             }
         }
-        
+
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
-        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
         $this->renderer->headTitle('Đăng nhập website bằng mạng xã hội!' . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
-        $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
-        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id)));
-        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
-        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
 
         return [
             'errors' => $errors,
             'completeSession' => $completeSession,
             'params' => $arrParams
         ];
+    }
+
+    public function errorSocialAction() {
+        
     }
 
     public function listMessagesAction() {
