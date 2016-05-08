@@ -281,10 +281,10 @@ class User extends SearchAbstract {
             $boolQuery->addMustNot($addQuery);
         }
         
-        echo '<pre>';
-        print_r($boolQuery);
-        echo '</pre>';
-        die();
+//        echo '<pre>';
+//        print_r($boolQuery);
+//        echo '</pre>';
+//        die();
         return $boolQuery;
     }
 
