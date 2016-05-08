@@ -376,12 +376,12 @@ class UserController extends MyController {
                 return $this->redirect()->toRoute('home');
             }
             $completeSession = new Container('authTemp');
-            if (!empty($completeSession)) {
+            if ($type == 'google') {
+                if ($completeSession->ref == 'google.com') {
                     return [
                         'completeSession' => $completeSession
                     ];
                 }
-            if ($type == 'google') {
                 try {
                     /*
                      * Service Google
@@ -465,6 +465,11 @@ class UserController extends MyController {
             }
 
             if ($type == 'facebook') {
+                if ($completeSession->ref == 'facebook.com') {
+                    return [
+                        'completeSession' => $completeSession
+                    ];
+                }
                 $state = $paramsQuery['state'];
 
                 /*
