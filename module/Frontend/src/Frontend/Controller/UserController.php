@@ -355,8 +355,18 @@ class UserController extends MyController {
         if (empty($type)) {
             return $this->redirect()->toRoute('home');
         }
+        
         $paramsQuery = $this->params()->fromQuery();
-
+        
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headTitle('Đăng nhập website bằng mạng xã hội!' . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
+        
         $serviceUser = $this->serviceLocator->get('My\Models\User');
 
         if ($this->request->isGet()) {
@@ -515,7 +525,7 @@ class UserController extends MyController {
                 }
 
                 $userEmail = $userInfoFacebook['email'];
-
+                
                 if (empty($userEmail)) {
                     $_SESSION['error_social'] = 'facebook';
                     return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
@@ -631,18 +641,6 @@ class UserController extends MyController {
                 }
             }
         }
-        echo '<pre>';
-        print_r('a');
-        echo '</pre>';
-        die();
-        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
-        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
-        $this->renderer->headTitle('Đăng nhập website bằng mạng xã hội!' . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website với mạng xã hội!'));
-        $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
-        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website với mạng xã hội!'));
-        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
 
         return [
             'errors' => $errors,
