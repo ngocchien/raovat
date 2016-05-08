@@ -346,10 +346,10 @@ class UserController extends MyController {
     }
 
     public function socialAction() {
-        $request = $this->getRequest();
+//        $request = $this->getRequest();
 //        $request->getHeader('referer');
         echo '<pre>';
-        print_r($request->getHeader('referer'));
+        print_r($this->request()->getHeader('referer'));
         echo '</pre>';
         die();
         if (CUSTOMER_ID) {
