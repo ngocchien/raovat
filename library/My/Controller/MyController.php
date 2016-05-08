@@ -164,7 +164,8 @@ class MyController extends AbstractActionController {
                  */
                 $fbInfo = General::$fbConfig;
                 $helperFacebook = $this->__createServiceFacebook();
-                $loginFacebookUrl = $helperFacebook->getLoginUrl($fbInfo['redirect_uri']);
+                $permissions = ['email', 'public_profile']; 
+                $loginFacebookUrl = $helperFacebook->getLoginUrl($fbInfo['redirect_uri'],$permissions);
             }
             define('GOOGLE_AUTH_URL', $googleAuthUrl ? $googleAuthUrl : '' );
             define('FACEBOOK_AUTH_URL', $loginFacebookUrl ? $loginFacebookUrl : '');
