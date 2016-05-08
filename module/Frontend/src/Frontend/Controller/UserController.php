@@ -408,16 +408,8 @@ class UserController extends MyController {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                          */
-//                        echo '<pre>';
-//                        print_r($fileContent['email']);
-//                        echo '</pre>';
-//                        die();
                         $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email']]);
-                        
-                        echo '<pre>';
-                        print_r($userInfo);
-                        echo '</pre>';
-                        die();
+
                         if ($userInfo) {
                             if ($userInfo['user_status'] == 0) {
                                 return $this->redirect()->toRoute('member-block');
@@ -439,19 +431,7 @@ class UserController extends MyController {
                                 $this->getAuthService()->getStorage()->write($arrUser);
                                 return $this->redirect()->toRoute('user-profile');
                             }
-                            /*
-                             * redirect to My/index
-                             */
-//                            if (!empty($urlRedirect)) {
-//                                $this->session->remove('historyUrl');
-//                                return $this->response->redirect($urlRedirect);
-//                            }
-//                            return $this->response->redirect("my/index");
                         }
-
-                        /*
-                         * Nếu chưa có thông tin trong hệ thống thì set session để Nhập tên cá nhân(Doanh Nghiệp) và mật khẩu
-                         */
 
                         /*
                          * Nếu chưa có thông tin trong hệ thống thì set session để Nhập tên cá nhân(Doanh Nghiệp) và mật khẩu
@@ -465,15 +445,16 @@ class UserController extends MyController {
                         $completeSession->email = $fileContent['email'];
                     }
                 } catch (\Exception $exc) {
-                    echo '<pre>';
-                    print_r($exc);
-                    die;
-                    echo '</pre>';
-                    die();
+//                    echo '<pre>';
+//                    print_r($exc);
+//                    die;
+//                    echo '</pre>';
+//                    die();
                     /*
                      * return to page register
                      */
-                    return $this->response->redirect("account/register");
+                    $_SESSION['error_social'] = 'google';
+                    return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
                 }
             }
 
