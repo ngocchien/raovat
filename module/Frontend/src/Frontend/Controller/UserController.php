@@ -85,7 +85,7 @@ class UserController extends MyController {
                         'updated_date' => time(),
                         'user_fullname' => $params['user_fullname']
                     ];
-                    
+
                     $serviceUser = $this->serviceLocator->get('My\Models\User');
                     $intResult = $serviceUser->edit($arrData, CUSTOMER_ID);
                     if ($intResult) {
@@ -442,7 +442,8 @@ class UserController extends MyController {
                     }
                 } catch (\Exception $exc) {
                     echo '<pre>';
-                    print_r($exc);die;
+                    print_r($exc);
+                    die;
                     echo '</pre>';
                     die();
                     /*
@@ -470,13 +471,13 @@ class UserController extends MyController {
                     'default_graph_version' => 'v2.5'
                 ]);
                 $helper = $facebookClient->getRedirectLoginHelper();
-                
+
                 try {
                     $accessToken = $helper->getAccessToken();
                 } catch (\Facebook\Exceptions\FacebookResponseException $e) {
                     // When Graph returns an error
-                        echo 'Graph returned an error: ' . $e->getMessage();
-                        die();
+                    echo 'Graph returned an error: ' . $e->getMessage();
+                    die();
                     /*
                      * catch return to login
                      */
@@ -506,8 +507,8 @@ class UserController extends MyController {
                     $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
                 } catch (\Exception $exc) {
-                        echo $exc->getMessage();
-                        die();
+                    echo $exc->getMessage();
+                    die();
                     /*
                      * catch return to register
                      */
@@ -632,6 +633,17 @@ class UserController extends MyController {
                 }
             }
         }
+
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+
+        $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headTitle(html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id)));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
 
         return [
             'errors' => $errors,

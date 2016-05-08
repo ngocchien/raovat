@@ -30,9 +30,7 @@ $email = $authTemp->email;
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3">
-                    </div>
-                    <div class="col-md-5">
+                    <div class="col-md-8">
                         <div class="ads-detail">
                             <div class="account-overview">
                                 <div class="row">
@@ -41,7 +39,7 @@ $email = $authTemp->email;
                                             <h3 class="text-center">Thông tin đăng nhập</h3>
                                             <div class="row form-group ">
                                                 <h4 class="title"><span>Chào bạn : <span class="name"><?php echo $name; ?></span></h4>
-                                                <p class="text">Chúc mừng bạn đã sử dụng <?php echo ($ref == 'google.com') ? 'Google Account' : 'Facebook Account' ?> đăng ký thành viên thành công tại dev.raovat.vn, hãy bổ sung thêm thông tin để hoàn tất đăng ký!</p>
+                                                <p class="text">Chúc mừng bạn đã sử dụng <?php echo ($ref == 'google.com') ? 'Google Account' : 'Facebook Account' ?> đăng ký thành viên thành công tại <?php echo My\General::SITE_AUTH;?>, hãy bổ sung thêm thông tin để hoàn tất đăng ký!</p>
                                             </div>
                                         </div>
                                         <div id="form">
