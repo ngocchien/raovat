@@ -124,7 +124,10 @@ class User extends SearchAbstract {
             $boolQuery = $this->__buildWhere($params, $boolQuery);
             $query = new ESQuery();
             $query->setQuery($boolQuery);
-
+            echo '<pre>';
+            print_r($query);
+            echo '</pre>';
+            die();
             if ($arrFields && is_array($arrFields)) {
                 $query->setSource($arrFields);
             }
