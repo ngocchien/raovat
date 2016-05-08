@@ -355,9 +355,9 @@ class UserController extends MyController {
         if (empty($type)) {
             return $this->redirect()->toRoute('home');
         }
-        
+
         $paramsQuery = $this->params()->fromQuery();
-        
+
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
         $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website với mạng xã hội!') . General::TITLE_META);
@@ -366,7 +366,8 @@ class UserController extends MyController {
         $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
         $this->renderer->headMeta()->setProperty('og:title', html_entity_decode('Đăng nhập website với mạng xã hội!'));
         $this->renderer->headMeta()->setProperty('og:description', html_entity_decode('Đăng nhập website với mạng xã hội!'));
-        
+
+        $instanceSearchUser = new \My\Search\User();
         $serviceUser = $this->serviceLocator->get('My\Models\User');
 
         if ($this->request->isGet()) {
@@ -375,12 +376,12 @@ class UserController extends MyController {
                 return $this->redirect()->toRoute('home');
             }
             $completeSession = new Container('authTemp');
-            if ($type == 'google') {
-                if ($completeSession->ref == 'facebook.com') {
+            if (!empty($completeSession)) {
                     return [
                         'completeSession' => $completeSession
                     ];
                 }
+            if ($type == 'google') {
                 try {
                     /*
                      * Service Google
@@ -403,7 +404,7 @@ class UserController extends MyController {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                          */
-                        $userInfo = $serviceUser->getDetail(['user_email' => $fileContent['email'], 'not_user_status' => -1]);
+                        $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email'], 'not_status' => -1]);
                         if ($userInfo) {
                             if ($userInfo['user_status'] == 0) {
                                 return $this->redirect()->toRoute('member-block');
@@ -414,7 +415,7 @@ class UserController extends MyController {
                                 'user_login_ip' => $this->getRequest()->getServer('REMOTE_ADDR'),
                             ];
                             if (empty($userInfo['social_profile_url'])) {
-                                $arrUpdate = $userInfoFacebook['link'];
+                                $arrUpdate['social_profile_url'] = $fileContent['link'];
                             }
                             $login = $serviceUser->edit($arrUpdate, $userInfo["user_id"]);
                             if ($login) {
@@ -464,11 +465,6 @@ class UserController extends MyController {
             }
 
             if ($type == 'facebook') {
-                if ($completeSession->ref == 'facebook.com') {
-                    return [
-                        'completeSession' => $completeSession
-                    ];
-                }
                 $state = $paramsQuery['state'];
 
                 /*
@@ -525,7 +521,7 @@ class UserController extends MyController {
                 }
 
                 $userEmail = $userInfoFacebook['email'];
-                
+
                 if (empty($userEmail)) {
                     $_SESSION['error_social'] = 'facebook';
                     return $this->redirect()->toRoute('frontend', ['controller' => 'user', 'action' => 'error-social']);
@@ -534,11 +530,8 @@ class UserController extends MyController {
                 /*
                  * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                  */
-                $userInfo = $serviceUser->getDetail(['user_email' => $userEmail, 'not_user_status' => -1]);
-                echo '<pre>';
-                print_r('toi cmnr');
-                echo '</pre>';
-                die();
+                $userInfo = $instanceSearchUser->getDetail(['user_email' => $userEmail, 'not_status' => -1]);
+
                 if ($userInfo) {
                     $arrUpdate = [
                         'user_last_login' => time(),
@@ -568,7 +561,7 @@ class UserController extends MyController {
                 $completeSession->email = $userInfoFacebook['email'];
             }
         }
-        
+
         echo '<pre>';
         print_r('a');
         echo '</pre>';
