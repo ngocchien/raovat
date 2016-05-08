@@ -503,7 +503,7 @@ class UserController extends MyController {
                 }
 
                 try {
-                    $response = $facebookClient->get('/v2.5/me?' . $fbInfo['field_profile'], $accessToken);
+                    $response = $facebookClient->get('/me?' . $fbInfo['field_profile'], $accessToken);
                     $userInfoFacebook = $response->getGraphUser();
                     echo '<pre>';
                     print_r($userInfoFacebook);
