@@ -280,7 +280,11 @@ class User extends SearchAbstract {
             $addQuery->setTerm('user_id', $params['not_user_id']);
             $boolQuery->addMustNot($addQuery);
         }
-
+        
+        echo '<pre>';
+        print_r($boolQuery);
+        echo '</pre>';
+        die();
         return $boolQuery;
     }
 
