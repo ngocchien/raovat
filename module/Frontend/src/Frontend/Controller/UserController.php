@@ -428,7 +428,7 @@ class UserController extends MyController {
                                  * set session
                                  */
                                 $this->getAuthService()->clearIdentity();
-                                $this->getAuthService()->getStorage()->write($arrUser);
+                                $this->getAuthService()->getStorage()->write($userInfo);
                                 return $this->redirect()->toRoute('user-profile');
                             }
                         }
