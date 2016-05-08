@@ -119,6 +119,10 @@ class User extends SearchAbstract {
     }
 
     public function getDetail($params, $arrFields = []) {
+        echo '<pre>';
+        print_r($params);
+        echo '</pre>';
+        die();
         try {
             $boolQuery = new Bool();
             $boolQuery = $this->__buildWhere($params, $boolQuery);
