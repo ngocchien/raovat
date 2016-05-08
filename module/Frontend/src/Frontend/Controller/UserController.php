@@ -377,6 +377,10 @@ class UserController extends MyController {
             }
             $completeSession = new Container('authTemp');
             if ($type == 'google') {
+                echo '<pre>';
+                print_r('a');
+                echo '</pre>';
+                die();
                 if ($completeSession->ref == 'google.com') {
                     return [
                         'completeSession' => $completeSession
