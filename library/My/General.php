@@ -51,7 +51,7 @@ class General {
         'appId' => '272925143041233',
         'secret' => '12af8416d358cbe1d5e6a64732603c19',
         'redirect_uri' => 'http://bestquynhon.com/thanh-vien/dang-nhap-bang-mang-xa-hoi-facebook.html',
-        'field_profile' => 'fields=email'
+        'field_profile' => 'fields=id,name,email,locale,link,cover,picture'
     ];
     static $ggConfig = [
         'application_name' => 'bestquynhon',
