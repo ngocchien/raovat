@@ -408,7 +408,7 @@ class UserController extends MyController {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                          */
-                        $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email'], 'not_status' => -1]);
+                        $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email']]);
                         echo '<pre>';
                         print_r($userInfo);
                         echo '</pre>';
