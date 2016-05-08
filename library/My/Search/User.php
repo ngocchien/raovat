@@ -68,7 +68,7 @@ class User extends SearchAbstract {
         $mapping->setProperties([
             'user_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'user_name' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'user_email' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'user_email' => ['type' => 'string', 'index' => 'not_analyzed'],
             'user_phone' => ['type' => 'string', 'index' => 'not_analyzed'],
             'user_created' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'created_date' => ['type' => 'long', 'index' => 'not_analyzed'],
