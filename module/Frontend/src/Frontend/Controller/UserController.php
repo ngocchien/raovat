@@ -377,20 +377,16 @@ class UserController extends MyController {
             }
             $completeSession = new Container('authTemp');
             if ($type == 'google') {
-                if ($completeSession->ref == 'google.com') {
-                    echo '<pre>';
-                    print_r('trong');
-                    echo '</pre>';
-                    die();
-                    return [
-                        'completeSession' => $completeSession
-                    ];
-                }
+//                if ($completeSession->ref == 'google.com') {
+//                    echo '<pre>';
+//                    print_r($completeSession);
+//                    echo '</pre>';
+//                    die();
+//                    return [
+//                        'completeSession' => $completeSession
+//                    ];
+//                }
                 try {
-                    echo '<pre>';
-                    print_r('try');
-                    echo '</pre>';
-                    die();
                     /*
                      * Service Google
                      */
@@ -407,7 +403,10 @@ class UserController extends MyController {
                     $urlGoogleGet = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $accessToken['access_token'];
                     $fileContent = json_decode(file_get_contents($urlGoogleGet), true);
                     $email = $fileContent['email'];
-
+                    echo '<pre>';
+                    print_r($fileContent);
+                    echo '</pre>';
+                    die();
                     if ($fileContent['id'] && $fileContent['email'] && $fileContent['name']) {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
