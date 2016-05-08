@@ -525,7 +525,10 @@ class UserController extends MyController {
                  * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                  */
                 $userInfo = $serviceUser->getDetail(['user_email' => $userEmail, 'not_user_status' => -1]);
-
+                echo '<pre>';
+                print_r('toi cmnr');
+                echo '</pre>';
+                die();
                 if ($userInfo) {
                     $arrUpdate = [
                         'user_last_login' => time(),
