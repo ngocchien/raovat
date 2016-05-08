@@ -346,6 +346,12 @@ class UserController extends MyController {
     }
 
     public function socialAction() {
+        $request = $this->getRequest();
+//        $request->getHeader('referer');
+        echo '<pre>';
+        print_r($request->getHeader('referer'));
+        echo '</pre>';
+        die();
         if (CUSTOMER_ID) {
             return $this->redirect()->toRoute('user-profile');
         }
@@ -377,15 +383,15 @@ class UserController extends MyController {
             }
             $completeSession = new Container('authTemp');
             if ($type == 'google') {
-//                if ($completeSession->ref == 'google.com') {
-//                    echo '<pre>';
-//                    print_r($completeSession);
-//                    echo '</pre>';
-//                    die();
-//                    return [
-//                        'completeSession' => $completeSession
-//                    ];
-//                }
+                if ($completeSession->ref == 'google.com') {
+                    echo '<pre>';
+                    print_r($completeSession);
+                    echo '</pre>';
+                    die();
+                    return [
+                        'completeSession' => $completeSession
+                    ];
+                }
                 try {
                     /*
                      * Service Google
