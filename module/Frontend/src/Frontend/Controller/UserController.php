@@ -346,12 +346,6 @@ class UserController extends MyController {
     }
 
     public function socialAction() {
-//        $request = $this->getRequest();
-//        $request->getHeader('referer');
-        echo '<pre>';
-        print_r($this->request()->getHeader('referer'));
-        echo '</pre>';
-        die();
         if (CUSTOMER_ID) {
             return $this->redirect()->toRoute('user-profile');
         }
@@ -384,10 +378,6 @@ class UserController extends MyController {
             $completeSession = new Container('authTemp');
             if ($type == 'google') {
                 if ($completeSession->ref == 'google.com') {
-                    echo '<pre>';
-                    print_r($completeSession);
-                    echo '</pre>';
-                    die();
                     return [
                         'completeSession' => $completeSession
                     ];
@@ -414,7 +404,7 @@ class UserController extends MyController {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                          */
-                        $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email']]);
+                        $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email'], 'not_status' => -1]);
 
                         if ($userInfo) {
                             if ($userInfo['user_status'] == 0) {
