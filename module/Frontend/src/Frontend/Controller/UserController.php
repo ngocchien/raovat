@@ -633,9 +633,12 @@ class UserController extends MyController {
                 }
             }
         }
-
+        
+        echo '<pre>';
+        print_r('toi cmnr');
+        echo '</pre>';
+        die();
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
-
         $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
         $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
         $this->renderer->headTitle('Đăng nhập website bằng mạng xã hội!' . General::TITLE_META);
