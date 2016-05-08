@@ -638,7 +638,7 @@ class UserController extends MyController {
 
         $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
         $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
-        $this->renderer->headTitle(html_entity_decode('Đăng nhập website bằng mạng xã hội!') . General::TITLE_META);
+        $this->renderer->headTitle('Đăng nhập website bằng mạng xã hội!' . General::TITLE_META);
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
         $this->renderer->headMeta()->appendName('description', html_entity_decode('Đăng nhập website bằng mạng xã hội!'));
         $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id)));
