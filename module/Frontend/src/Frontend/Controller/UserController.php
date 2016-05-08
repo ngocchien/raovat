@@ -555,6 +555,11 @@ class UserController extends MyController {
                 $completeSession->email = $userInfoFacebook['email'];
             }
         }
+        
+        echo '<pre>';
+        print_r('a');
+        echo '</pre>';
+        die();
         if ($this->request->isPost()) {
 
             $arrParams = $this->params()->fromPost();
