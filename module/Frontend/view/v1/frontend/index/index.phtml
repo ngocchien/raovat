@@ -36,6 +36,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                     $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
                                                     $flag = true;
                                                 }
+                                                $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr('freetuts.net', 0, 400) . '...' : $arrContent['cont_detail_text'];
                                                 ?>
                                                 <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                     <td style="vertical-align: middle">
@@ -51,7 +52,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                             <?php endif; ?>
                                                         </div>
                                                         <div class="col-md-11" style="margin-top: 5px;">
-                                                            <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip color-red" style="text-decoration: none;">
+                                                            <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip color-red" style="text-decoration: none;">
                                                                 <b><?php echo $arrContent['cont_title']; ?></b>
                                                             </a>
                                                             <span class="color-view">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i>)</span>
@@ -162,6 +163,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                 $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
                                                 $flag = true;
                                             }
+                                            $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr('freetuts.net', 0, 400) . '...' : $arrContent['cont_detail_text'];
                                             ?>
                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                 <td style="vertical-align: middle">
@@ -177,7 +179,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                         <?php endif; ?>
                                                     </div>
                                                     <div class="col-md-11 col-xs-12" style="margin-top: 5px;">
-                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip vip2" style="text-decoration: none;">
+                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip vip2" style="text-decoration: none;">
                                                             <?php echo $arrContent['cont_title']; ?><?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>"><?php endif; ?> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>">
                                                         </a>
                                                     </div>
