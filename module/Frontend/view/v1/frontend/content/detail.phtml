@@ -418,14 +418,17 @@ if (empty($this->arrContent['user_created'])):
                             <p><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">  = 5000đ/Ngày <b style="color: red"> Hoặc </b> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> = 2000đ/Ngày</p>
                         </div>
                         <div class="col">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <p  style="margin-bottom: 5px">Chọn Loại Víp</p>
                                 <input class="radio" type="radio" value="svip" name="typevip"><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
                                 <input class="radio" type="radio" value="vip" name="typevip"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <p  style="margin-bottom: 5px">Nhập số ngày muốn mua</p>
                                 <input type="number" class="form-control input-sm" name="numdate">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success" name="deal-vip">Mua</button>
                             </div>
                         </div>
                     </div>
