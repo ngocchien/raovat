@@ -156,7 +156,9 @@
                         <p>Nội dung :</p>
                         <?php echo $this->arrContent['cont_detail']; ?>
                     </div>
-
+                    <div class="tags">
+                        
+                    </div>
                     <div class="tags">
                         <i class="fa fa-tags"></i>
                         <span>Tags:</span>
@@ -417,21 +419,24 @@ if (empty($this->arrContent['user_created'])):
     </div>
 <?php endif; ?>
 <script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '272925143041233',
-      xfbml      : true,
-      version    : 'v2.6'
-    });
-  };
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '272925143041233',
+            xfbml: true,
+            version: 'v2.6'
+        });
+    };
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 </script>
 
 <script>
