@@ -70,8 +70,8 @@ class MyController extends AbstractActionController {
                 $this->renderer->headMeta()->setProperty('og:description', html_entity_decode(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.'));
                 $this->renderer->headMeta()->setProperty('og:image', STATIC_URL . '/f/v1/images/logoct.png');
                 $this->renderer->headMeta()->setProperty('og:image:type', 'image/png');
-                $this->renderer->headMeta()->setProperty('og:image:width', STATIC_URL . '/f/v1/images/logoct.png');
-                $this->renderer->headMeta()->setProperty('og:image:height', STATIC_URL . '/f/v1/images/logoct.png');
+                $this->renderer->headMeta()->setProperty('og:image:width', '621');
+                $this->renderer->headMeta()->setProperty('og:image:height', '132');
                 $this->renderer->headMeta()->setProperty('og:type', 'website');
 
                 break;
