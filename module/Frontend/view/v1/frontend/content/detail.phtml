@@ -415,9 +415,10 @@ if (empty($this->arrContent['user_created'])):
                     <h5>HOẶC BẰNG SỐ DƯ TÀI KHOẢN</h5>
                     <div class="row border-detail form-control timeline-desk">
                         <p><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">  = 5000đ/Ngày <b style="color: red"> Hoặc </b> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> = 2000đ/Ngày</p>
-                        <p style="color: blue"></p> 
-                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
-                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $this->arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                        <div class="col">
+                            <input type="checkbox"><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                            <input type="checkbox"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
