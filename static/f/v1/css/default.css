@@ -2175,3 +2175,7 @@ ul.inbox-pagination li {
 }
 #chiase {position:fixed; top:35%; left:0%; background-color:#2AA4CF;padding:2px;z-index:10;border-bottom-right-radius:5px;border-top-right-radius:5px;}
 #chiase .nut {float:left;clear:both;}
+
+.color-view{
+    color: #1b95e0
+}

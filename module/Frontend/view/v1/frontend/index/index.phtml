@@ -53,7 +53,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                         </div>
                                                         <div class="col-md-11" style="margin-top: 5px;">
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip color-red" style="text-decoration: none;">
-                                                                <b><?php echo $arrContent['cont_title']; ?></b> <img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                                                                <b><?php echo $arrContent['cont_title']; ?></b> <span class="color-view">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i>)</span> <img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
                                                             </a>
                                                         </div>
                                                     </td>
