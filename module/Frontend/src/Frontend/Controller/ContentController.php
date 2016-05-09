@@ -96,12 +96,15 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('og:title', html_entity_decode($arrContent['cont_title']));
         $this->renderer->headMeta()->setProperty('og:description', html_entity_decode($arrContent['cont_title']));
 
-        $metaImage = '';
-        if (!empty($arrContent['cont_image'])) {
+        $metaImage = STATIC_URL . '/f/v1/images/logoct.png';
+        if (!empty($arrContent['cont_image']) && $arrContent['cont_image'] != 'null') {
             $metaImage = json_decode(current(json_decode($arrContent['cont_image'])), true);
             $metaImage = $metaImage['thumbImage']['490x294'];
         }
-
+        echo '<pre>';
+        print_r($arrContent['cont_image']);
+        echo '</pre>';
+        die();
         $this->renderer->headMeta()->setProperty('og:image', $metaImage);
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
