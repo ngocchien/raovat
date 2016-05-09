@@ -22,7 +22,6 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                             <th class="text-center" style="color: #337ab7"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Tiêu đề</th>
                                             <th class="text-center" width="100px" style="color: #69A467"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
                                             <th class="text-center" width="85px" style="color: #A94464"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
-                                            <th class="text-center" width="57px" style="color: #1b95e0"><i class="fa fa-eye" aria-hidden="true"></i> Xem</th>
                                             <th class="text-center" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
                                         </tr>
                                     </thead>
@@ -62,10 +61,6 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                     </td>
                                                     <td class="text-center" style="vertical-align: middle">
                                                         <a href="#" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
-                                                    </td>
-
-                                                    <td class="text-center" style="vertical-align: middle;color: #1b95e0">
-                                                        <?php echo $arrContent['cont_views']; ?>
                                                     </td>
                                                     <td class="text-center" style="vertical-align: middle">
                                                         <?php echo My\General::formatDateString($arrContent['created_date']); ?>
