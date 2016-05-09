@@ -101,10 +101,7 @@ class ContentController extends MyController {
             $metaImage = json_decode(current(json_decode($arrContent['cont_image'])), true);
             $metaImage = $metaImage['thumbImage']['490x294'];
         }
-        echo '<pre>';
-        print_r($arrContent['cont_image']);
-        echo '</pre>';
-        die();
+
         $this->renderer->headMeta()->setProperty('og:image', $metaImage);
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
