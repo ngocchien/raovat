@@ -91,7 +91,7 @@
                                                                 <b><?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?></b>
                                                             </a>
                                                         <?php else : ?>
-                                                            <a style="text-decoration: none; font-size: 11px" href="javascript:;" ><?php echo $arrContent['user_info']['user_fullname']; ?></a>
+                                                        <a style="text-decoration: none; font-size: 11px" href="javascript:;" ><?php echo json_decode($arrContent['user_info'],true)['user_fullname']; ?></a>
                                                         <?php endif;
                                                         ?>
                                                         </a>
