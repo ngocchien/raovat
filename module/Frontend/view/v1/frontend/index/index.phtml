@@ -36,7 +36,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                     <td style="vertical-align: middle">
                                                         <div class="col-md-1">
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
-                                                                <img src="<?php echo STATIC_URL; ?>/f/v1/image/icon.png" style="width: 30px; height: 30px"></a>
+                                                                <img src="<?php echo STATIC_URL; ?>/f/v1/images/icon.png" style="width: 30px; height: 30px"></a>
                                                         </div>
                                                         <div class="col-md-11" style="margin-top: 5px;">
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip color-red" style="text-decoration: none;">
