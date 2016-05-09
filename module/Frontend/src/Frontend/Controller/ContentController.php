@@ -72,9 +72,11 @@ class ContentController extends MyController {
         }
 
         //lấy thuộc tính
-        $instanceSearchProperties = new \My\Search\Properties();
-        $arrProperties = $instanceSearchProperties->getDetail(['prop_id' => $arrContent['prop_id']]);
-
+        $arrProperties = [];
+        if (!empty($arrContent['prop_id'])) {
+            $instanceSearchProperties = new \My\Search\Properties();
+            $arrProperties = $instanceSearchProperties->getDetail(['prop_id' => $arrContent['prop_id']]);
+        }
         $arrContent['meta_title'] ? $metaTitle = $arrContent['meta_title'] : $metaTitle = $arrContent['cont_title'];
         $metaKeyword = $arrContent['meta_keyword'] ? $arrContent['meta_keyword'] : $arrContent['cont_title'];
         $metaDescription = $arrContent['meta_description'] ? $arrContent['meta_description'] : $arrContent['cont_title'];
