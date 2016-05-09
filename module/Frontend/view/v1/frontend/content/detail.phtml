@@ -417,16 +417,23 @@ if (empty($this->arrContent['user_created'])):
     </div>
 <?php endif; ?>
 <script>
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id))
-            return;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v2.6&appId=1697339473867169";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '272925143041233',
+      xfbml      : true,
+      version    : 'v2.6'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 </script>
+
 <script>
     var cont_id = '<?php echo $this->arrContent['cont_id']; ?>';
     saveContentURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'save-content')); ?>';
