@@ -19,7 +19,7 @@
                     <?php
                     if (!empty($this->arrContent['cont_image']) && $this->arrContent['cont_image'] != 'null'):
                         $arrImage = json_decode($this->arrContent['cont_image']);
-                        $href_user = 'javascrip:;';
+                        $href_user = 'javascript:;';
                         if (!empty($this->arrContent['user_created'])) {
                             $href_user = $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUser['user_fullname']), 'userId' => $this->arrUser['user_id']]);
                         }
