@@ -247,7 +247,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                                                 ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', array('contentSlug' => $this->arrContent["cont_slug"], 'cont_id' => $this->arrContent["cont_id"])) ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">
@@ -416,6 +416,17 @@ if (empty($this->arrContent['user_created'])):
         </div>
     </div>
 <?php endif; ?>
+<script>
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id))
+            return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v2.6&appId=1697339473867169";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
 <script>
     var cont_id = '<?php echo $this->arrContent['cont_id']; ?>';
     saveContentURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'save-content')); ?>';
