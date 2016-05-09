@@ -69,7 +69,7 @@ class SearchController extends MyController {
         }
 
         $instaceSearchContent = new \My\Search\Content();
-        $arrContentList = $instaceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['is_vip' => ['order' => 'desc'], 'vip_type' => ['order' => 'desc'], 'updated_date' => ['order' => 'desc']]);
+        $arrContentList = $instaceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['is_vip' => ['order' => 'desc'], 'vip_type' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
 
         //phân trang
         $intTotal = $instaceSearchContent->getTotal($arrCondition);
