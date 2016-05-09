@@ -55,10 +55,11 @@ class ContentController extends MyController {
         try {
             $serviceContent = $this->serviceLocator->get('My\Models\Content');
         } catch (\Exception $exc) {
-            echo $exc->getMessage();die;
+            echo $exc->getMessage();
+            die;
         }
 
-        
+
         $serviceContent->edit($arrUpdate, $cont_id);
 
         //Lay thong tin người đăng
@@ -462,7 +463,7 @@ class ContentController extends MyController {
                             'user_fullname' => $params['name'],
                             'user_email' => $params['email'],
                             'user_phone' => $params['phone'],
-                            'password' => $arrContent['user_info']['password']
+                            'password' => json_decode($arrContent['user_info'], true)['password']
                         ]);
                     }
 
@@ -563,6 +564,36 @@ class ContentController extends MyController {
         }
 
         return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại trong giây lát!</b></center>']));
+    }
+
+    public function deleteContentAction() {
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            if (empty($params['cont_id']) || empty($params['cont_pass'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></center>']));
+            }
+
+            $instaceSearchContent = new \My\Search\Content();
+            $content_detail = $instaceSearchContent->getDetail(['cont_id' => (int) $params['cont_id'], 'not_cont_status' => -1]);
+
+            if (empty($content_detail)) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></center>']));
+            }
+
+            if (!empty($content_detail['user_created'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Không tìm thấy tin rao vặt này trong hệ thống của chúng tôi!</b></center>']));
+            }
+
+            if (json_decode($content_detail['user_info'], true)['password'] != $params['cont_pass']) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Nhập mật khẩu tin này chưa chính xác!</b></center>']));
+            }
+
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            if ($serviceContent->edit(['updated_date' => time(), 'cont_status' => -1], (int) $params['cont_id'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => 1, 'url' => $this->url()->fromRoute('home')]));
+            }
+            return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<center><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></center>']));
+        }
     }
 
     public function completeAction() {

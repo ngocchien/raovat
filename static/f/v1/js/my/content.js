@@ -203,6 +203,58 @@ var Content = {
 
             });
 
+            $('.delete-content').on('click', function () {
+                bootbox.confirm('<b class="color-red">Bạn có chắc chắn muốn xóa tin rao vặt này không??? </b>', function (e) {
+                    if (e) {
+                        bootbox.hideAll();
+                        $('#confirm-delete').modal('toggle');
+                    }
+                });
+            });
+
+            $('.confirm-delete').on('click', function () {
+                $('.error-delete').hide();
+                if (!cont_id) {
+                    bootbox.alert('<p style="color:red"><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!</b></p>', function () {
+                        return false;
+                    });
+                }
+
+                var pass_content = $('#pass-delete').val();
+                var error = false;
+
+                if (!pass_content) {
+                    error = true;
+                    $('.error-delete').html('Bạn chưa nhập mật khẩu của tin này!');
+                    $('.error-delete').show();
+                }
+
+                if (error == false) {
+                    $.ajax({
+                        type: 'POST',
+                        url: deleteContentURL,
+                        dataType: 'json',
+                        cache: false,
+                        beforeSend: function () {
+                            $('#loading-mask').show();
+                        },
+                        data: {
+                            cont_id: cont_id,
+                            cont_pass: pass_content
+                        },
+                        success: function (rs) {
+                            $('#loading-mask').hide();
+                            if (rs.st == 1) {
+                                window.location.href = rs.url;
+                            } else {
+                                bootbox.alert(rs.ms);
+                                return false;
+                            }
+                        }
+                    });
+                }
+            });
+
             $('.no-login').on('click', function () {
                 bootbox.alert('<p style="color:red"><b>Vui lòng đăng nhập trước khi thực hiện thao tác này!</b></p>');
             });
