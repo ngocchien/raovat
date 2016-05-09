@@ -556,10 +556,6 @@ class UserController extends MyController {
             }
         }
 
-        echo '<pre>';
-        print_r('a');
-        echo '</pre>';
-        die();
         if ($this->request->isPost()) {
 
             $arrParams = $this->params()->fromPost();
