@@ -1,6 +1,3 @@
-<?php
-$arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
-?>
 <?php if (!empty($this->arrContentList)): ?>
     <section id="premium">
         <div class="container">
@@ -59,7 +56,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                         <a href="javascript:;" style="text-decoration: none;color: #69A467"><b><?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?></b></a>
                                                     </td>
                                                     <td class="text-center" style="vertical-align: middle">
-                                                        <a href="#" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
+                                                        <a href="javascript:;" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
                                                     </td>
                                                     <td class="text-center" style="vertical-align: middle">
                                                         <?php echo My\General::formatDateString($arrContent['created_date']); ?>
