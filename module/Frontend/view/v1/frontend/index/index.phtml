@@ -169,11 +169,11 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                 <td style="vertical-align: middle">
                                                     <!--<div class="col-md-1 col-sm-0">-->
                                                     <?php if ($flag == true): ?>
-                                                        <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                        <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                             <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                         </a>
                                                     <?php else: ?>
-                                                        <a style="text-decoration: none" href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                        <a style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
                                                             <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                         </a>
                                                     <?php endif; ?>
