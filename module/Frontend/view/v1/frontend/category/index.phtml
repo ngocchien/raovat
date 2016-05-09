@@ -119,7 +119,6 @@
                                                         <th class="text-center"><i class="fa fa-thumb-tack" aria-hidden="true"></i> Tiêu đề</th>
                                                         <th class="text-center" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
                                                         <?php if (!empty($this->arrPropertiesList)): ?><th class="text-center" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th><?php endif; ?>
-                                                        <th class="text-center" width="57px"><i class="fa fa-eye" aria-hidden="true"></i> Xem</th>
                                                         <th class="text-center" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
                                                     </tr>
                                                 </thead>
@@ -127,18 +126,31 @@
                                                     <?php
                                                     if ($this->arrContentList):
                                                         foreach ($this->arrContentList as $arrContent):
+                                                            $avatar_user = STATIC_URL . '/f/v1/images/icon.png';
+                                                            $flag = false;
+                                                            if (!empty($arrContent['user_created']) && !empty($this->arrUserList[$arrContent['user_created']]['user_avatar'])) {
+                                                                $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
+                                                                $flag = true;
+                                                            }
+                                                            $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr($arrContent['cont_detail_text'], 0, 400) . '...' : $arrContent['cont_detail_text'];
                                                             ?>
                                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                                 <td style="vertical-align: middle">
-                                                                    <div class="col-md-1">
-                                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
-                                                                            <img src="http://dev.st.raovat.vn/uploads/user/2016/05/01/thumbs/150x150/1462115823.285.jpg" style="width: 30px; height: 30px"></a>
-                                                                    </div>
-                                                                    <div class="col-md-11" style="margin-top: 5px">
-                                                                        <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip" style="text-decoration: none">
-                                                                            <b><?php echo $arrContent['cont_title']; ?></b>
+                                                                    <?php if ($flag == true): ?>
+                                                                        <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                                            <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                                         </a>
-                                                                    </div>
+                                                                    <?php else: ?>
+                                                                        <a style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                                            <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
+                                                                        </a>
+                                                                    <?php endif; ?>
+                                                                    <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip vip2" style="text-decoration: none;">
+                                                                        <?php echo $arrContent['cont_title']; ?>
+                                                                    </a>
+
+                                                                    <span class="color-view">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i>)</span>
+                                                                    <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>"><?php endif; ?> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>">
                                                                 </td>
                                                                 <td class="text-center" style="vertical-align: middle">
                                                                     <a href="javascript:;" style="text-decoration: none;color: #69A467"><b><?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $this->arrLocation[$arrContent['dist_id']]['dist_name']; ?></b></a>
@@ -148,10 +160,6 @@
                                                                         <a href="#" style="text-decoration: none; color: #A94464"><b><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></b></a>
                                                                     </td>
                                                                 <?php endif; ?>
-
-                                                                <td class="text-center" style="vertical-align: middle">
-                                                                    <?php echo $arrContent['cont_views']; ?>
-                                                                </td>
                                                                 <td class="text-center" style="vertical-align: middle">
                                                                     <?php echo My\General::formatDateString($arrContent['created_date']); ?>
                                                                 </td>
