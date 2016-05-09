@@ -167,7 +167,7 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                             ?>
                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                 <td style="vertical-align: middle">
-                                                    <div class="col-md-1 col-sm-0">
+                                                    <!--<div class="col-md-1 col-sm-0">-->
                                                         <?php if ($flag == true): ?>
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                                 <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
@@ -177,12 +177,12 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                                                 <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php endif; ?>
-                                                    </div>
-                                                    <div class="col-md-11 col-xs-12" style="margin-top: 5px;">
+                                                    <!--</div>-->
+                                                    <!--<div class="col-md-11 col-xs-12" style="margin-top: 5px;">-->
                                                         <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip vip2" style="text-decoration: none;">
                                                             <?php echo $arrContent['cont_title']; ?><?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>"><?php endif; ?> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif' ?>">
                                                         </a>
-                                                    </div>
+                                                    <!--</div>-->
                                                 </td>
                                                 <td class="text-center" style="vertical-align: middle">
                                                     <a href="javascript:;" style="text-decoration: none;color: #69A467"><b><?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?></b></a>
