@@ -956,7 +956,10 @@ class UserController extends MyController {
         }
         $instanceSearchUser = new \My\Search\User();
         $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId']]);
-
+        echo '<pre>';
+        print_r($arrUserDetail);
+        echo '</pre>';
+        die();
         if (empty($arrUserDetail)) {
             return $this->redirect()->toRoute('404', array());
         }
@@ -966,6 +969,7 @@ class UserController extends MyController {
             'user_created' => $arrUserDetail['user_id'],
             'not_cont_status' => -1
         ];
+        
         $intPage = (int) $params['page'] > 0 ? (int) $params['page'] > 0 : 1;
         $intLimit = 20;
         $arrContentList = $instaceSearchContent->getListLimit($arrConditionContent, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
