@@ -416,8 +416,11 @@ if (empty($this->arrContent['user_created'])):
                     <div class="row border-detail form-control timeline-desk">
                         <p><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">  = 5000đ/Ngày <b style="color: red"> Hoặc </b> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> = 2000đ/Ngày</p>
                         <div class="col">
-                            <input type="checkbox"><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
-                            <input type="checkbox"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                            <input class="radio" type="radio" value="svip"><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                            <input class="radio" type="radio" value="vip"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="numdate">
                         </div>
                     </div>
                 </div>
