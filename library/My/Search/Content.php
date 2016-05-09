@@ -149,10 +149,6 @@ class Content extends SearchAbstract {
                     ->setSize($intLimit)
                     ->setSort($sort);
             $query->setQuery($boolQuery);
-            echo '<pre>';
-            print_r($query);
-            echo '</pre>';
-            die();
             $instanceSearch = new Search(General::getSearchConfig());
             $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
                     ->addType($this->getSearchType())
