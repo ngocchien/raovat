@@ -19,6 +19,10 @@
                     <?php
                     if (!empty($this->arrContent['cont_image']) && $this->arrContent['cont_image'] != 'null'):
                         $arrImage = json_decode($this->arrContent['cont_image']);
+                        $href_user = 'javascrip:;';
+                        if (!empty($this->arrContent['user_created'])) {
+                            $href_user = $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUser['user_fullname']), 'userId' => $this->arrUser['user_id']]);
+                        }
                         ?>
                         <div class="row">
                             <div class="col-md-12 col-xs-12 col-sm-12">
@@ -63,7 +67,7 @@
                                     <img src="<?php echo $avatar; ?>" alt="author avatar">
                                 </div>
                                 <div class="author-name">
-                                    <a style="text-decoration: none;" href=""><p><?php echo $this->arrUser['user_fullname'] ?></p></a>
+                                    <a style="text-decoration: none;" href="<?php echo $href_user; ?>"><p><?php echo $this->arrUser['user_fullname'] ?></p></a>
                                 </div>
                             </div>
                             <div class="col-sm-9">
@@ -243,7 +247,7 @@
                         ?>
                     </section>
                 </div>
-                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                                     ?>" data-width="100%" data-numposts="5"></div>
+                <div class="fb-comments" data-href="<?php // echo $this->serverUrl() . $this->Url('product', array('productslug' => $this->arrProductDetail["prod_slug"], 'productId' => $this->arrProductDetail["prod_id"]))                                                                                                                          ?>" data-width="100%" data-numposts="5"></div>
 
                 <!--Related Ads-->
                 <div id="relatedAds">
