@@ -157,7 +157,12 @@
                         <?php echo $this->arrContent['cont_detail']; ?>
                     </div>
                     <div class="tags">
-                        
+                        <div class="col-md-6 col-xs-6">
+                            <div class="fb-like" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $this->arrContent['cont_slug'], 'contentId' => $this->arrContent['cont_id']]) ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="g-plusone" data-annotation="inline" data-width="300"></div>
+                        </div>
                     </div>
                     <div class="tags">
                         <i class="fa fa-tags"></i>
@@ -418,7 +423,11 @@ if (empty($this->arrContent['user_created'])):
         </div>
     </div>
 <?php endif; ?>
-
+<script src="https://apis.google.com/js/platform.js" async defer>
+    {
+        lang: 'vi'
+    }
+</script>
 <script>
     var cont_id = '<?php echo $this->arrContent['cont_id']; ?>';
     saveContentURL = '<?php echo $this->serverUrl() . $this->Url('content', array('action' => 'save-content')); ?>';
