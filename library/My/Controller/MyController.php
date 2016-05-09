@@ -69,7 +69,8 @@ class MyController extends AbstractActionController {
                 $this->renderer->headMeta()->setProperty('og:title', html_entity_decode(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.'));
                 $this->renderer->headMeta()->setProperty('og:description', html_entity_decode(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.'));
                 $this->renderer->headMeta()->setProperty('og:image', STATIC_URL . '/f/v1/images/logoct.png');
-
+                $this->renderer->headMeta()->setProperty('og:type', 'website');
+                
                 break;
             default:
                 break;

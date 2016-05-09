@@ -95,7 +95,6 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('view-content', array('controller' => 'content', 'action' => 'detail', 'contentSlug' => $arrContent['cont_slug'], 'contentId' => $cont_id)));
         $this->renderer->headMeta()->setProperty('og:title', html_entity_decode($arrContent['cont_title']));
         $this->renderer->headMeta()->setProperty('og:description', html_entity_decode($arrContent['cont_title']));
-
         $metaImage = STATIC_URL . '/f/v1/images/logoct.png';
         if (!empty($arrContent['cont_image']) && $arrContent['cont_image'] != 'null') {
             $metaImage = json_decode(current(json_decode($arrContent['cont_image'])), true);
@@ -103,6 +102,27 @@ class ContentController extends MyController {
         }
 
         $this->renderer->headMeta()->setProperty('og:image', $metaImage);
+
+        $arrCategoryDetail = unserialize(ARR_CATEGORY)[$arrContent['cont_id']];
+        
+        $this->renderer->headMeta()->setProperty('og:type', 'article');
+        $this->renderer->headMeta()->setProperty('article:section', $arrCategoryDetail['cate_name']);
+
+        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
+
+        //        $this->renderer->headMeta()->setProperty('article:published_time', $ar);
+//        <meta property="fb:pages" content="262700667105773" />
+//        <meta property="article:published_time" content="Thời gian đăng của bài viết" />
+
+        $this->renderer->headMeta()->setProperty('itemprop:name', html_entity_decode($arrContent['cont_title']));
+        $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode($arrContent['cont_title']));
+        $this->renderer->headMeta()->setProperty('itemprop:image', $metaImage);
+
+
+//        <meta property="article:published_time" content="Thời gian đăng của bài viết" />
+//<meta property="article:modified_time" content="Thời gian cập nhật cuối cùng của bài viết" /> 
+//<meta property="article:tag" content="Tên tag của bài viết, nếu có nhiều tag thì tạo nhiều thẻ" />
+
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
 
