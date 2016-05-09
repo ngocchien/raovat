@@ -955,7 +955,7 @@ class UserController extends MyController {
             return $this->redirect()->toRoute('404', array());
         }
         $instanceSearchUser = new \My\Search\User();
-        $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId']]);
+        $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId'],'user_status'=>1]);
         echo '<pre>';
         print_r($arrUserDetail);
         echo '</pre>';
