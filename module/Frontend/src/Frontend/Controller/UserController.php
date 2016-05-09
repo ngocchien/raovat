@@ -404,8 +404,16 @@ class UserController extends MyController {
                         /*
                          * Kiểm tra người dùng đã tồn tại trong hệ thống hay chưa, nếu đã tồn tại thì cho login thành công
                          */
+//                        echo '<pre>';
+//                        print_r();
+//                        echo '</pre>';
+//                        die();
                         $userInfo = $instanceSearchUser->getDetail(['user_email' => $fileContent['email'], 'not_status' => -1]);
-
+                        echo '<pre>';
+                        print_r($userInfo);
+                        echo '</pre>';
+                        die();
+//                        $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId'], 'not_status' => -1]);
                         if ($userInfo) {
                             if ($userInfo['user_status'] == 0) {
                                 return $this->redirect()->toRoute('member-block');
@@ -956,10 +964,7 @@ class UserController extends MyController {
         }
         $instanceSearchUser = new \My\Search\User();
         $arrUserDetail = $instanceSearchUser->getDetail(['user_id' => (int) $params['userId'], 'not_status' => -1]);
-        echo '<pre>';
-        print_r($arrUserDetail);
-        echo '</pre>';
-        die();
+
         if (empty($arrUserDetail)) {
             return $this->redirect()->toRoute('404', array());
         }
