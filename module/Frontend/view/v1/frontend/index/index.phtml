@@ -31,12 +31,25 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                         if ($this->arrContentList):
                                             $arrLocation = unserialize(ARR_DISTRICT);
                                             foreach ($this->arrContentList as $arrContent):
+                                                $avatar_user = STATIC_URL . '/f/v1/images/icon.png';
+                                                $flag = false;
+                                                if (!empty($arrContent['user_created']) && !empty($this->arrUserList[$arrContent['user_created']]['user_avatar'])) {
+                                                    $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
+                                                    $flag = true;
+                                                }
                                                 ?>
                                                 <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                     <td style="vertical-align: middle">
                                                         <div class="col-md-1">
-                                                            <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
-                                                                <img src="<?php echo STATIC_URL; ?>/f/v1/images/icon.png" style="width: 30px; height: 30px"></a>
+                                                            <?php if ($flag == true): ?>
+                                                                <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                                    <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
+                                                                </a>
+                                                            <?php else: ?>
+                                                                <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                                    <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
+                                                                </a>
+                                                            <?php endif; ?>
                                                         </div>
                                                         <div class="col-md-11" style="margin-top: 5px;">
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $arrContent['cont_detail_text']; ?>" class="red-tooltip color-red" style="text-decoration: none;">
@@ -146,20 +159,23 @@ $arrCategoryListChildrenFormat = $this->arrCategoryListChildrenFormat;
                                         <?php
                                         $arrLocation = unserialize(ARR_DISTRICT);
                                         foreach ($this->arrNewContentList as $arrContent):
+                                            $avatar_user = STATIC_URL . '/f/v1/images/icon.png';
+                                            $flag = false;
+                                            if (!empty($arrContent['user_created']) && !empty($this->arrUserList[$arrContent['user_created']]['user_avatar'])) {
+                                                $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
+                                                $flag = true;
+                                            }
                                             ?>
                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                 <td style="vertical-align: middle">
                                                     <div class="col-md-1 col-sm-0">
-                                                        <?php
-                                                        if (!empty($arrContent['user_created'])):
-                                                            $avatar = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
-                                                            ?>
+                                                        <?php if ($flag == true): ?>
                                                             <a href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
-                                                                <img src="<?php echo $avatar; ?>" style="width: 30px; height: 30px">
+                                                                <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php else: ?>
                                                             <a href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
-                                                                <img src="<?php echo STATIC_URL . '/f/v1/images/noavatar.jpg' ?>" style="width: 30px; height: 30px">
+                                                                <img src="<?php echo $avatar_user; ?>" style="width: 30px; height: 30px">
                                                             </a>
                                                         <?php endif; ?>
                                                     </div>
