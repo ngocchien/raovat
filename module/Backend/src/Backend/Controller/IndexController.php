@@ -17,11 +17,11 @@ class IndexController extends MyController {
             $dom = new \Zend\Dom\Query($content);
 //            $results = $dom->execute('table#Table2 tr td tr td');
             
-            $results = $dom->execute('div.subcat ul');
-//            echo '<pre>';
-//            print_r($results);
-//            echo '</pre>';
-//            die();
+            $results = $dom->execute('div.subcat ul li');
+            echo '<pre>';
+            print_r($results);
+            echo '</pre>';
+            die();
         } catch (\Exception $ex) {
             echo '<pre>';
             print_r($ex->getMessage());
