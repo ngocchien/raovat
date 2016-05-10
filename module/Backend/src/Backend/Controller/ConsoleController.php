@@ -1286,4 +1286,53 @@ class ConsoleController extends MyController {
         }
     }
 
+    public function crawlerAction() {
+        $params = $this->request->getParams();
+
+        if (empty($params['type'])) {
+            return General::getColoredString("Unknown type or id \n", 'light_cyan', 'red');
+        }
+
+        if ($name == 'raovatquynhon') {
+            $link = 'http://raovatquynhon.com';
+            $content = General::crawler($link);
+            echo '<pre>';
+            print_r($content);
+            echo '</pre>';
+            die();
+            try {
+                $dom = new \Zend\Dom\Query($content);
+                $results = $dom->execute('table#Table2 tr td tr td');
+            } catch (\Exception $ex) {
+                echo '<pre>';
+                print_r($ex->getMessage());
+                echo '</pre>';
+
+                return $flag;
+            }
+
+
+            $pattern = '#phát thành công#';
+            foreach ($results as $item) {
+                $subject = $item->textContent;
+
+                if (preg_match($pattern, $subject)) {
+                    $flag = true;
+                    break;
+                }
+            }
+
+            return $flag;
+
+
+            $arrCate = [
+                'Nhân sự việc làm',
+            ];
+
+            $arrProperties = [
+                'Tin Rao Vặt', 'Tin Quảng Cáo', 'Tin Dịch Vụ'
+            ];
+        }
+    }
+
 }

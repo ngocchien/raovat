@@ -71,6 +71,16 @@ return array(
                             'action' => 'crontab'
                         ),
                     ),
+                ),
+                'crawler' => array(
+                    'options' => array(
+                        'route' => 'crawler [--type=]',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Backend\Controller',
+                            'controller' => 'console',
+                            'action' => 'crawler'
+                        ),
+                    ),
                 )
             )
         )
