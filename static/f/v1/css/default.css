@@ -1786,6 +1786,10 @@ input[type="radio"]{
 .mg-bt-15 {
     margin-bottom: 15px
 }
+.mg-t-18 {
+    margin-top: 18px;
+}
+
 .border-detail{ padding-top:5px; padding-bottom: 5px; padding-right:10px; border:  1px solid #e1e1e1};
 #loading-mask {
     color: #D85909;
