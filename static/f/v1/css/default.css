@@ -2190,3 +2190,27 @@ ul.inbox-pagination li {
 .mg-r-5{
     margin-right: 5px;
 }
+
+#footer-bottom{
+    overflow: hidden;
+    padding-top: 20px;
+    margin-top: 15px;
+    border-top: 1px solid #dedede;
+}
+#footer-bottom .img-dkbct{
+    margin: auto 0;
+}
+#footer-bottom .title{
+    font-size: 13px;
+    color: #7a7a7a;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+#footer-bottom .adrest-ftbt ul li{
+    font-size: 13px;
+    color: #939292;
+}
+#footer-bottom .copyright-ft li{
+    color: #959595;
+    font-size: 13px;
+}
