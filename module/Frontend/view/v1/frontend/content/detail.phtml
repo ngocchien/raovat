@@ -417,6 +417,7 @@ if (empty($this->arrContent['user_created'])):
                     </div>
                     <h5>HOẶC BẰNG SỐ DƯ TÀI KHOẢN</h5>
                     <div class="row border-detail form-control timeline-desk">
+                        <input type="hidden" name="blance" value="<?php echo CUSTOMER_BALANCE; ?>">
                         <div class="col" style="margin: 5px 0px 10px 0">
                             <p><b class="color-blue">Số dư còn lại trong tài khoản hiện tại của bạn là : </b><b class="color-red"><?php echo CUSTOMER_BALANCE; ?> đ</b></p>
                         </div>
@@ -426,14 +427,16 @@ if (empty($this->arrContent['user_created'])):
                         <div class="col">
                             <div class="col-md-4">
                                 <p  style="margin-bottom: 5px; color: blue">Chọn Loại Víp</p>
-                                <input class="radio" type="radio" value="svip" name="typevip" checked><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
-                                <input class="radio" type="radio" value="vip" name="typevip"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                                <input class="radio" type="radio" value="<?php echo My\General::VIP_ALL_PAGE; ?>" name="typevip" checked><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                                <input class="radio" type="radio" value="<?php echo My\General::VIP_CATE_PAGE; ?>" name="typevip"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <p  style="margin-bottom: 5px; color: blue">Số ngày</p>
                                 <input type="number" class="form-control input-sm" name="numdate" min="1">
                             </div>
-                            <div class="col-md-4 mg-t-18">
+                            <div class="col-md-3 mg-t-18 total-fee" style="display: none">
+                            </div>
+                            <div class="col-md-2 mg-t-18">
                                 <button class="btn btn-success" name="deal-vip">Mua</button>
                             </div>
                         </div>
@@ -458,5 +461,6 @@ if (empty($this->arrContent['user_created'])):
     addCommentURL = '<?php echo $this->serverUrl() . $this->Url('add-comment'); ?>';
     confirmPassContURL = '<?php echo $this->serverUrl() . $this->Url('confirm-pass-content'); ?>';
     deleteContentURL = '<?php echo $this->serverUrl() . $this->Url('content', ['action' => 'delete-content']); ?>';
+    dealVipURL = '<?php echo $this->serverUrl() . $this->Url('content', ['action' => 'deal-vip']); ?>';
     Content.detail();
 </script>

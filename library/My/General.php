@@ -38,13 +38,20 @@ class General {
     const RECHARGE_GATE = 4;
     const RECHARGE_VIETNAM_MOBI = 6;
     const RECHARGE_ZING = 7;
+    
+    //nap tien
     const TRANS_INPUT = 1;
+    //mua vip
     const TRANS_OUTPUT = 2;
     const SEND_MAIL_MESSAGES = 1;
     //define social url
     const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/quynhon247/';
     const VIP_ALL_PAGE = 3;
     const VIP_CATE_PAGE = 2;
+    const SVIP = 'svip';
+    const FEE_SVIP = 5000;
+    const VIP = 'vip';
+    const FEE_VIP = 2000;
 
     private $headlink;
     static $fbConfig = [

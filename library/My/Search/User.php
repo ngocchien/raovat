@@ -87,7 +87,8 @@ class User extends SearchAbstract {
             'user_birthday' => ['type' => 'long', 'index' => 'not_analyzed'],
             'random_key' => ['type' => 'string', 'index' => 'not_analyzed'],
             'random_key_expried' => ['type' => 'long', 'index' => 'not_analyzed'],
-            'user_avatar_social' => ['type' => 'string', 'index' => 'not_analyzed']
+            'user_avatar_social' => ['type' => 'string', 'index' => 'not_analyzed'],
+            'modified_date' => ['type' => 'long', 'index' => 'not_analyzed'],
         ]);
         $mapping->send();
     }
@@ -124,7 +125,7 @@ class User extends SearchAbstract {
             $boolQuery = $this->__buildWhere($params, $boolQuery);
             $query = new ESQuery();
             $query->setQuery($boolQuery);
-            
+
             if ($arrFields && is_array($arrFields)) {
                 $query->setSource($arrFields);
             }
@@ -280,7 +281,7 @@ class User extends SearchAbstract {
             $addQuery->setTerm('user_id', $params['not_user_id']);
             $boolQuery->addMustNot($addQuery);
         }
-        
+
         return $boolQuery;
     }
 

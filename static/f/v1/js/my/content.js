@@ -304,10 +304,107 @@ var Content = {
                         }
                     });
                 }
+            });
+
+            $('input[name=typevip]').change(function () {
+                __calculatorFee();
+            });
+
+            $('input[name=numdate]').keyup(function () {
+                __calculatorFee();
+            });
+
+            $('button[name=deal-vip]').on('click', function () {
+                var blance = $('input[name=blance]').val();
+                var num_date = $('input[name=numdate]').val();
+                var type_vip = $('input[name=typevip]:checked').val();
+
+                if (blance == 0) {
+                    bootbox.alert('<b class="color-red">Số dư tài khoản không đủ! Vui lòng nạp thêm tiền!</b>');
+                    return false;
+                }
+
+                if (!num_date || num_date < 1) {
+                    bootbox.alert('<b class="color-red">Bạn nhập số ngày chưa hợp lệ</b>');
+                    return false;
+                }
+
+                var exist = __validateFee(type_vip, blance, num_date);
+
+                if (exist == false) {
+                    bootbox.alert('<b class="color-red">Số dư tài khoản không đủ! Vui lòng nạp thêm tiền!</b>');
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '',
+                    cache: false,
+                    dataType: 'json',
+                    data: {
+                        num_date: num_date,
+                        type_vip: type_vip,
+                        cont_id: cont_id
+                    },
+                    beforeSend: function () {
+                        $('#loading-mask').show();
+                    },
+                    success: function (rs) {
+                        $('#loading-mask').hide();
+                        if (rs.st == 1) {
+                            bootbox.alert(rs.ms, function () {
+                                window.location.href = window.location.href;
+                            })
+                        } else {
+                            bootbox.alert(rs.ms);
+                            return false;
+                        }
+                    }
+                })
             })
         })
     }
 };
+function __calculatorFee() {
+    var num_date = $('input[name=numdate]').val();
+    var type_vip = $('input[name=typevip]:checked').val();
+    if (num_date < 1) {
+        $('.total-fee').hide();
+        return;
+    }
+
+    var fee_svip = 5000;
+    var fee_vip = 2000;
+    var total_fee = 0;
+
+    if (type_vip == 3) {
+        total_fee = num_date * fee_svip;
+    }
+
+    if (type_vip == 2) {
+        total_fee = num_date * fee_vip;
+    }
+    $('.total-fee').html('<b class="color-blue">Tổng :</b> <b class="color-red">' + total_fee + ' đ</b>');
+    $('.total-fee').show();
+}
+function __validateFee(type_vip, blance, num_date) {
+    var fee_svip = 5000;
+    var fee_vip = 2000;
+    var total_fee = 0;
+
+    if (type_vip == 3) {
+        total_fee = num_date * fee_svip;
+    }
+
+    if (type_vip == 2) {
+        total_fee = num_date * fee_vip;
+    }
+
+    if (total_fee > blance) {
+        return false;
+    }
+
+}
 
 function __changeCategory() {
     var cateID = $('#detail .category').val();

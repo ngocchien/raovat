@@ -204,7 +204,8 @@ class UserController extends MyController {
                             'created_date' => time(),
                             'tran_type' => General::TRANS_INPUT,
                             'soucre_id' => $type,
-                            'tran_deal' => $info_card
+                            'tran_deal' => $info_card,
+                            'user_blance' => $balance,
                         ];
                         $serviceTrans = $this->serviceLocator->get('My\Models\TransactionHistory');
                         $serviceTrans->add($arrData);

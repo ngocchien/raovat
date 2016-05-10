@@ -924,4 +924,114 @@ class ContentController extends MyController {
         return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát</b></p>')));
     }
 
+    public function dealVipAction() {
+        if (!CUSTOMER_ID) {
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Chưa đăng nhập, không thể mua víp!</b></p>')));
+        }
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            if (empty($params['num_date']) || empty($params['type_vip']) || (int) $params['num_date'] < 1 || (int) $params['cont_id'] < 0) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Tham số truyền lên không chính xác! Vui lòng kiểm tra lại</b></p>')));
+            }
+
+            $arr_type = [General::VIP_ALL_PAGE, General::VIP_CATE_PAGE];
+            if (!in_array((int) $params['type_vip'], $arr_type)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Tham số truyền lên không chính xác! Vui lòng kiểm tra lại</b></p>')));
+            }
+
+            $instanceContent = new \My\Search\Content();
+            $arrContent = $instanceContent->getDetail(['cont_id' => (int) $params['cont_id'], 'not_status' => -1]);
+            if (empty($arrContent)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Tin này không tồn tại trong hệ thống hoặc đã bị xóa! Bạn vui lòng kiểm tra lại!</b></p>')));
+            }
+            $image_svip = STATIC_URL . '/f/v1/images/s-vip.gif';
+            $image_vip = STATIC_URL . '/f/v1/images/vip2.gif';
+
+            if ($arrContent['vip_type'] == General::VIP_ALL_PAGE && $params['type_vip'] != General::VIP_ALL_PAGE) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Rao vặt này đang ở chế độ <img src="' . $image_svip . '"> bạn không thể chuyển thành <img src="' . $image_vip . '">!</b></p>')));
+            }
+
+            $total_fee = 0;
+
+            switch ($params['type_vip']) {
+                case General::SVIP:
+                    $total_fee = (int) $params['num_date'] * General::FEE_SVIP;
+
+                    break;
+                case General::VIP:
+                    $total_fee = (int) $params['num_date'] * General::FEE_VIP;
+
+                    break;
+                default:
+                    break;
+            }
+
+            if ($total_fee > CUSTOMER_BALANCE) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Số dư tài khoản không đủ! Vui lòng nạp thêm tiền!</b></p>')));
+            }
+
+            //user_blance
+            $balance = CUSTOMER_BALANCE - $total_fee;
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
+            $intResult = $serviceUser->edit(['user_blance' => $balance, 'modified_date' => time()], CUSTOMER_ID);
+            if ($intResult) {
+                if ($arrContent['vip_type'] == General::VIP_ALL_PAGE) {
+                    $time_expiried = empty($arrContent['expired_time']) ? time() + ($params['num_date'] * 60 * 60 * 24) : $arrContent['expired_time'] + ($params['num_date'] * 60 * 60 * 24);
+                }
+
+                if ($arrContent['vip_type'] == General::VIP_CATE_PAGE) {
+                    if ($params['type_vip'] == General::VIP_ALL_PAGE) {
+                        $time_expiried = time() + ($params['num_date'] * 60 * 60 * 24);
+                    } else {
+                        $time_expiried = empty($arrContent['expired_time']) ? time() + ($params['num_date'] * 60 * 60 * 24) : $arrContent['expired_time'] + ($params['num_date'] * 60 * 60 * 24);
+                    }
+                }
+
+                $arrData = [
+                    'is_vip' => 1,
+                    'expired_time' => $time_expiried,
+                    'vip_type' => (int) $params['type_vip'],
+                    'updated_date' => time()
+                ];
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $intResult = $serviceContent->edit($arrData, $arrContent['cont_id']);
+
+                if ($intResult) {
+                    //lưu lại lịch sử giao dich
+                    $arrData = [
+                        'user_id' => CUSTOMER_ID,
+                        'created_date' => time(),
+                        'tran_type' => General::TRANS_OUTPUT,
+                        'user_blance' => $balance,
+                        'tran_deal' => $total_fee,
+                        'cont_id' => $arrContent['cont_id']
+                    ];
+                    $serviceTrans = $this->serviceLocator->get('My\Models\TransactionHistory');
+                    $serviceTrans->add($arrData);
+
+                    //set lại session
+                    $arrUser = [
+                        'user_id' => CUSTOMER_ID,
+                        'user_fullname' => CUSTOMER_FULLNAME,
+                        'user_email' => CUSTOMER_EMAIL,
+                        'user_phone' => CUSTOMER_PHONE,
+                        'user_balance' => $balance
+                    ];
+
+                    $this->getAuthService()->clearIdentity();
+                    $this->getAuthService()->getStorage()->write($arrUser);
+
+                    $image = $params['type_vip'] == General::VIP_ALL_PAGE ? $image_svip : $image_vip;
+
+                    $arrReturn = [
+                        'st' => 1,
+                        'ms' => '<p class="success">Bạn đã thanh toán thành công <b class="color-red">' . $total_fee . ' đ </b><br/>Để mua ' . $params['num_date'] . ' ngày <img src="' . $image . '"> Cho mã tin <b class="color-red">RV' . sprintf("%04d", $arrContent['cont_id']) . '</p>'
+                    ];
+                    return $this->getResponse()->setContent(json_encode($arrReturn));
+                }
+            }
+        }
+        return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<p style="color:red"><b>Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát</b></p>')));
+    }
+
 }
