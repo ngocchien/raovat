@@ -15,11 +15,13 @@ class IndexController extends MyController {
         $content = \My\General::crawler($link);
         try {
             $dom = new \Zend\Dom\Query($content);
-            $results = $dom->execute('div.subcat');
-            echo '<pre>';
-            print_r($results);
-            echo '</pre>';
-            die();
+//            $results = $dom->execute('table#Table2 tr td tr td');
+            
+            $results = $dom->execute('div.subcat ul');
+//            echo '<pre>';
+//            print_r($results);
+//            echo '</pre>';
+//            die();
         } catch (\Exception $ex) {
             echo '<pre>';
             print_r($ex->getMessage());
@@ -29,8 +31,12 @@ class IndexController extends MyController {
         }
 
 
-        $pattern = '#phát thành công#';
+//        $pattern = '#phát thành công#';
         foreach ($results as $item) {
+            echo '<pre>';
+            print_r($item);
+            echo '</pre>';
+            die();
             $subject = $item->textContent;
 
             if (preg_match($pattern, $subject)) {
