@@ -26,8 +26,8 @@ class IndexController extends MyController {
             echo '<pre>';
             print_r($ex->getMessage());
             echo '</pre>';
-
-            return $flag;
+            die();
+//            return $flag;
         }
 
 
