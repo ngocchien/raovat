@@ -12,6 +12,10 @@ class IndexController extends MyController {
 
     public function indexAction() {
         $link = 'http://raovatquynhon.com';
+        echo '<pre>';
+        print_r($link);
+        echo '</pre>';
+        die();
         $content = General::crawler($link);
         echo '<pre>';
         print_r($content);
