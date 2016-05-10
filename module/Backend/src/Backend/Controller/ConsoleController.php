@@ -584,8 +584,6 @@ class ConsoleController extends MyController {
         $service = $this->serviceLocator->get('My\Models\TransactionHistory');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\TransactionHistory();
-        $instanceSearch->createIndex();
-        die('done');
         for ($intPage = 1; $intPage < 10000; $intPage ++) {
             $arrListLimit = $service->getListLimit([], $intPage, $intLimit, 'tran_id ASC');
             if (empty($arrListLimit)) {

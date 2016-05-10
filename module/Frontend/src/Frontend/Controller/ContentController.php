@@ -954,11 +954,11 @@ class ContentController extends MyController {
             $total_fee = 0;
 
             switch ($params['type_vip']) {
-                case General::SVIP:
+                case General::VIP_ALL_PAGE:
                     $total_fee = (int) $params['num_date'] * General::FEE_SVIP;
 
                     break;
-                case General::VIP:
+                case General::VIP_CATE_PAGE:
                     $total_fee = (int) $params['num_date'] * General::FEE_VIP;
 
                     break;
@@ -972,8 +972,9 @@ class ContentController extends MyController {
 
             //user_blance
             $balance = CUSTOMER_BALANCE - $total_fee;
+
             $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $intResult = $serviceUser->edit(['user_blance' => $balance, 'modified_date' => time()], CUSTOMER_ID);
+            $intResult = $serviceUser->edit(['user_balance' => $balance, 'modified_date' => time()], CUSTOMER_ID);
             if ($intResult) {
                 if ($arrContent['vip_type'] == General::VIP_ALL_PAGE) {
                     $time_expiried = empty($arrContent['expired_time']) ? time() + ($params['num_date'] * 60 * 60 * 24) : $arrContent['expired_time'] + ($params['num_date'] * 60 * 60 * 24);
@@ -995,14 +996,13 @@ class ContentController extends MyController {
                 ];
                 $serviceContent = $this->serviceLocator->get('My\Models\Content');
                 $intResult = $serviceContent->edit($arrData, $arrContent['cont_id']);
-
                 if ($intResult) {
                     //lưu lại lịch sử giao dich
                     $arrData = [
                         'user_id' => CUSTOMER_ID,
                         'created_date' => time(),
                         'tran_type' => General::TRANS_OUTPUT,
-                        'user_blance' => $balance,
+                        'user_balance' => $balance,
                         'tran_deal' => $total_fee,
                         'cont_id' => $arrContent['cont_id']
                     ];

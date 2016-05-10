@@ -338,7 +338,7 @@ var Content = {
 
                 $.ajax({
                     type: 'POST',
-                    url: '',
+                    url: dealVipURL,
                     cache: false,
                     dataType: 'json',
                     data: {

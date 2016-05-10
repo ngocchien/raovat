@@ -178,6 +178,18 @@ return array(
                     ),
                 ),
             ),
+            'deal-vip-content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/mua-vip-tin.html',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'content',
+                        'action' => 'deal-vip',
+                    ),
+                ),
+            ),
             'user-delete-content' => array(
                 'type' => 'Segment',
                 'options' => array(
