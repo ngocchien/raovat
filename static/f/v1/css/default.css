@@ -1779,6 +1779,10 @@ input[type="radio"]{
     color: red
 }
 
+.color-blue{
+    color: blue
+}
+
 .mg-bt-15 {
     margin-bottom: 15px
 }
