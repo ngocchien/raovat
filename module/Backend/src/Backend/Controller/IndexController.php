@@ -13,13 +13,13 @@ class IndexController extends MyController {
     public function indexAction() {
         $link = 'http://raovatquynhon.com';
         $content = \My\General::crawler($link);
-        echo '<pre>';
-        print_r($content);
-        echo '</pre>';
-        die();
         try {
             $dom = new \Zend\Dom\Query($content);
-            $results = $dom->execute('table#Table2 tr td tr td');
+            $results = $dom->execute('div.subcat');
+            echo '<pre>';
+            print_r($results);
+            echo '</pre>';
+            die();
         } catch (\Exception $ex) {
             echo '<pre>';
             print_r($ex->getMessage());
