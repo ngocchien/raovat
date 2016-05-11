@@ -55,14 +55,23 @@
                                                                     </a>
                                                                     <div class="border-detail form-control timeline-desk">
                                                                         <p style="color: blue">Bạn có thể nhắn tin theo cú pháp : </p> 
-                                                                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày víp cho tin</p>
-                                                                        <p><b style="color: red">QN247 RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày víp cho tin</p>
+                                                                        <p><b style="color: red">BQN SVIP RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">2 </b> ngày <img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>"> cho tin</p>
+                                                                        <p><b style="color: red">BQN SVIP RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">3</b> ngày <img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>"> cho tin</p>
+                                                                        <p style="color: blue">Hoặc nhắn tin theo cú pháp : </p> 
+                                                                        <p><b style="color: red">BQN VIP RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7650</b> để mua <b style="color: red">5 </b> ngày <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> cho tin</p>
+                                                                        <p><b style="color: red">BQN VIP RV<?php echo sprintf("%04d", $arrContent['cont_id']); ?></b> gửi <b style="color: red">7750</b> để mua <b style="color: red">8</b> ngày <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> cho tin</p>
                                                                     </div>
                                                                 </td>
                                                                 <td class="text-center"><?php echo $arrContent['cont_views']; ?></td>
                                                                 <td class="text-center" witd="100">
-                                                                    <a class="btn btn-warning btn-xs up-vip" data-toggle="tooltip" title="Mua víp" rel="<?php echo $arrContent['cont_id'] ?>">
-                                                                        <i class="fa fa-star"></i>
+                                                                    <span data-toggle="modal" data-target="#ModalUpVip">
+                                                                        <a class="btn btn-warning btn-xs up-vip" data-toggle="tooltip" title="Mua víp" rel="<?php echo $arrContent['cont_id'] ?>">
+                                                                            <i class="fa fa-star"></i>
+                                                                        </a>
+                                                                    </span>
+                                                                    
+                                                                    <a class="btn btn-success btn-xs refresh-content" rel="<?php echo $arrContent['cont_id'] ?>">
+                                                                        <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
                                                                     </a>
                                                                     <a class="btn btn-primary btn-xs" data-toggle="tooltip" title="Sửa" href="<?php echo $this->serverUrl() . $this->Url('edit-content', array('contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id'])) ?>">
                                                                         <i class="fa fa-pencil"></i>
@@ -92,7 +101,48 @@
         </section><!--end details-->
     </div>
 </section>
+<div class="modal fade" id="ModalUpVip" tabindex="-1" role="dialog" aria-labelledby="ModalUpVip">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">MUA VÍP CHO RAO VẶT</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row border-detail form-control timeline-desk">
+                    <input type="hidden" name="blance" value="<?php echo CUSTOMER_BALANCE; ?>">
+                    <div class="col" style="margin: 5px 0px 10px 0">
+                        <p><b class="color-blue">Số dư tài khoản bạn là : </b><b class="color-red"><?php echo number_format(CUSTOMER_BALANCE, 0, ",", "."); ?>đ</b></p>
+                    </div>
+                    <div class="col" style="margin: 5px 0px 10px 0">
+                        <p><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">  <b class="color-blue">= 5000đ/Ngày</b> <b style="color: red"> Hoặc </b> <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>"> <b class="color-blue">= 2000đ/Ngày</b></p>
+                    </div>
+                    <div class="col">
+                        <div class="col-md-4">
+                            <p  style="margin-bottom: 5px; color: blue">Chọn Loại Víp</p>
+                            <input class="radio" type="radio" value="<?php echo My\General::VIP_ALL_PAGE; ?>" name="typevip" checked><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                            <input class="radio" type="radio" value="<?php echo My\General::VIP_CATE_PAGE; ?>" name="typevip"><img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                        </div>
+                        <div class="col-md-3">
+                            <p  style="margin-bottom: 5px; color: blue">Số ngày</p>
+                            <input type="number" class="form-control input-sm" name="numdate" min="1">
+                        </div>
+                        <div class="col-md-3 mg-t-18 total-fee" style="display: none">
+                        </div>
+                        <div class="col-md-2 mg-t-18">
+                            <button class="btn btn-success" name="deal-vip">Mua</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     var deletePostURL = '<?php echo $this->serverUrl() . $this->Url('delete-content'); ?>';
+    dealVipURL = '<?php echo $this->serverUrl() . $this->Url('deal-vip-content'); ?>';
     User.listPost();
 </script>

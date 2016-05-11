@@ -12,49 +12,58 @@ class IndexController extends MyController {
 
     public function indexAction() {
 //        $link = 'http://raovatquynhon.com';
-//        $content = \My\General::crawler($link);
-//        try {
-//            $dom = new \Zend\Dom\Query($content);
-////            $results = $dom->execute('table#Table2 tr td tr td');
-//            
-//            $results = $dom->execute('div.subcat ul li');
-//            echo '<pre>';
-//            print_r($results);
-//            echo '</pre>';
-//            die();
-//        } catch (\Exception $ex) {
-//            echo '<pre>';
-//            print_r($ex->getMessage());
-//            echo '</pre>';
-//            die();
-////            return $flag;
-//        }
-//
-//
-////        $pattern = '#phát thành công#';
-//        foreach ($results as $item) {
-//            echo '<pre>';
-//            print_r($item);
-//            echo '</pre>';
-//            die();
-//            $subject = $item->textContent;
-//
-//            if (preg_match($pattern, $subject)) {
-//                $flag = true;
-//                break;
-//            }
-//        }
-//
-//        return $flag;
-//
-//
-//        $arrCate = [
-//            'Nhân sự việc làm',
-//        ];
-//
-//        $arrProperties = [
-//            'Tin Rao Vặt', 'Tin Quảng Cáo', 'Tin Dịch Vụ'
-//        ];
+        $link = 'http://bidimark.com/home.aspx';
+        $content = \My\General::crawler($link);
+        
+        try {
+            $dom = new \Zend\Dom\Query($content);
+//            $results = $dom->execute('table#Table2 tr td tr td');
+            
+            $results = $dom->execute('.tbaLR #inc_main td');
+            echo '<pre>';
+            print_r(count($results));
+            echo '</pre>';
+            die();
+        } catch (\Exception $ex) {
+            echo '<pre>';
+            print_r($ex->getMessage());
+            echo '</pre>';
+            die();
+//            return $flag;
+        }
+        echo '<pre>';
+        print_r(count($results));
+        echo '</pre>';
+        die();
+
+//        $pattern = '#phát thành công#';
+        foreach ($results as $item) {
+            echo '<pre>';
+            print_r($item);
+            echo '</pre>';
+            die();
+            $subject = $item->textContent;
+
+            if (preg_match($pattern, $subject)) {
+                $flag = true;
+                break;
+            }
+        }
+        echo '<pre>';
+        print_r('aaaa');
+        echo '</pre>';
+        die();
+
+        return $flag;
+
+
+        $arrCate = [
+            'Nhân sự việc làm',
+        ];
+
+        $arrProperties = [
+            'Tin Rao Vặt', 'Tin Quảng Cáo', 'Tin Dịch Vụ'
+        ];
 
         return;
         $servicePermission = $this->serviceLocator->get('My\Models\Permission');
