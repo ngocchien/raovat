@@ -38,7 +38,6 @@ class General {
     const RECHARGE_GATE = 4;
     const RECHARGE_VIETNAM_MOBI = 6;
     const RECHARGE_ZING = 7;
-    
     //nap tien
     const TRANS_INPUT = 1;
     //mua vip
@@ -676,6 +675,31 @@ class General {
         list($day, $month, $year, $hour, $min, $second) = explode('/', $temp);
         $strReturn = 'Ngày ' . $day . ' tháng ' . $month . ' năm ' . $year . ' - ' . $hour . ' giờ ' . $min . ' phút ' . $second . ' giây';
         return $strReturn;
+    }
+
+    public static function formatExpired($second) {
+        if ($second < 60) {
+            return $second . ' giây';
+        }
+
+        if ($second < (60 * 60)) {
+            $min = (int) ($second / 60);
+            $sec = $second - ($min * 60);
+            return $min . ' phút ' . $sec . ' giây';
+        }
+
+        if ($second < (60 * 60 * 24)) {
+            $hour = (int) ($second / 60 / 60);
+            $min = ($second - ($hour * 60 * 60)) / 60;
+            $sec = $second - (($hour * 60 * 60) + ($min * 60));
+            return $hour . ' giờ ' . $min . ' phút ' . $sec . ' giây';
+        }
+
+        $date = (int) ($second / 60 / 60 / 24);
+        $hour = (int) ($second - ($date * 60 * 60 * 24)) / 60 / 60;
+        $min = (int) (($second - ($second / 60 / 60 / 24)) / 60) / 60;
+        $sec = ((($second - ($second / 60 / 60 / 24)) / 60) / 60) / 60;
+        return;
     }
 
 }

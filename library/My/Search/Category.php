@@ -237,6 +237,12 @@ class Category extends SearchAbstract {
             $addQuery->setTerm('cate_id', $params['cate_id']);
             $boolQuery->addMust($addQuery);
         }
+        
+        if (!empty($params['in_cate_id'])) {
+            $addQuery = new ESQuery\Terms();
+            $addQuery->setTerms('cate_id', $params['in_cate_id']);
+            $boolQuery->addMust($addQuery);
+        }
 
         if (!empty($params['cate_name'])) {
             $addQuery = new ESQuery\Term();

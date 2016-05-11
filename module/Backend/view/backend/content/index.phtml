@@ -71,10 +71,17 @@ $arrCategoryList = $this->arrCategoryList;
                                         <td  class="text-center" width="80">
                                             <?php echo $arrContent['cont_id']; ?>
                                         </td>
-                                        <td class="text-center">
+                                        <td>
                                             <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'edit', 'id' => $arrContent['cont_id'])); ?>"> 
-                                                <b><?php echo $arrContent['cont_title']; ?></b> 
+                                                <b><?php echo $arrContent['cont_title']; ?></b>
                                             </a>
+                                            <?php
+                                            if ($arrContent['is_vip']):
+                                                $image = $arrContent['vip_type'] == \My\General::VIP_ALL_PAGE ? STATIC_URL . '/f/v1/images/s-vip.gif' : STATIC_URL . '/f/v1/images/vip2.gif';
+                                                $expired = ($arrContent['expired_time'] - time());
+                                                ?>
+                                                <img src="<?php echo $image; ?>">
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-center">
                                             <?php echo $arrCategoryList[$arrContent['cate_id']]['cate_name']; ?> 
@@ -88,9 +95,10 @@ $arrCategoryList = $this->arrCategoryList;
                                         <td class="text-center" width="100">
                                             <?php echo $arrContent['cont_status'] ? '<a href="javascript:;" class="tooltips" data-placement="top" data-original-title="Hoạt động"><i class="icon-ok color-success"></i></a>' : ' <a href="javascript:;" class="tooltips" data-placement="top" data-original-title="Đã khóa"><i class="icon-minus-sign color-danger"></i></a>'; ?>
                                         </td>
-                                        <td class="text-center" width="200">
-                                            <a  href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'edit', 'id' => $arrContent['cont_id'])); ?>"  class="btn btn-primary btn-xs  edit" data-placement="top" data-original-title="Sửa thông tin"><i class="icon-pencil"></i> Sửa</a>
-                                            <a  class="btn btn-danger btn-xs remove tooltips" data-placement="top" data-original-title="Xóa danh mục" rel="<?php echo $arrContent['cont_id']; ?>"><i class="icon-trash "></i> Xóa</a>
+                                        <td class="text-center" width="100">
+                                            <a  class="btn btn-warning btn-xs up-vip" data-toggle="tooltip" title="Úp víp" rel="<?php echo $arrContent['cont_id']; ?>"><i class="icon-star"></i></a>
+                                        <!--<a  href="<?php // echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'edit', 'id' => $arrContent['cont_id']));                         ?>"  class="btn btn-primary btn-xs  edit"><i class="icon-pencil"></i></a>-->
+                                            <a  class="btn btn-danger btn-xs remove" data-toggle="tooltip" title="Xóa" rel="<?php echo $arrContent['cont_id']; ?>"><i class="icon-trash "></i></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -107,6 +115,47 @@ $arrCategoryList = $this->arrCategoryList;
         </div>
     </section>
 </section>
+<div class="modal fade" id="ModalUpVip" tabindex="-1" role="dialog" aria-labelledby="ModalUpVip">
+    <div class="modal-dialog" role="document">
+        <input type="hidden" name="cont_id">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">ÚP VÍP CHO TIN</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row border-detail form-control timeline-desk">
+                    <div class="col">
+                        <div class="col-md-4 text-center">
+                            <div class="col-md-12"> 
+                                <p  style="margin-bottom: 5px; color: blue">Chọn Loại Víp</p>
+                            </div>
+                            <div class="col-md-6">
+                                <input style="display:" class="radio" type="radio" value="<?php echo My\General::VIP_ALL_PAGE; ?>" name="typevip" checked><img src="<?php echo STATIC_URL . '/f/v1/images/s-vip.gif'; ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <input class="radio" type="radio" value="<?php echo My\General::VIP_CATE_PAGE; ?>" name="typevip">
+                                <img src="<?php echo STATIC_URL . '/f/v1/images/vip2.gif'; ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <p  style="margin-bottom: 5px; color: blue">Số ngày</p>
+                            <input type="number" class="form-control input-sm" name="numdate" min="1">
+                        </div>
+                        <div class="col-md-3 mg-t-18 total-fee" style="display: none">
+                        </div>
+                        <div class="col-md-2" style="margin-top: 20px;">
+                            <button class="btn btn-success" name="deal-vip">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
-//    Category.index();
+    Content.index();
 </script>

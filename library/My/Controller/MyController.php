@@ -74,6 +74,19 @@ class MyController extends AbstractActionController {
                 $this->renderer->headMeta()->setProperty('og:image:height', '132');
                 $this->renderer->headMeta()->setProperty('og:type', 'website');
 
+//                $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
+
+                $this->renderer->headMeta()->setProperty('itemprop:name', General::SITE_DOMAIN);
+                $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode('bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định'));
+                $this->renderer->headMeta()->setProperty('itemprop:image', STATIC_URL . '/f/v1/images/logoct.png');
+
+                $this->renderer->headMeta()->setProperty('twitter:card', 'summary');
+                $this->renderer->headMeta()->setProperty('twitter:site', General::SITE_AUTH);
+                $this->renderer->headMeta()->setProperty('twitter:title', General::SITE_AUTH);
+                $this->renderer->headMeta()->setProperty('twitter:description', 'bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
+                $this->renderer->headMeta()->setProperty('twitter:creator', General::SITE_AUTH);
+                $this->renderer->headMeta()->setProperty('twitter:image:src', STATIC_URL . '/f/v1/images/logoct.png');
+
                 break;
             default:
                 break;

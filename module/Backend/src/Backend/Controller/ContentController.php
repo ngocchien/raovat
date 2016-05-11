@@ -11,16 +11,15 @@ class ContentController extends MyController {
     /* @var $serviceContent \My\Models\Content */
 
     public function __construct() {
-        
+
         $this->externalCSS = [
             STATIC_URL . '/b/css/??bootstrap-wysihtml5.css'
         ];
-        
+
         $this->externalJS = [
             STATIC_URL . '/b/js/library/??wysihtml5-0.3.0.js,bootstrap-wysihtml5.js',
             STATIC_URL . '/b/js/my/??content.js'
         ];
-
     }
 
     public function indexAction() {
@@ -31,13 +30,11 @@ class ContentController extends MyController {
             'not_cont_status' => -1
         );
 
-        $serviceContent = $this->serviceLocator->get('My\Models\Content');
-
-        $arrContentList = $serviceContent->getListLimit($arrCondition, $intPage, $intLimit, 'cont_id DESC');
+        $instanceSearchContent = new \My\Search\Content();
+        $arrContentList = $instanceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['cont_id' => ['order' => 'desc']]);
 
         $route = 'backend-user-search';
-
-        $intTotal = $serviceContent->getTotal($arrConditions);
+        $intTotal = $instanceSearchContent->getTotal($arrCondition);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $route, $params);
 
@@ -48,14 +45,13 @@ class ContentController extends MyController {
                 $arrCategoryIdList[] = $arrContent['cate_id'];
             }
 
-            $strUserIdList = implode(',', array_unique($arrUserIdList));
-            $strCategoryIdList = implode(',', array_unique($arrCategoryIdList));
+            $arrUserIdList = array_unique($arrUserIdList);
+            $arrCategoryIdList = array_unique($arrCategoryIdList);
+            $instanceSearchUser = new \My\Search\User();
+            $instanceSearchCategory = new \My\Search\Category();
+            $arrUserListTemp = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
+            $arrCategoryListTemp = $instanceSearchCategory->getList(['in_cate_id' => $arrCategoryIdList]);
 
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-
-            $arrUserListTemp = $serviceUser->getList(array('in_user_id' => $strUserIdList));
-            $arrCategoryListTemp = $serviceCategory->getList(array('in_cate_id' => $strCategoryIdList));
 
             //format lại 2 array
             foreach ($arrUserListTemp as $arrUser) {
@@ -290,46 +286,69 @@ class ContentController extends MyController {
     }
 
     public function deleteAction() {
+        $paramsRoute = $this->params()->fromRoute();
         if ($this->request->isPost()) {
             $params = $this->params()->fromPost();
-            if (empty($params['categoryId'])) {
+            if (empty($params['cont_id'])) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi ! Vui lòng thử lại!')));
             }
-            $intCategoryId = (int) $params['categoryId'];
-            //find Category in system
-            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-            $arrConditionCategory = array(
-                'cate_id' => $intCategoryId
-            );
 
-            $arrCategory = $serviceCategory->getDetail($arrConditionCategory);
+            //find Content in system
+            $instanceSearchContent = new \My\Search\Content();
+            $content = $instanceSearchContent->getDetail(['cont_id' => $params['cont_id'], 'not_cont_status' => -1]);
 
-            if (empty($arrCategory)) {
-                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Find not found Category in DB!')));
+            if (empty($content)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Rao vặt này không tồn tại trong hệ thống!')));
             }
 
-            $arrParams = array(
-                'cate_status' => -1,
-                'user_updated' => UID,
-                'updated_date' => time()
-            );
-
-            $result = $serviceCategory->edit($arrParams, $intCategoryId);
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            $result = $serviceContent->edit(['cont_status' => -1, 'updated_date' => time(), 'user_updated' => UID], $content['cont_id']);
 
             if ($result) {
                 $serviceLogs = $this->serviceLocator->get('My\Models\Logs');
-                $arrLogs = array(
-                    'user_id' => UID,
-                    'logs_controller' => 'User',
-                    'logs_action' => 'delete',
-                    'logs_time' => time(),
-                    'logs_detail' => 'Xóa Category có id = ' . $intCategoryId,
-                );
-                $serviceLogs->add($arrLogs);
+                $arrLog = General::createLogs($paramsRoute, $params, $content['cont_id']);
+                $serviceLogs->add($arrLog);
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Xóa tin rao vặt thành công!')));
+            }
+            return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý ! Vui lòng thử lại!')));
+        }
+    }
 
-                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => 'Deleted Category Success!')));
+    public function upvipAction() {
+        $params_route = $this->params()->fromRoute();
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+
+            if (empty($params['cont_id']) || empty($params['num_date']) || empty($params['type_vip'])) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Lỗi tham số truyền lên!')));
             }
 
+            $instanceSearchContent = new \My\Search\Content();
+            $content = $instanceSearchContent->getDetail(['cont_id' => $params['cont_id'], 'not_cont_status' => -1]);
+
+            if (empty($content)) {
+                return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Rao vặt này không tồn tại trong hệ thống!')));
+            }
+
+            $data = [
+                'is_vip' => 1,
+                'vip_type' => $params['type_vip'],
+                'expired_time' => time() + ((int) $params['num_date'] * 60 * 60 * 24),
+                'updated_date' => time(),
+                'user_updated' => UID
+            ];
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            $result = $serviceContent->edit($data, $content['cont_id']);
+
+            if ($result) {
+                $serviceLogs = $this->serviceLocator->get('My\Models\Logs');
+                $arrLog = General::createLogs($params_route, $params, $content['cont_id']);
+                $serviceLogs->add($arrLog);
+
+                $image = $params['type_vip'] == \My\General::VIP_ALL_PAGE ? STATIC_URL . '/f/v1/images/s-vip.gif' : STATIC_URL . '/f/v1/images/vip2.gif';
+
+                return $this->getResponse()->setContent(json_encode(array('st' => 1, 'ms' => '<b>Úp thành công ' . $params['num_date'] . ' ngày <img src="' . $image . '"> cho tin <b style="color:red"> RV' . sprintf("%04d", $content['cont_id']) . '</b>!</b>')));
+            }
             return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => 'Xảy ra lỗi trong quá trình xử lý ! Vui lòng thử lại!')));
         }
     }

@@ -11,6 +11,7 @@ class IndexController extends MyController {
     }
 
     public function indexAction() {
+        return;
 //        $link = 'http://raovatquynhon.com';
         $link = 'http://bidimark.com/home.aspx';
         $content = \My\General::crawler($link);
