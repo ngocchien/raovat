@@ -1006,4 +1006,32 @@ class UserController extends MyController {
         ];
     }
 
+    public function refreshContentAction() {
+        if (empty(CUSTOMER_ID)) {
+            return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<b class="color-red">Chưa đăng nhập không thể làm mới tin!</b>']));
+        }
+
+        if ($this->request->isPost()) {
+            $params = $this->params()->fromPost();
+            if (empty($params['cont_id'])) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<b class="color-red">Tham số truyền lên không chính xác!</b>']));
+            }
+
+            $instanceSearchContent = new \My\Search\Content();
+            $arrContent = $instanceSearchContent->getDetail(['cont_id', 'not_cont_status' => -1, 'user_created' => CUSTOMER_ID]);
+
+            if (empty($arrContent)) {
+                return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<b class="color-red">Không tìm thấy rao vặt này trong hệ thống của chúng tôi!</b>']));
+            }
+
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            $intResult = $serviceContent->edit(['updated_date' => time(), 'user_updated' => CUSTOMER_ID], $arrContent['cont_id']);
+
+            if ($intResult) {
+                return $this->getResponse()->setContent(json_encode(['st' => 1, 'ms' => '<b class="color-red">Làm mới rao vặt thành công!</b>']));
+            }
+        }
+        return $this->getResponse()->setContent(json_encode(['st' => -1, 'ms' => '<b class="color-red">Xảy ra lỗi trong quá trình xử lý!Vui lòng thử lại sau giây lát!</b>']));
+    }
+
 }

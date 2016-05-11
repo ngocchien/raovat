@@ -69,8 +69,8 @@
                                                                             <i class="fa fa-star"></i>
                                                                         </a>
                                                                     </span>
-                                                                    
-                                                                    <a class="btn btn-success btn-xs refresh-content" rel="<?php echo $arrContent['cont_id'] ?>">
+
+                                                                    <a class="btn btn-success btn-xs refresh-content" data-toggle="tooltip" title="Làm mới tin" rel="<?php echo $arrContent['cont_id'] ?>">
                                                                         <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
                                                                     </a>
                                                                     <a class="btn btn-primary btn-xs" data-toggle="tooltip" title="Sửa" href="<?php echo $this->serverUrl() . $this->Url('edit-content', array('contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id'])) ?>">
@@ -144,5 +144,6 @@
 <script>
     var deletePostURL = '<?php echo $this->serverUrl() . $this->Url('delete-content'); ?>';
     dealVipURL = '<?php echo $this->serverUrl() . $this->Url('deal-vip-content'); ?>';
+    refreshContentURL = '<?php echo $this->serverUrl() . $this->Url('refresh-content'); ?>';
     User.listPost();
 </script>

@@ -321,6 +321,7 @@ var User = {
             var blance = $('input[name=blance]').val();
             var num_date = $('input[name=numdate]').val();
             var type_vip = $('input[name=typevip]:checked').val();
+            var cont_id = $(this).attr('rel');
 
             if (blance == 0) {
                 bootbox.alert('<b class="color-red">Số dư tài khoản không đủ! Vui lòng nạp thêm tiền!</b>');
@@ -356,7 +357,6 @@ var User = {
                     $('#loading-mask').hide();
                     if (rs.st == 1) {
                         bootbox.alert(rs.ms, function () {
-                            window.location.href = window.location.href;
                         })
                     } else {
                         bootbox.alert(rs.ms);
@@ -364,6 +364,30 @@ var User = {
                     }
                 }
             })
+        });
+
+        $('.refresh-content').on('click', function () {
+            var cont_id = $(this).attr('rel');
+            if (!cont_id) {
+                bootbox.alert('Xảy ra lỗi trong quá trình xử lý! Vui lòng thử lại sau giây lát!');
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: refreshContentURL,
+                dataType: 'json',
+                cache: false,
+                data: {
+                    cont_id: cont_id
+                },
+                beforeSend: function () {
+
+                },
+                success: function (rs) {
+                    bootbox.alert(rs.ms);
+                }
+            });
         })
     },
     listSavePost: function () {

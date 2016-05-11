@@ -551,6 +551,25 @@ return array(
                     ),
                 ),
             ),
+            
+            'refresh-content' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/thanh-vien/lam-moi-rao-vat.html',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'refresh-content',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'user',
+                        'action' => 'refresh-content',
+                    ),
+                ),
+            ),
+            
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
