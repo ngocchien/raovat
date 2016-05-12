@@ -33,9 +33,9 @@ class IndexController extends MyController {
         $instaceSearchContent = new \My\Search\Content();
         $arrConditionContent = [
             'cont_status' => 1,
-//            'is_vip' => 1,
-//            'vip_type' => \My\General::VIP_ALL_PAGE,
-//            'more_expired_time' => time()
+            'is_vip' => 1,
+            'vip_type' => \My\General::VIP_ALL_PAGE,
+            'more_expired_time' => time()
         ];
         $arrContentList = $instaceSearchContent->getList($arrConditionContent, ['updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
 

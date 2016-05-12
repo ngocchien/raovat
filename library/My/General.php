@@ -38,7 +38,6 @@ class General {
     const RECHARGE_GATE = 4;
     const RECHARGE_VIETNAM_MOBI = 6;
     const RECHARGE_ZING = 7;
-    
     //nap tien
     const TRANS_INPUT = 1;
     //mua vip
@@ -52,6 +51,9 @@ class General {
     const FEE_SVIP = 5000;
     const VIP = 'vip';
     const FEE_VIP = 2000;
+    //image
+    const IMAGE_SVIP = 'http://static.bestquynhon.com/f/v1/images/s-vip.gif';
+    const IMAGE_VIP = 'http://static.bestquynhon.com/f/v1/images/vip2.gif';
 
     private $headlink;
     static $fbConfig = [

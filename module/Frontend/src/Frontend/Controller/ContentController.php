@@ -785,6 +785,9 @@ class ContentController extends MyController {
             $serviceComment = $this->serviceLocator->get('My\Models\Comment');
             $intResult = $serviceComment->add($arrData);
             if ($intResult > 0) {
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $serviceContent->edit(['total_comment' => (int) $content_detail['total_comment'] + 1], (int) $params['cont_id']);
+
                 unset($_SESSION['captcha']);
                 $viewModel = new ViewModel();
                 $viewModel->setTerminal(true);

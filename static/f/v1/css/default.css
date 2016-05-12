@@ -2214,3 +2214,23 @@ ul.inbox-pagination li {
     color: #959595;
     font-size: 13px;
 }
+
+.item-list-content{
+    
+}
+
+.color-location {
+    color: #69A467
+}
+
+.color-properties {
+    color: #A94464
+}
+.color-title{
+    color : #337ab7
+}
+
+.thumb-image-avatar {
+    width: 30px; 
+    height: 30px
+}

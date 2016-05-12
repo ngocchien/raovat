@@ -251,7 +251,27 @@ class UserController extends MyController {
     }
 
     public function dealHistoryAction() {
+        if (!CUSTOMER_ID) {
+            return $this->redirect()->toRoute('home');
+        }
+        $params = $this->params()->fromRoute();
+        $intLimit = 15;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
+
+        $arrCondition = [
+            'user_id' => CUSTOMER_ID,
+        ];
+
+        $instanceSearchTran = new \My\Search\TransactionHistory();
+        $arrTranList = $instanceSearchTran->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
+        $intTotal = $instanceSearchTran->getTotal($arrCondition);
+        $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'user-list-post', $params);
         
+        return [
+            'arrTranList' => $arrTranList,
+            'paging'=>$paging
+        ];
     }
 
     public function blockAction() {
@@ -709,10 +729,16 @@ class UserController extends MyController {
             }
 
             $isAcitve = false;
+
             if ($arrMessges['is_view'] == 0) {
                 $isAcitve = true;
-                $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
-                $serviceMessages->edit(['is_view' => 1, 'updated_date' => time()], (int) $params['id']);
+                try {
+                    $serviceMessages = $this->serviceLocator->get('My\Models\Messages');
+                    $serviceMessages->edit(['is_view' => 1, 'updated_date' => time()], $arrMessges['mess_id']);
+                } catch (\Exception $exc) {
+                    echo $exc->getMessage();
+                    die();
+                }
             }
 
             $instanceSearchUser = new \My\Search\User();

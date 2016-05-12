@@ -89,6 +89,7 @@ class Content extends SearchAbstract {
             'ip_address' => ['type' => 'string', 'index' => 'not_analyzed'],
             'cont_image' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'dist_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'total_comment' => ['type' => 'integer', 'index' => 'not_analyzed']
         ]);
         $mapping->send();
     }
@@ -371,13 +372,13 @@ class Content extends SearchAbstract {
             $addQuery->setTerm('vip_type', $params['vip_type']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (!empty($params['not_type_vip'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('vip_type', $params['not_type_vip']);
             $boolQuery->addMustNot($addQuery);
         }
-        
+
 
         if (!empty($params['more_expired_time'])) {
             $addQuery = new ESQuery\Range();

@@ -416,17 +416,19 @@ return array(
             'user-deal-history' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/thanh-vien/lich-su-giao-dich[.html]',
+                    'route' => '/thanh-vien/lich-su-giao-dich[[-:page]][.html]',
                     'constraints' => array(
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'deal-history',
+                        'page' => '[0-9]+',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Frontend\Controller',
                         'module' => 'frontend',
                         'controller' => 'user',
                         'action' => 'deal-history',
+                        'page' => 1
                     ),
                 ),
             ),
@@ -551,7 +553,6 @@ return array(
                     ),
                 ),
             ),
-            
             'refresh-content' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -569,7 +570,6 @@ return array(
                     ),
                 ),
             ),
-            
             'captcha' => array(
                 'type' => 'Segment',
                 'options' => array(
