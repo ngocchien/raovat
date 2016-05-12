@@ -3,6 +3,7 @@
 namespace Backend\Controller;
 
 use My\Controller\MyController;
+use Sunra\PhpSimple\HtmlDomParser;
 
 class IndexController extends MyController {
 
@@ -11,15 +12,46 @@ class IndexController extends MyController {
     }
 
     public function indexAction() {
+        return;
+        include PUBLIC_PATH . '/simple_html_dom.php';
+
+        $link = 'http://www.raovatquynhon.com/raovat/nhan-su-viec-lam/';
+//        
+//        $html = file_get_html($link);
+//        $cate = $html->find('table');
+//        echo '<pre>';
+//        print_r($cate);
+//        echo '</pre>';
+//        die();
+//// Find all images 
+//        foreach ($html->find('img') as $element)
+//            echo $element->src . '<br>';
+//
+//// Find all links 
+//        foreach ($html->find('a') as $element)
+//            echo $element->href . '<br>';
+//        
 //        $link = 'http://raovatquynhon.com';
-        $link = 'http://bidimark.com/home.aspx';
         $content = \My\General::crawler($link);
-        
+//        $dom = HtmlDomParser::str_get_html($content);
+////        $dom = HtmlDomParser::file_get_html($link);
+//
+//        echo '<pre>';
+//        print_r($dom);
+//        echo '</pre>';
+//        die();
+//        $link = 'http://bidimark.com/home.aspx';
+
+
         try {
             $dom = new \Zend\Dom\Query($content);
 //            $results = $dom->execute('table#Table2 tr td tr td');
-            
-            $results = $dom->execute('.tbaLR #inc_main td');
+            $results = $dom->execute('table#Table2 tr td tr td');
+            echo '<pre>';
+            print_r($dom);
+            echo '</pre>';
+//            die();
+            $results = $dom->execute('div');
             echo '<pre>';
             print_r(count($results));
             echo '</pre>';
