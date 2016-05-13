@@ -14,115 +14,55 @@ class IndexController extends MyController {
     public function indexAction() {
         return;
         include PUBLIC_PATH . '/simple_html_dom.php';
-
-        $link = 'http://www.raovatquynhon.com/raovat/nhan-su-viec-lam/';
-//        
-//        $html = file_get_html($link);
-//        $cate = $html->find('table');
-//        echo '<pre>';
-//        print_r($cate);
-//        echo '</pre>';
-//        die();
-//// Find all images 
-//        foreach ($html->find('img') as $element)
-//            echo $element->src . '<br>';
-//
-//// Find all links 
-//        foreach ($html->find('a') as $element)
-//            echo $element->href . '<br>';
-//        
-//        $link = 'http://raovatquynhon.com';
-        $content = \My\General::crawler($link);
-//        $dom = HtmlDomParser::str_get_html($content);
-////        $dom = HtmlDomParser::file_get_html($link);
-//
-//        echo '<pre>';
-//        print_r($dom);
-//        echo '</pre>';
-//        die();
-//        $link = 'http://bidimark.com/home.aspx';
-
-
-        try {
-            $dom = new \Zend\Dom\Query($content);
-//            $results = $dom->execute('table#Table2 tr td tr td');
-            $results = $dom->execute('table#Table2 tr td tr td');
-            echo '<pre>';
-            print_r($dom);
-            echo '</pre>';
-//            die();
-            $results = $dom->execute('div');
-            echo '<pre>';
-            print_r(count($results));
-            echo '</pre>';
-            die();
-        } catch (\Exception $ex) {
-            echo '<pre>';
-            print_r($ex->getMessage());
-            echo '</pre>';
-            die();
-//            return $flag;
-        }
-        echo '<pre>';
-        print_r(count($results));
-        echo '</pre>';
-        die();
-
-//        $pattern = '#phát thành công#';
-        foreach ($results as $item) {
-            echo '<pre>';
-            print_r($item);
-            echo '</pre>';
-            die();
-            $subject = $item->textContent;
-
-            if (preg_match($pattern, $subject)) {
-                $flag = true;
-                break;
+        $html = file_get_html('http://www.raovatbinhdinh.vn/viec-lam-tuyen-dung-1-19.html');
+        $domain = 'http://www.raovatbinhdinh.vn';
+        
+        $arr = [];
+        foreach ($html->find('#ccr-left-section .ccr-world-news a') as $element) {
+            if ($element->href != 'javascript:void(0);') {
+                $arr[] = $element->href;
             }
         }
-        echo '<pre>';
-        print_r('aaaa');
-        echo '</pre>';
-        die();
+        unset($html);
+        foreach ($arr as $value) {
 
-        return $flag;
-
-
-        $arrCate = [
-            'Nhân sự việc làm',
-        ];
-
-        $arrProperties = [
-            'Tin Rao Vặt', 'Tin Quảng Cáo', 'Tin Dịch Vụ'
-        ];
-
-        return;
-        $servicePermission = $this->serviceLocator->get('My\Models\Permission');
-        $arrData = $servicePermission->getAllResource();
-        p($arrData);
-        die;
-
-        $dirScanner = new \Zend\Code\Scanner\DirectoryScanner();
-//        p(WEB_ROOT.'/module/Backend/');die;
-        $dirScanner->addDirectory(WEB_ROOT . '/module/Backend/');
-        foreach ($dirScanner->getClasses(true) as $classScanner) {
-            list($moduleName, $tmp, $controllerName) = explode('\\', $classScanner->getName());
-            $controllerName = str_replace('Controller', '', $controllerName);
-            $action = array();
-            foreach ($classScanner->getMethods(true) as $method) {
-                if (strpos($method->getName(), 'Action')) {
-                    $action[] = str_replace('Action', '', $method->getName());
+            $html = file_get_html($domain . $value);
+            $arrData = [];
+            foreach ($html->find('h2') as $element) {
+                preg_match('/<h2>(.*?)<label style="float:right;margin-right: 5px;"><i class="fa fa-eye"><\/i>.*?<\/label><\/h2>/', $element->outertext, $arrRa);
+                $arrData['cont_title'] = $arrRa[1];
+                $arrData['cont_slug'] = \My\General::getSlug($arrRa[1]);
+                $arrData['updated_date'] = time();
+                $arrData['cate_id'] = 79;
+                $arrData['cont_status'] = 1;
+            }
+            foreach ($html->find('#ccr-left-section #ccr-article .ccr-world-news li') as $key => $element) {
+                if ($key == 2) {
+                    preg_match('/Người đăng :(.*?) - Điện thoại : (.*?) - Email :(.*?)/', $element->plaintext, $arrRa);
+                    $arrUser = [
+                        'user_fullname' => $arrRa[1],
+                        'user_phone' => $arrRa[2],
+                        'user_email' => $arrRa[3],
+                        'cont_password' => '123123'
+                    ];
+                    $arrData['user_info'] = json_encode($arrUser);
                 }
             }
-            $arrData[] = array('module' => $moduleName, 'controller' => $controllerName, 'action' => $action);
+            foreach ($html->find('#DetailCommerce div[style=border-bottom: 1px solid #e3e2e2;float:left;width:100%]') as $key => $element) {
+                $arrData['cont_detail'] = $element->plaintext;
+                $arrData['cont_detail_text'] = \My\General::getSlug($element->plaintext);
+                $arrData['created_date'] = time();
+            }
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            if ($serviceContent->add($arrData)) {
+                echo \My\General::getColoredString("Sitemap content done", 'green', 'cyan');
+            } else {
+                echo \My\General::getColoredString("Sitemap content done", 'red', 'cyan');
+            }
+            unset($arrData);
+            unset($serviceContent);
         }
-        p($arrData);
-        die;
-        $params = $this->params()->fromRoute();
-        return array(
-            'params' => $params,
-        );
+        die();
     }
 
 }

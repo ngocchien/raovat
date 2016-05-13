@@ -26,6 +26,7 @@ class ContentController extends MyController {
 
     public function detailAction() {
         $params = $this->params()->fromRoute();
+        
         $cont_id = (int) $params['contentId'];
         $cont_slug = $params['contentSlug'];
 
@@ -34,7 +35,7 @@ class ContentController extends MyController {
         }
         $arrConditionContent = [
             'cont_id' => $cont_id,
-            'cont_status' => 1
+            'not_cont_status' => -1
         ];
         $instanceSearchContent = new \My\Search\Content();
         $arrContent = $instanceSearchContent->getDetail($arrConditionContent);

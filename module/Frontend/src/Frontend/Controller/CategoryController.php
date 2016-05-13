@@ -112,14 +112,18 @@ class CategoryController extends MyController {
         if (!empty($arrContentList)) {
             $arrUserId = [];
             foreach ($arrContentList as $arrContent) {
-                $arrUserId[] = $arrContent['user_created'];
+                if(!empty($arrContent['user_created'])){
+                    $arrUserId[] = $arrContent['user_created'];
+                }
             }
             $arrUserId = array_unique($arrUserId);
-            $instanceSearchUser = new \My\Search\User();
-            $arrUserList = $instanceSearchUser->getList(['in_user_id' => $arrUserId]);
-            if (!empty($arrUserList)) {
-                foreach ($arrUserList as $value) {
-                    $arrUserListFormat[$value['user_id']] = $value;
+            if (!empty($arrUserId)) {
+                $instanceSearchUser = new \My\Search\User();
+                $arrUserList = $instanceSearchUser->getList(['in_user_id' => $arrUserId]);
+                if (!empty($arrUserList)) {
+                    foreach ($arrUserList as $value) {
+                        $arrUserListFormat[$value['user_id']] = $value;
+                    }
                 }
             }
         }
