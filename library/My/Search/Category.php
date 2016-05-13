@@ -202,7 +202,6 @@ class Category extends SearchAbstract {
     public function getTotal($arrConditions = array()) {
         $boolQuery = new Bool();
         $boolQuery = $this->__buildWhere($arrConditions, $boolQuery);
-
         $query = new ESQuery();
         $query->setQuery($boolQuery);
         $instanceSearch = new Search(General::getSearchConfig());

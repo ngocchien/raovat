@@ -81,6 +81,7 @@ $arrCategoryList = $this->arrCategoryList;
                                                 $expired = ($arrContent['expired_time'] - time());
                                                 ?>
                                                 <img src="<?php echo $image; ?>">
+                                                <b><?php echo date('d/m/Y', $arrContent['expired_time']); ?></b>
                                             <?php endif; ?>
                                         </td>
                                         <td class="text-center">
@@ -97,7 +98,7 @@ $arrCategoryList = $this->arrCategoryList;
                                         </td>
                                         <td class="text-center" width="100">
                                             <a  class="btn btn-warning btn-xs up-vip" data-toggle="tooltip" title="Úp víp" rel="<?php echo $arrContent['cont_id']; ?>"><i class="icon-star"></i></a>
-                                        <!--<a  href="<?php // echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'edit', 'id' => $arrContent['cont_id']));                         ?>"  class="btn btn-primary btn-xs  edit"><i class="icon-pencil"></i></a>-->
+                                        <!--<a  href="<?php // echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'edit', 'id' => $arrContent['cont_id']));                          ?>"  class="btn btn-primary btn-xs  edit"><i class="icon-pencil"></i></a>-->
                                             <a  class="btn btn-danger btn-xs remove" data-toggle="tooltip" title="Xóa" rel="<?php echo $arrContent['cont_id']; ?>"><i class="icon-trash "></i></a>
                                         </td>
                                     </tr>
@@ -151,7 +152,7 @@ $arrCategoryList = $this->arrCategoryList;
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
