@@ -1335,4 +1335,226 @@ class ConsoleController extends MyController {
         }
     }
 
+    public function sitemapAction() {
+        $this->siteMapCategory();
+        $this->siteMapContent();
+        $this->sitemapOther();
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>';
+        $xml = new \SimpleXMLElement($xml);
+
+        if (is_file(PUBLIC_PATH . '/xml/content.xml')) {
+            $sitemap = $xml->addChild('sitemap', '');
+            $sitemap->addChild('loc', BASE_URL . '/xml/content.xml');
+            $sitemap->addChild('lastmod', date('c', time()));
+        }
+        if (is_file(PUBLIC_PATH . '/xml/category.xml')) {
+            $sitemap = $xml->addChild('sitemap', '');
+            $sitemap->addChild('loc', BASE_URL . '/xml/category.xml');
+            $sitemap->addChild('lastmod', date('c', time()));
+        }
+//
+//        if (is_file(PUBLIC_PATH . '/xml/general.xml')) {
+//            $sitemap = $xml->addChild('sitemap');
+//            $sitemap->addChild('loc', BASE_URL . '/xml/general.xml');
+//            $sitemap->addChild('lastmod', date('c', time()));
+//        }
+        if (is_file(PUBLIC_PATH . '/xml/other.xml')) {
+            $sitemap = $xml->addChild('sitemap');
+            $sitemap->addChild('loc', BASE_URL . '/xml/other.xml');
+            $sitemap->addChild('lastmod', date('c', time()));
+        }
+
+        $result = file_put_contents(PUBLIC_PATH . '/xml/bestquynhon_sitemap.xml', $xml->asXML());
+        if ($result) {
+            echo General::getColoredString("Create bestquynhon_sitemap.xml completed!", 'blue', 'cyan');
+            $this->flush();
+        }
+        echo General::getColoredString("DONE!", 'blue', 'cyan');
+        die('done');
+    }
+
+    public function siteMapCategory() {
+        $doc = '<?xml version="1.0" encoding="UTF-8"?>';
+        $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+        $doc .= '</urlset>';
+        $xml = new \SimpleXMLElement($doc);
+        $this->flush();
+        $instanceSearchCategory = new \My\Search\Category();
+        $arrCategoryList = $instanceSearchCategory->getList(['cate_status' => 1], [], ['cate_sort' => ['order' => 'asc'], 'cate_id' => ['order' => 'asc']]);
+
+        $arrCategoryParentList = [];
+        $arrCategoryByParent = [];
+        if (!empty($arrCategoryList)) {
+            foreach ($arrCategoryList as $arrCategory) {
+                if ($arrCategory['parent_id'] == 0) {
+                    $arrCategoryParentList[$arrCategory['cate_id']] = $arrCategory;
+                } else {
+                    $arrCategoryByParent[$arrCategory['parent_id']][] = $arrCategory;
+                }
+            }
+        }
+
+        ksort($arrCategoryByParent);
+
+        //findall district
+        $instanceSearchDistrict = new \My\Search\District();
+        $arrDistrict = $instanceSearchDistrict->getList(['not_dist_status' => -1], [], ['dist_sort' => ['order' => 'asc'], 'dist_id' => ['order' => 'asc']]);
+
+        //findall properties
+        $instanceSearchProperties = new \My\Search\Properties();
+        $arrProperties = $instanceSearchProperties->getList(['not_prop_status' => -1, 'not_parent_id' => 0]);
+
+        //format properties
+        $arrPropertiesFormat = [];
+        foreach ($arrProperties as $value) {
+            $arrPropertiesFormat[$value['parent_id']][] = $value;
+        }
+
+        foreach ($arrCategoryParentList as $value) {
+            $strCategoryURL = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '.html';
+            $url = $xml->addChild('url');
+            $url->addChild('loc', $strCategoryURL);
+            $url->addChild('lastmod', date('c', time()));
+            $url->addChild('changefreq', 'daily');
+            $url->addChild('priority', 0.7);
+
+            //khu vuc tat ca
+            foreach ($arrPropertiesFormat[$value['prop_id']] as $prop) {
+                $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/toan-tinh-0/nhu-cau/' . $prop['prop_slug'] . '-' . $prop['prop_id'] . '.html';
+                $url = $xml->addChild('url');
+                $url->addChild('loc', $href);
+                $url->addChild('lastmod', date('c', time()));
+                $url->addChild('changefreq', 'daily');
+                $url->addChild('priority', 0.7);
+            }
+
+            foreach ($arrDistrict as $arrLoca) {
+                $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/' . $arrLoca['dist_slug'] . '-' . $arrLoca['dist_id'] . '.html';
+                $url = $xml->addChild('url');
+                $url->addChild('loc', $href);
+                $url->addChild('lastmod', date('c', time()));
+                $url->addChild('changefreq', 'daily');
+                $url->addChild('priority', 0.7);
+
+                foreach ($arrPropertiesFormat[$value['prop_id']] as $prop) {
+                    $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/' . $arrLoca['dist_slug'] . '-' . $arrLoca['dist_id'] . '/nhu-cau/' . $prop['prop_slug'] . '-' . $prop['prop_id'] . '.html';
+                    $url = $xml->addChild('url');
+                    $url->addChild('loc', $href);
+                    $url->addChild('lastmod', date('c', time()));
+                    $url->addChild('changefreq', 'daily');
+                    $url->addChild('priority', 0.7);
+                }
+            }
+        }
+        foreach ($arrCategoryByParent as $key => $arr) {
+            foreach ($arr as $value) {
+                $strCategoryURL = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '.html';
+                $url = $xml->addChild('url');
+                $url->addChild('loc', $strCategoryURL);
+                $url->addChild('lastmod', date('c', time()));
+                $url->addChild('changefreq', 'daily');
+                $url->addChild('priority', 0.7);
+
+                //khu vuc tat ca
+                foreach ($arrPropertiesFormat[$arrCategoryParentList[$key]['prop_id']] as $prop) {
+                    $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/toan-tinh-0/nhu-cau/' . $prop['prop_slug'] . '-' . $prop['prop_id'] . '.html';
+                    $url = $xml->addChild('url');
+                    $url->addChild('loc', $href);
+                    $url->addChild('lastmod', date('c', time()));
+                    $url->addChild('changefreq', 'daily');
+                    $url->addChild('priority', 0.7);
+                }
+
+                foreach ($arrDistrict as $arrLoca) {
+                    $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/' . $arrLoca['dist_slug'] . '-' . $arrLoca['dist_id'] . '.html';
+                    $url = $xml->addChild('url');
+                    $url->addChild('loc', $href);
+                    $url->addChild('lastmod', date('c', time()));
+                    $url->addChild('changefreq', 'daily');
+                    $url->addChild('priority', 0.7);
+
+                    foreach ($arrPropertiesFormat[$arrCategoryParentList[$key]['prop_id']] as $prop) {
+                        $href = BASE_URL . '/danh-muc/' . $value['cate_slug'] . '-' . $value['cate_id'] . '/khu-vuc/' . $arrLoca['dist_slug'] . '-' . $arrLoca['dist_id'] . '/nhu-cau/' . $prop['prop_slug'] . '-' . $prop['prop_id'] . '.html';
+                        $url = $xml->addChild('url');
+                        $url->addChild('loc', $href);
+                        $url->addChild('lastmod', date('c', time()));
+                        $url->addChild('changefreq', 'daily');
+                        $url->addChild('priority', 0.7);
+                    }
+                }
+            }
+        }
+
+        unlink(PUBLIC_PATH . '/xml/category.xml');
+        $result = file_put_contents(PUBLIC_PATH . '/xml/category.xml', $xml->asXML());
+        if ($result) {
+            echo General::getColoredString("Sitemap category done", 'blue', 'cyan');
+            $this->flush();
+        }
+
+        return true;
+    }
+
+    public function siteMapContent() {
+        $instanceSearchContent = new \My\Search\Content();
+        $doc = '<?xml version="1.0" encoding="UTF-8"?>';
+        $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+        $doc .= '</urlset>';
+        $xml = new \SimpleXMLElement($doc);
+        $this->flush();
+        $intLimit = 100;
+        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+            $arrContentList = $instanceSearchContent->getListLimit(['not_cont_status' => -1], $intPage, $intLimit, ['cont_id' => ['order' => 'desc']]);
+            if (empty($arrContentList)) {
+                break;
+            }
+            foreach ($arrContentList as $arr) {
+                $href = BASE_URL . '/rao-vat/' . $arr['cont_slug'] . '-' . $arr['cont_id'] . '.html';
+                $url = $xml->addChild('url');
+                $url->addChild('loc', $href);
+                $url->addChild('lastmod', date('c', time()));
+                $url->addChild('changefreq', 'daily');
+                $url->addChild('priority', 0.7);
+            }
+        }
+
+        unlink(PUBLIC_PATH . '/xml/content.xml');
+        $result = file_put_contents(PUBLIC_PATH . '/xml/content.xml', $xml->asXML());
+        if ($result) {
+            echo General::getColoredString("Sitemap content done", 'blue', 'cyan');
+            $this->flush();
+        }
+
+        return true;
+    }
+
+    public function siteMapSearch() {
+        
+    }
+
+    private function sitemapOther() {
+        $doc = '<?xml version="1.0" encoding="UTF-8"?>';
+        $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+        $doc .= '</urlset>';
+        $xml = new \SimpleXMLElement($doc);
+        $this->flush();
+        $arrData = ['http://bestquynhon.com/'];
+        foreach ($arrData as $value) {
+            $href = $value;
+            $url = $xml->addChild('url');
+            $url->addChild('loc', $href);
+            $url->addChild('lastmod', date('c', time()));
+            $url->addChild('changefreq', 'daily');
+            $url->addChild('priority', 1);
+        }
+
+        unlink(PUBLIC_PATH . '/xml/other.xml');
+        $result = file_put_contents(PUBLIC_PATH . '/xml/other.xml', $xml->asXML());
+        if ($result) {
+            echo General::getColoredString("Sitemap orther done", 'blue', 'cyan');
+            $this->flush();
+        }
+    }
+
 }

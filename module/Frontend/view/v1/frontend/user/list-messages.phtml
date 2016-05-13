@@ -39,7 +39,7 @@
                                                         <input type="checkbox" class="mail-checkbox item" value="<?php echo $arrMessages['mess_id']; ?>">
                                                     </td>
                                                     <td class="text-center"><?php echo $this->arrUserList[$arrMessages['user_created']]['user_fullname']; ?></td>
-                                                    <td class="text-center"><a href="javascript:;" style="text-decoration: none" class="read-messages" rel="<?php echo $arrMessages['mess_id']; ?>"><?php echo substr($arrMessages['mess_content'], 1, 30) . '...'; ?></a></td>
+                                                    <td><a href="javascript:;" style="text-decoration: none" class="read-messages" rel="<?php echo $arrMessages['mess_id']; ?>"><?php echo substr($arrMessages['mess_content'], 1, 30) . '...'; ?></a></td>
                                                     <td class="text-center"><?php echo date('d/m/Y H:i', $arrMessages['created_date']); ?></td>
                                                 </tr>
                                             <?php endforeach; ?>

@@ -81,6 +81,16 @@ return array(
                             'action' => 'crawler'
                         ),
                     ),
+                ),
+                'sitemap' => array(
+                    'options' => array(
+                        'route' => 'sitemap',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Backend\Controller',
+                            'controller' => 'console',
+                            'action' => 'sitemap'
+                        ),
+                    ),
                 )
             )
         )

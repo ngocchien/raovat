@@ -8,6 +8,7 @@ $strTemplate = current($this->layout()->getChildren())->getTemplate();
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="REFRESH" content="1200" />
         <link rel="shortcut icon" href="<?php echo STATIC_URL; ?>/f/v1/images/icon.png" type="image/x-icon" />
+        <link rel="alternate" href="http://bestquynhon.com" hreflang="vi-vn" />
         <?php
         echo $this->headMeta();
         ?>
@@ -49,7 +50,7 @@ $strTemplate = current($this->layout()->getChildren())->getTemplate();
             {
             "@context": "http://schema.org",
             "@type": "Organization",
-            "url": "<?php echo $this->serverUrl(); ?>",
+            "url": "<?php echo $this->serverUrl(); ?>"
             }
         </script>
 

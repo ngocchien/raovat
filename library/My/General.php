@@ -51,6 +51,9 @@ class General {
     const FEE_SVIP = 5000;
     const VIP = 'vip';
     const FEE_VIP = 2000;
+    //image
+    const IMAGE_SVIP = 'http://static.bestquynhon.com/f/v1/images/s-vip.gif';
+    const IMAGE_VIP = 'http://static.bestquynhon.com/f/v1/images/vip2.gif';
 
     private $headlink;
     static $fbConfig = [

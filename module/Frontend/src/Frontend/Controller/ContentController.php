@@ -26,6 +26,7 @@ class ContentController extends MyController {
 
     public function detailAction() {
         $params = $this->params()->fromRoute();
+        
         $cont_id = (int) $params['contentId'];
         $cont_slug = $params['contentSlug'];
 
@@ -34,7 +35,7 @@ class ContentController extends MyController {
         }
         $arrConditionContent = [
             'cont_id' => $cont_id,
-            'cont_status' => 1
+            'not_cont_status' => -1
         ];
         $instanceSearchContent = new \My\Search\Content();
         $arrContent = $instanceSearchContent->getDetail($arrConditionContent);
@@ -785,6 +786,9 @@ class ContentController extends MyController {
             $serviceComment = $this->serviceLocator->get('My\Models\Comment');
             $intResult = $serviceComment->add($arrData);
             if ($intResult > 0) {
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $serviceContent->edit(['total_comment' => (int) $content_detail['total_comment'] + 1], (int) $params['cont_id']);
+
                 unset($_SESSION['captcha']);
                 $viewModel = new ViewModel();
                 $viewModel->setTerminal(true);
@@ -1004,7 +1008,9 @@ class ContentController extends MyController {
                         'tran_type' => General::TRANS_OUTPUT,
                         'user_balance' => $balance,
                         'tran_deal' => $total_fee,
-                        'cont_id' => $arrContent['cont_id']
+                        'cont_id' => $arrContent['cont_id'],
+                        'vip_type' => (int) $params['type_vip'],
+                        'num_date' => (int) $params['num_date']
                     ];
                     $serviceTrans = $this->serviceLocator->get('My\Models\TransactionHistory');
                     $serviceTrans->add($arrData);
