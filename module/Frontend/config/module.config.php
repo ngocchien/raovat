@@ -680,7 +680,7 @@ return array(
                         'propId' => 0,
                         'propSlug' => '',
                         'dist' => '',
-                        'distId' => 0,
+//                        'distId' => 0,
                         'page' => 1
                     ),
                 ),

@@ -1007,7 +1007,9 @@ class ContentController extends MyController {
                         'tran_type' => General::TRANS_OUTPUT,
                         'user_balance' => $balance,
                         'tran_deal' => $total_fee,
-                        'cont_id' => $arrContent['cont_id']
+                        'cont_id' => $arrContent['cont_id'],
+                        'vip_type' => (int) $params['type_vip'],
+                        'num_date' => (int) $params['num_date']
                     ];
                     $serviceTrans = $this->serviceLocator->get('My\Models\TransactionHistory');
                     $serviceTrans->add($arrData);

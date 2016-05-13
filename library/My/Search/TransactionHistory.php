@@ -75,7 +75,9 @@ class TransactionHistory extends SearchAbstract {
             'tran_deal' => ['type' => 'long', 'index' => 'not_analyzed'],
             'soucre_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'user_balance' => ['type' => 'long', 'index' => 'not_analyzed'],
-            'cont_id' => ['type' => 'long', 'index' => 'not_analyzed']
+            'cont_id' => ['type' => 'long', 'index' => 'not_analyzed'],
+            'vip_type' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'num_date' => ['type' => 'integer', 'index' => 'not_analyzed']
         ]);
         $mapping->send();
     }

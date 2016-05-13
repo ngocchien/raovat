@@ -241,6 +241,12 @@ class Properties extends SearchAbstract {
             $boolQuery->addMust($addQuery);
         }
 
+        if (!empty($params['not_prop_status'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('prop_status', $params['not_prop_status']);
+            $boolQuery->addMustNot($addQuery);
+        }
+
         if (!empty($params['parent_id'])) {
             $addQuery = new ESQuery\Term();
             $addQuery->setTerm('parent_id', $params['parent_id']);
@@ -251,6 +257,12 @@ class Properties extends SearchAbstract {
             $addQuery = new ESQuery\Terms();
             $addQuery->setTerms('prop_id', $params['in_prop_id']);
             $boolQuery->addMust($addQuery);
+        }
+
+        if (isset($params['not_parent_id'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('parent_id', $params['not_parent_id']);
+            $boolQuery->addMustNot($addQuery);
         }
 
         return $boolQuery;
