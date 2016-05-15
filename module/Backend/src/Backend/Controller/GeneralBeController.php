@@ -8,12 +8,12 @@ use My\Controller\MyController,
 class GeneralBeController extends MyController {
 
     public function __construct() {
-        $this->externalCSS = [
-            STATIC_URL . '/b/css/??bootstrap-wysihtml5.css'
-        ];
+//        $this->externalCSS = [
+//            STATIC_URL . '/b/css/??bootstrap-wysihtml5.css'
+//        ];
         $this->externalJS = [
             STATIC_URL . '/b/js/my/??general.js',
-            STATIC_URL . '/b/js/library/??wysihtml5-0.3.0.js,bootstrap-wysihtml5.js',
+            STATIC_URL . '/f/v1/js/library/tinymce/tinymce.min.js'
         ];
     }
 

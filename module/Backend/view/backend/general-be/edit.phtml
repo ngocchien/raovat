@@ -68,5 +68,13 @@ $arr_general = $this->arr_general;
     </section>
 </section>
 <script type="text/javascript">
-    General.add();
+//    General.add();
+    tinymce.init({
+        selector: 'textarea',
+        width: "300",
+        height: "300",
+        plugins: "image imagetools,textcolor",
+        toolbar: 'fontsizeselect,image,forecolor backcolor',
+        fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt'
+    });
 </script>

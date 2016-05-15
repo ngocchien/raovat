@@ -32,13 +32,13 @@ var General = {
         })
     },
     add: function () {
-        $(document).ready(function () {
-            $('.wysihtml5').wysihtml5({
-                "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
-                "emphasis": true, //Italics, bold, etc. Default true
-                "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
-                "color": true //Button to change color of font  
-            });
-        })
+//        $(document).ready(function () {
+////            $('.wysihtml5').wysihtml5({
+////                "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
+////                "emphasis": true, //Italics, bold, etc. Default true
+////                "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+////                "color": true //Button to change color of font  
+////            });
+//        })
     },
 }
