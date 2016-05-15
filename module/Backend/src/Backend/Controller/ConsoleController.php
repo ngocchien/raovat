@@ -94,7 +94,7 @@ class ConsoleController extends MyController {
     }
 
     public function __migrateGeneral($intIsCreateIndex) {
-        $service = $this->serviceLocator->get('My\Models\General');
+        $service = $this->serviceLocator->get('My\Models\GeneralBqn');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\GeneralBqn();
 
