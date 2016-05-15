@@ -34,6 +34,39 @@ class GeneralController extends MyController {
             return $this->redirect()->toRoute('general', array('geneSlug' => $arr_general['gene_slug'], 'geneId' => $params['geneId']));
         }
 
+        $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
+
+        $this->renderer->headTitle(html_entity_decode($arr_general['gene_title']) . General::TITLE_META);
+        $this->renderer->headMeta()->appendName('keywords', html_entity_decode($arr_general['gene_title']));
+        $this->renderer->headMeta()->appendName('description', html_entity_decode($arr_general['gene_title']));
+//        $this->renderer->headMeta()->appendName('social', $metaSocial);
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('general', array('geneSlug' => $arrContent['gene_slug'], 'geneId' => $arr_general['gene_id'])));
+        $this->renderer->headMeta()->setProperty('og:title', html_entity_decode($arr_general['gene_title']));
+        $this->renderer->headMeta()->setProperty('og:description', html_entity_decode($arr_general['gene_title']));
+        $metaImage = STATIC_URL . '/f/v1/images/logoct.png';
+        $this->renderer->headMeta()->setProperty('og:image', $metaImage);
+
+        $this->renderer->headMeta()->setProperty('itemprop:datePublished', date('Y-m-d H:i', $arr_general['created_date']) . ' + 07:00');
+        $this->renderer->headMeta()->setProperty('itemprop:dateModified', date('Y-m-d H:i', $arr_general['updated_date']) . ' + 07:00');
+        $this->renderer->headMeta()->setProperty('itemprop:dateCreated', date('Y-m-d H:i', $arr_general['created_date']) . ' + 07:00');
+
+        $this->renderer->headMeta()->setProperty('og:type', 'article');
+        $this->renderer->headMeta()->setProperty('article:published_time', date('Y-m-d H:i', $arr_general['created_date']) . ' + 07:00');
+        $this->renderer->headMeta()->setProperty('article:modified_time', date('Y-m-d H:i', $arr_general['updated_date']) . ' + 07:00');
+
+        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
+
+        $this->renderer->headMeta()->setProperty('itemprop:name', html_entity_decode($arr_general['gene_title']));
+        $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode($arrContent['gene_title']));
+        $this->renderer->headMeta()->setProperty('itemprop:image', $metaImage);
+
+        $this->renderer->headMeta()->setProperty('twitter:card', 'summary');
+        $this->renderer->headMeta()->setProperty('twitter:site', General::SITE_AUTH);
+        $this->renderer->headMeta()->setProperty('twitter:title', html_entity_decode($arr_general['gene_title']));
+        $this->renderer->headMeta()->setProperty('twitter:description', html_entity_decode($arr_general['gene_title']));
+        $this->renderer->headMeta()->setProperty('twitter:creator', General::SITE_AUTH);
+        $this->renderer->headMeta()->setProperty('twitter:image:src', $metaImage);
+
         return [
             'arr_general' => $arr_general
         ];
