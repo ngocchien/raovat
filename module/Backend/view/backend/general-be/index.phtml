@@ -15,7 +15,7 @@ $arrUserList = $this->arrUserList;
     <?php endif; ?>
 
     <?php
-    $successMessage = array_merge($this->flashMessenger()->setNamespace('success-add-group')->getMessages(), $this->flashMessenger()->setNamespace('success-edit-group')->getMessages());
+    $successMessage = array_merge($this->flashMessenger()->setNamespace('add-success-general')->getMessages(), $this->flashMessenger()->setNamespace('edit-success-group')->getMessages());
     if ($successMessage):
         ?>
         <div class="alert alert-success alert-block fade in">
@@ -30,14 +30,14 @@ $arrUserList = $this->arrUserList;
         <div class="col-lg-12">
             <section class="panel panel-primary">
                 <header class="panel-heading">
-                    Danh sách nhóm
+                    Danh General
                 </header>
                 <div class="panel-body">    
                     <div class="adv-table editable-table ">  
                         <div class="row">
                             <div class="col-lg-6">                  
                                 <div id="editable-sample_length" class="dataTables_length no-padding">
-                                    <a class="btn btn-primary" href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'add')); ?>" ><i class="icon-plus-sign-alt"></i> Thêm</a>
+                                    <a class="btn btn-primary" href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'general', 'action' => 'add')); ?>" ><i class="icon-plus-sign-alt"></i> Thêm</a>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -57,7 +57,7 @@ $arrUserList = $this->arrUserList;
                             <table class="table table-bordered table-striped table-condensed cf">
                                 <thead class="cf">
                                     <tr>
-                                        <th class="text-center">Tên nhóm</th>
+                                        <th class="text-center">Tiêu đề</th>
                                         <th class="text-center">Ngày tạo</th>
                                         <th class="text-center">Người tạo</th>
                                         <th class="text-center">Trạng thái</th>
@@ -66,29 +66,27 @@ $arrUserList = $this->arrUserList;
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if ($this->arrGroupList):
-                                        foreach ($this->arrGroupList as $arrGroup):
+                                    if ($this->arrGeneralList):
+                                        foreach ($this->arrGeneralList as $arrGeneral):
                                             ?>
-
                                             <tr>
-                                                <td class="text-center">
-                                                    <a class="tooltips" data-placement="top" data-original-title="Xem thông tin người dùng" href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'edit', 'id' => $arrGroup['group_id'])); ?>">
-                                                        <?php echo $arrGroup['group_name']; ?>
+                                                <td>
+                                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'edit', 'id' => $arrGroup['group_id'])); ?>">
+                                                        <?php echo $arrGeneral['gene_title']; ?>
                                                     </a>
                                                 </td>
-                                                <td class="text-center"><?php echo date('d/m/Y H:i', $arrGroup['created_date']); ?></td>
-                                                <td class="text-center"><?php echo $arrUserList[$arrGroup['user_created']]['user_fullname']; ?></td>
-                                                <td class="text-center" width="100"><?php echo $arrGroup['group_status'] ? '<a href="javascript:;" class="color-success" data-toggle="tooltip" title="Hoạt động"><i class="icon-ok"></i></a>' : ' <a href="javascript:;" data-toggle="tooltip" title="Đã khóa"><i class="icon-minus-sign color-danger"></i></a>'; ?></td>
+                                                <td class="text-center"><?php echo date('d/m/Y H:i', $arrGeneral['created_date']); ?></td>
+                                                <td class="text-center"><?php echo $arrUserList[$arrGeneral['user_created']]['user_fullname']; ?></td>
+                                                <td class="text-center" width="100"><?php echo $arrGeneral['gene_status'] ? '<a href="javascript:;" class="color-success" data-toggle="tooltip" title="Đang hiện"><i class="icon-ok"></i></a>' : ' <a href="javascript:;" data-toggle="tooltip" title="Đang ẩn"><i class="icon-minus-sign color-danger"></i></a>'; ?></td>
                                                 <td class="text-center" width="100">
-                                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'permission', 'action' => 'grant', 'gid' => $arrGroup['group_id'])); ?>" class="btn btn-success btn-xs tooltips edit" data-toggle="tooltip" title="Phân quyền"><i class="icon-lock"></i></a>
-                                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'edit', 'id' => $arrGroup['group_id'])); ?>" class="btn btn-primary btn-xs edit" data-toggle="tooltip" title="Chỉnh sửa"><i class="icon-pencil"></i></a>
-                                                    <a class="btn btn-danger btn-xs remove" data-toggle="tooltip" title="Xóa" rel="<?php echo $arrGroup['group_id'] ?>"><i class="icon-trash "></i></a>
+                                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'general-be', 'action' => 'edit', 'id' => $arrGeneral['gene_id'])); ?>" class="btn btn-primary btn-xs edit" data-toggle="tooltip" title="Chỉnh sửa"><i class="icon-pencil"></i></a>
+                                                    <a class="btn btn-danger btn-xs remove" data-toggle="tooltip" title="Xóa" rel="<?php echo $arrGeneral['gene_id'] ?>"><i class="icon-trash "></i></a>
                                                 </td>
                                             </tr>
 
                                         <?php endforeach; ?>
                                     <?php else: ?>
-                                        <tr><td colspan="6" style="text-align:center;">Hiện tại chưa có người dùng nào.</td></tr>
+                                        <tr><td colspan="6" style="text-align:center;">Hiện tại chưa có general nào.</td></tr>
                                     <?php endif; ?>
                                 </tbody>
                             </table>
@@ -104,5 +102,5 @@ $arrUserList = $this->arrUserList;
     </div>
 </section>
 <script type="text/javascript">
-    Group.index();
+    General.index();
 </script>

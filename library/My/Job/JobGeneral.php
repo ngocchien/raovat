@@ -20,7 +20,7 @@ class JobGeneral extends JobAbstract {
         }
 
         $id = $arrParams['gene_id'];
-        $instanceSearch = new \My\Search\General();
+        $instanceSearch = new \My\Search\GeneralBqn();
         $arrDocument = new \Elastica\Document($id, $arrParams);
         $intResult = $instanceSearch->add($arrDocument);
 
@@ -53,7 +53,7 @@ class JobGeneral extends JobAbstract {
         $document = new \Elastica\Document($id, $arrParams);
         $document->setUpsert($updateData);
 
-        $instanceSearch = new \My\Search\General();
+        $instanceSearch = new \My\Search\GeneralBqn();
         $resutl = $instanceSearch->edit($document);
 
         if (!$resutl) {
@@ -65,4 +65,5 @@ class JobGeneral extends JobAbstract {
 
         return true;
     }
+
 }

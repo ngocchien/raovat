@@ -11,7 +11,7 @@ use Elastica\Query\QueryString,
     My\Search\SearchAbstract,
     My\General;
 
-class General extends SearchAbstract {
+class GeneralBqn extends SearchAbstract {
 
     public function __construct() {
         $this->setSearchIndex(SEARCH_PREFIX . 'general');
@@ -67,7 +67,7 @@ class General extends SearchAbstract {
         $mapping->setType($searchType);
         $mapping->setProperties([
             'gene_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'gene_name' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'gene_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'gene_slug' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'gene_parent' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'gene_content' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
@@ -259,7 +259,7 @@ class General extends SearchAbstract {
             $addQuery->setTerm('parent_id', $params['parent_id']);
             $boolQuery->addMust($addQuery);
         }
-
+        
         return $boolQuery;
     }
 

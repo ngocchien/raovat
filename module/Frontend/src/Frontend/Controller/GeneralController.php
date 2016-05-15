@@ -9,27 +9,34 @@ class GeneralController extends MyController {
 
     public function __construct() {
         $this->externalJS = [
-            STATIC_URL . '/f/v1/js/my/??general.js',
-            STATIC_URL . '/f/v1/js/library/tinymce/tinymce.min.js'
+            STATIC_URL . '/f/v1/js/my/??general.js'
+        ];
+        $this->externalCSS = [
+            STATIC_URL . '/b/css/??bootstrap-wysihtml5.css'
         ];
     }
 
     public function indexAction() {
         $params = $this->params()->fromRoute();
-        if (empty($params['id'])) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
-        }
-        $intGeneralId = (int) $params['id'];
-        $serviceGeneral = $this->serviceLocator->get('My\Models\General');
-        $arrGeneralDetail = $serviceGeneral->getDetail(array('gene_id' => $intGeneralId, 'gene_status' => 1));
-        if (empty($arrGeneralDetail)) {
-            return $this->redirect()->toRoute('frontend', array('controller' => 'index', 'action' => 'index'));
+
+        if (empty($params['geneId']) || empty($params['geneSlug'])) {
+            return $this->redirect()->toRoute('404');
         }
 
-        return array(
-            'params' => $params,
-            'arrGeneralDetail' => $arrGeneralDetail
-        );
+        $instanceSeachGeneral = new \My\Search\GeneralBqn();
+        $arr_general = $instanceSeachGeneral->getDetail(['gene_id' => $params['geneId'], 'gene_status' => 1]);
+
+        if (empty($arr_general)) {
+            return $this->redirect()->toRoute('404');
+        }
+
+        if ($arr_general['gene_slug'] != $params['geneSlug']) {
+            return $this->redirect()->toRoute('general', array('geneSlug' => $arr_general['gene_slug'], 'geneId' => $params['geneId']));
+        }
+
+        return [
+            'arr_general' => $arr_general
+        ];
     }
 
     public function contactAction() {

@@ -19,7 +19,7 @@ $action = $paramsRouter['action'];
                                 <a href="#"><i class="fa fa-dribbble"></i></a>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="col-sm-6 responsive-width-top">
                         <div class="links text-right">
@@ -63,23 +63,14 @@ $action = $paramsRouter['action'];
                                     <li class="<?php if ($controller == 'index' && $action == 'index'): ?>active<?php endif; ?> dropdown">
                                         <a class="dropdown-toggle" href="<?php echo $this->serverUrl(); ?>"><b>Trang chủ</b></a>
                                     </li>
-                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('general', array('controller' => 'general', 'action' => 'index', 'title' => $arrGeneral[13]['gene_slug'], 'id' => 13)) ?>"><b>Giới thiệu</b></a></li>
+                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('general', ['geneSlug' => 'gioi-thieu-ve-bestquynhoncom', 'geneId' => 1]) ?>" class="<?php if ($controller == 'general' && $action == 'contact' && $paramsRouter['geneId'] == 1): ?>active<?php endif; ?>"><b>Giới thiệu</b></a></li>
+                                    <li><a href="<?php echo $this->serverUrl() . $this->Url('general', ['geneSlug' => 'huong-dan-dang-tin', 'geneId' => 2]) ?>" class="<?php if ($controller == 'general' && $action == 'index' && $paramsRouter['geneId'] == 2): ?>active<?php endif; ?>"><b>Hướng dẫn</b></a></li>
                                     <li class="<?php if ($controller == 'category'): ?>active<?php endif; ?> dropdown">
                                         <a href="javascript:;"><b>Danh mục</b></a>
                                         <ul class="dropdown-menu sub-menu">
                                             <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
                                                 <li><a href="<?php echo $this->serverUrl() . $this->Url('category', array('controller' => 'category', 'action' => 'index', 'cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo $value['cate_name'] ?></a></li>
                                             <?php endforeach; ?>
-                                        </ul>
-                                    </li>
-
-                                    <li class="<?php if ($controller == 'general' && $action != 'contact'): ?>active<?php endif; ?> dropdown">
-                                        <a class="dropdown-toggle" href="javascript:;"><b>Thông tin khác</b></a>
-                                        <ul class="dropdown-menu sub-menu">
-                                            <li><a href="detail-page.html">Hướng dẫn</a></li>
-                                            <li><a href="faq.html">FAQ</a></li>
-                                            <li><a href="notification.html">Thông báo</a></li>
-                                            <li><a href="detail-page.html">Chi tiêt trang</a></li>
                                         </ul>
                                     </li>
                                     <li class="<?php if ($controller == 'general' && $action == 'contact'): ?>active<?php endif; ?>"><a href="<?php echo $this->serverUrl() . $this->Url('add-contact') ?>"><b>Liên hệ</b></a></li>

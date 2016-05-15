@@ -96,7 +96,7 @@ class ConsoleController extends MyController {
     public function __migrateGeneral($intIsCreateIndex) {
         $service = $this->serviceLocator->get('My\Models\General');
         $intLimit = 1000;
-        $instanceSearch = new \My\Search\General();
+        $instanceSearch = new \My\Search\GeneralBqn();
 
         for ($intPage = 1; $intPage < 10000; $intPage ++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'gene_id ASC');

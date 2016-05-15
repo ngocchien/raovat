@@ -108,6 +108,27 @@ return array(
                     ),
                 ),
             ),
+            'general' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/general[[/:geneSlug]-[:geneId].html]',
+                    'constraints' => array(
+                        'module' => 'frontend',
+                        'controller' => 'general',
+                        'action' => 'index',
+                        'geneSlug' => '[a-zA-Z0-9_-]*',
+                        'geneId' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'general',
+                        'action' => 'index',
+                        'geneSlug' => '',
+                        'geneId' => 0,
+                    ),
+                ),
+            ),
             'view-content' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -704,24 +725,6 @@ return array(
                         'fullname' => '',
                         'userId' => 0,
                         'page' => 1
-                    ),
-                ),
-            ),
-            'general' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/ge/[:title]-[:id].html',
-                    'constraints' => array(
-                        'title' => '[a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Frontend\Controller',
-                        'module' => 'frontend',
-                        'controller' => 'general',
-                        'action' => 'index',
-                        'title' => '',
-                        'id' => 0,
                     ),
                 ),
             ),

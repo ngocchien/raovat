@@ -17,82 +17,111 @@ $action = $params['action'];
         <!--logo end-->
         <div class="horizontal-menu navbar-collapse collapse" style="margin-left:0px ">
             <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="javascript:;"><i class="icon-list-ul"></i> <b>Quản lý Danh mục </b><b class="icon-angle-down"></b></a>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown"><b><i class="icon-book"></i> Nội dung <b class="caret"></b></b></a>
                     <ul class="dropdown-menu">
-                        <li class="<?php echo ($module=='backend' && $controller=='category' &&  $action=='index') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'index'));?>">
-                                Danh sách danh mục
-                            </a>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-book"></i> Bài đăng</a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'content' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'index')); ?>">
+                                        Danh sách bài đăng
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'content' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'add')); ?>">
+                                        Thêm bài đăng
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="<?php echo ($module=='backend' && $controller=='category' &&  $action=='add') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'add'));?>">
-                                Thêm danh mục
-                            </a>
+
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-ul"></i> Danh mục</a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'category' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'index')); ?>">
+                                        Danh sách danh mục
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'category' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'category', 'action' => 'add')); ?>">
+                                        Thêm danh mục
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-ul"></i> Nhu cầu</i></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'properties' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'index')); ?>">
+                                        Danh sách Nhu cầu
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'properties' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'add')); ?>">
+                                        Thêm nhu cầu
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
-                
-                <li class="dropdown">
-                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="javascript:;"><i class="icon-list-ul"></i> <b>Quản lý Nhu cầu rao vặt </b><b class="icon-angle-down"></b></a>
+
+                <li>
+                    <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown"><b><i class="icon-user-md"></i> Người dùng <b class="caret"></b></b></a>
                     <ul class="dropdown-menu">
-                        <li class="<?php echo ($module=='backend' && $controller=='properties' &&  $action=='index') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'index'));?>">
-                                Danh sách Nhu cầu rao vặt
-                            </a>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-group"> Nhóm người dùng</i></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'group' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'index')); ?>">
+                                        Danh sách nhóm người dùng
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'group' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'add')); ?>">
+                                        Thêm nhóm người dùng
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="<?php echo ($module=='backend' && $controller=='properties' &&  $action=='add') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'properties', 'action' => 'add'));?>">
-                                Thêm nhu cầu
-                            </a>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"> Người dùng</i></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'user' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'index')); ?>">
+                                        Danh sách người dùng
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'user' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'add')); ?>">
+                                        Thêm người dùng
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
-                
-                <li class="dropdown">
-                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt"></i> <b>Quản lý bài đăng </b><b class="icon-angle-down"></b></a>
+
+                <li>
+                    <a href="#" class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown"><b><i class="icon-terminal"></i> General <b class="caret"></b></b></a>
                     <ul class="dropdown-menu">
-                        <li class="<?php echo ($module=='backend' && $controller=='content' &&  $action=='index') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'index'));?>">
-                                Danh sách bài đăng
-                            </a>
-                        </li>
-                        <li class="<?php echo ($module=='backend' && $controller=='content' &&  $action=='add') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'content', 'action' => 'add'));?>">
-                                Thêm bài đăng
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                
-                <li class="dropdown">
-                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-group"></i> <b>Quản lý Nhóm người dùng </b><b class="icon-angle-down"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="<?php echo ($module=='backend' && $controller=='group' &&  $action=='index') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'index'));?>">
-                                Danh sách nhóm người dùng
-                            </a>
-                        </li>
-                        <li class="<?php echo ($module=='backend' && $controller=='group' &&  $action=='add') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'group', 'action' => 'add'));?>">
-                                Thêm nhóm người dùng
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                
-                <li class="dropdown">
-                    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i> <b>Quản lý người dùng </b><b class="icon-angle-down"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="<?php echo ($module=='backend' && $controller=='user' &&  $action=='index') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'index'));?>">
-                                Danh sách người dùng
-                            </a>
-                        </li>
-                        <li class="<?php echo ($module=='backend' && $controller=='user' &&  $action=='add') ? 'active' : '';?>">
-                            <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'user', 'action' => 'add'));?>">
-                                Thêm người dùng
-                            </a>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-terminal"> General</i></a>
+                            <ul class="dropdown-menu">
+                                <li class="<?php echo ($module == 'backend' && $controller == 'general-be' && $action == 'index') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'general-be', 'action' => 'index')); ?>">
+                                        Danh sách General
+                                    </a>
+                                </li>
+                                <li class="<?php echo ($module == 'backend' && $controller == 'general' && $action == 'add') ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'general-be', 'action' => 'add')); ?>">
+                                        Thêm General
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -107,7 +136,7 @@ $action = $params['action'];
                 <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <img alt="" src="<?php echo STATIC_URL; ?>/f/img/avatar1_small.jpg">
-                        <span class="username"><?php echo FULLNAME;?></span>
+                        <span class="username"><?php echo FULLNAME; ?></span>
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu extended logout">
@@ -115,7 +144,7 @@ $action = $params['action'];
                         <li><a href="#"><i class=" icon-suitcase"></i>Tài khoản</a></li>
                         <li><a href="#"><i class="icon-cog"></i> Cài đặt</a></li>
                         <li><a href="#"><i class="icon-bell-alt"></i> Thông báo</a></li>
-                        <li><a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'auth', 'action' => 'logout'));?>"><i class="icon-key"></i> Đăng xuất</a></li>
+                        <li><a href="<?php echo $this->serverUrl() . $this->Url('backend', array('controller' => 'auth', 'action' => 'logout')); ?>"><i class="icon-key"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
                 <!-- user login dropdown end -->

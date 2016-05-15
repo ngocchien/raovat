@@ -29,7 +29,6 @@ class MyController extends AbstractActionController {
             $this->params['action'] = strtolower($this->params['action']);
             $this->resource = $this->params['module'] . ':' . $this->params['controller'] . ':' . $this->params['action'];
             $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
-
             $auth = $this->authenticate($this->params);
 
             if ($this->params['module'] === 'backend' && !$auth) {

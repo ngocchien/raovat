@@ -27,4 +27,6 @@ return array(
     'Backend\Controller\ConsoleController' => __DIR__ . '/src/Backend/Controller/ConsoleController.php',
     'Backend\Controller\GeneralController' => __DIR__ . '/src/Backend/Controller/GeneralController.php',
     'Backend\Controller\MessageController' => __DIR__ . '/src/Backend/Controller/MessageController.php',
+    'Backend\Controller\GeneralBeController' => __DIR__ . '/src/Backend/Controller/GeneralBeController.php',
+    
 );
