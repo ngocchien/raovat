@@ -114,7 +114,7 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('article:published_time', date('Y-m-d H:i', $arrContent['created_date']) . ' + 07:00');
         $this->renderer->headMeta()->setProperty('article:modified_time', date('Y-m-d H:i', $arrContent['updated_date']) . ' + 07:00');
 
-        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
+//        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
 
         $this->renderer->headMeta()->setProperty('itemprop:name', html_entity_decode($arrContent['cont_title']));
         $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode($arrContent['cont_title']));

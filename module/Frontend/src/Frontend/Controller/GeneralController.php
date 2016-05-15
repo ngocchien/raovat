@@ -40,7 +40,7 @@ class GeneralController extends MyController {
         $this->renderer->headMeta()->appendName('keywords', html_entity_decode($arr_general['gene_title']));
         $this->renderer->headMeta()->appendName('description', html_entity_decode($arr_general['gene_title']));
 //        $this->renderer->headMeta()->appendName('social', $metaSocial);
-        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('general', array('geneSlug' => $arrContent['gene_slug'], 'geneId' => $arr_general['gene_id'])));
+        $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('general', array('geneSlug' => $arr_general['gene_slug'], 'geneId' => $arr_general['gene_id'])));
         $this->renderer->headMeta()->setProperty('og:title', html_entity_decode($arr_general['gene_title']));
         $this->renderer->headMeta()->setProperty('og:description', html_entity_decode($arr_general['gene_title']));
         $metaImage = STATIC_URL . '/f/v1/images/logoct.png';
@@ -54,7 +54,7 @@ class GeneralController extends MyController {
         $this->renderer->headMeta()->setProperty('article:published_time', date('Y-m-d H:i', $arr_general['created_date']) . ' + 07:00');
         $this->renderer->headMeta()->setProperty('article:modified_time', date('Y-m-d H:i', $arr_general['updated_date']) . ' + 07:00');
 
-        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
+//        $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
 
         $this->renderer->headMeta()->setProperty('itemprop:name', html_entity_decode($arr_general['gene_title']));
         $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode($arrContent['gene_title']));
