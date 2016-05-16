@@ -394,6 +394,12 @@ class Content extends SearchAbstract {
             $addQuery->addField('expired_time', array('lte' => $params['less_expired_time']));
             $boolQuery->addMust($addQuery);
         }
+        
+        if (isset($params['is_send'])) {
+             $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('is_send', $params['is_send']);
+            $boolQuery->addMust($addQuery);
+        }
 
         return $boolQuery;
     }

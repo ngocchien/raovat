@@ -52,6 +52,22 @@ return array(
                     ),
                 ),
             ),
+            'index' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '[[/page[/:page]].html]',
+                    'constraints' => array(
+                        'page' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Frontend\Controller',
+                        'module' => 'frontend',
+                        'controller' => 'index',
+                        'action' => 'index',
+                        'page' => 1
+                    ),
+                ),
+            ),
             'product_rate' => array(
                 'type' => 'Segment',
                 'options' => array(

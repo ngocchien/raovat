@@ -47,10 +47,9 @@ class IndexController extends MyController {
         ];
         $arrNewContent = $instaceSearchContent->getListLimit($arrConditionNewContent, $intPage, $intLimit, ['vip_type' => ['order' => 'desc'], 'updated_date' => ['order' => 'desc'], 'created_date' => ['order' => 'desc']]);
 
-        $intTotal = $instaceSearchContent->getTotal($arrConditionContent);
+        $intTotal = $instaceSearchContent->getTotal($arrConditionNewContent);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
-        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'category', $params);
-
+        $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'index', $params);
         $arrPropIdList = [];
         $arrUserIdList = [];
 

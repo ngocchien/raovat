@@ -28,5 +28,6 @@ return array(
     'Backend\Controller\GeneralController' => __DIR__ . '/src/Backend/Controller/GeneralController.php',
     'Backend\Controller\MessageController' => __DIR__ . '/src/Backend/Controller/MessageController.php',
     'Backend\Controller\GeneralBeController' => __DIR__ . '/src/Backend/Controller/GeneralBeController.php',
+    'Backend\Controller\ToolController' => __DIR__ . '/src/Backend/Controller/ToolController.php',
     
 );
