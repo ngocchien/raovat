@@ -68,7 +68,7 @@ class Content extends SearchAbstract {
         $mapping->setProperties([
             'cont_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'cont_title' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
-            'cont_slug' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
+            'cont_slug' => ['type' => 'string', 'index' => 'not_analyzed'],
             'cont_detail' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'cont_detail_text' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'created_date' => ['type' => 'long', 'index' => 'not_analyzed'],
@@ -89,7 +89,10 @@ class Content extends SearchAbstract {
             'ip_address' => ['type' => 'string', 'index' => 'not_analyzed'],
             'cont_image' => ['type' => 'string', 'store' => 'yes', 'index_analyzer' => 'translation_index_analyzer', 'search_analyzer' => 'translation_search_analyzer', 'term_vector' => 'with_positions_offsets'],
             'dist_id' => ['type' => 'integer', 'index' => 'not_analyzed'],
-            'total_comment' => ['type' => 'integer', 'index' => 'not_analyzed']
+            'total_comment' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'method' => ['type' => 'string', 'index' => 'not_analyzed'],
+            'from_soucre' => ['type' => 'string', 'index' => 'not_analyzed'],
+            'is_send' => ['type' => 'integer', 'index' => 'not_analyzed']
         ]);
         $mapping->send();
     }

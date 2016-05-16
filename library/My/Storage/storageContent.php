@@ -5,7 +5,8 @@ namespace My\Storage;
 use Zend\Db\TableGateway\AbstractTableGateway,
     Zend\Db\Sql\Sql,
     Zend\Db\Adapter\Adapter,
-    My\Validator\Validate;
+    My\Validator\Validate,
+    Zend\Db\TableGateway\TableGateway;
 
 class storageContent extends AbstractTableGateway {
 
@@ -101,9 +102,14 @@ class storageContent extends AbstractTableGateway {
             if (!is_array($p_arrParams) || empty($p_arrParams)) {
                 return false;
             }
-            $result = $this->insert($p_arrParams);
+            
+            $adapter = $this->adapter;
+            $sql = new Sql($adapter);
+            $insert = $sql->insert($this->table)->values($p_arrParams);
+            $query = $sql->getSqlStringForSqlObject($insert);
+            $adapter->createStatement($query)->execute();
+            $result = $adapter->getDriver()->getLastGeneratedValue();
             if ($result) {
-                $result = $this->lastInsertValue;
                 $p_arrParams['cont_id'] = $result;
                 $instanceJob = new \My\Job\JobContent();
                 $instanceJob->addJob(SEARCH_PREFIX . 'writeContent', $p_arrParams);

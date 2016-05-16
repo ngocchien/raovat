@@ -18,8 +18,12 @@ class JobMail extends JobAbstract {
             echo General::getColoredString("ERROR: Params is incorrent or empty ", 'light_cyan', 'red');
             return false;
         }
-        
-        $result = General::sendMail($arrParams['user_email'], $arrParams['title'], $arrParams['html']);
+        try {
+            $result = General::sendMail($arrParams['user_email'], $arrParams['title'], $arrParams['html']);
+        } catch (\Exception $exc) {
+            echo $exc->getMessage();
+            die();
+        }
 
         if (!$result) {
             echo General::getColoredString("ERROR: Send Mail error", 'light_cyan', 'red');

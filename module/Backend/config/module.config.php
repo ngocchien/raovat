@@ -123,6 +123,7 @@ return array(
             'backend/error/404' => __DIR__ . '/../view/error/404.phtml',
             'backend/error/index' => __DIR__ . '/../view/error/index.phtml',
             'backend/error/accessDeny' => __DIR__ . '/../view/error/access-deny.phtml',
+            'backend/layout/send-mail-when-crawler' => __DIR__ . '/../view/layout/send-mail-when-crawler.phtml',
         ),
         'template_path_stack' => array(
             'backend' => __DIR__ . '/../view',

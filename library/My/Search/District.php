@@ -246,7 +246,21 @@ class District extends SearchAbstract {
             $addQuery->setTerm('dist_status', $params['not_dist_status']);
             $boolQuery->addMustNot($addQuery);
         }
+        
+        if (!empty($params['like_name'])) {
+            $bool = new Bool();
+            $strKeyword = trim($params['like_name']);
+            
+            $titleQueryString = new QueryString();
+            $titleQueryString->setDefaultField('dist_name')
+                    ->setQuery($strKeyword)
+                    ->setAllowLeadingWildcard(1)
+                    ->setDefaultOperator('AND');
+            $bool->addShould($titleQueryString);
 
+            $boolQuery->addMust($bool);
+        }
+        
         return $boolQuery;
     }
 

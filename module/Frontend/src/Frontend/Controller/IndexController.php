@@ -56,20 +56,31 @@ class IndexController extends MyController {
 
         if (!empty($arrNewContent)) {
             foreach ($arrNewContent as $arrContent) {
-                $arrPropIdList[] = $arrContent['prop_id'];
-                $arrUserIdList[] = $arrContent['user_created'];
+                if (!empty($arrContent['prop_id'])) {
+                    $arrPropIdList[] = $arrContent['prop_id'];
+                }
+
+                if (!empty($arrContent['user_created'])) {
+                    $arrUserIdList[] = $arrContent['user_created'];
+                }
             }
         }
 
         if (!empty($arrContentList)) {
-            foreach ($arrContentList as $arrContent) {
-                $arrPropIdList[] = $arrContent['prop_id'];
-                $arrUserIdList[] = $arrContent['user_created'];
-            }
 
-            $arrPropIdList = array_unique($arrPropIdList);
-            $arrUserIdList = array_unique($arrUserIdList);
+            foreach ($arrContentList as $arrContent) {
+                if (!empty($arrContent['prop_id'])) {
+                    $arrPropIdList[] = $arrContent['prop_id'];
+                }
+
+                if (!empty($arrContent['user_created'])) {
+                    $arrUserIdList[] = $arrContent['user_created'];
+                }
+            }
         }
+
+        $arrPropIdList = array_unique($arrPropIdList);
+        $arrUserIdList = array_unique($arrUserIdList);
 
         $arrUserList = [];
         $arrPropertiesList = [];
