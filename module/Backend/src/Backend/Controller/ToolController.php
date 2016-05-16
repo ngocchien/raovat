@@ -36,12 +36,17 @@ class ToolController extends MyController {
                 );
                 $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
                 $arrEmail = [
-                    'user_email' => json_decode($arr_data['user_info'], true)['user_email'],
+                    'user_email' => 'ngocchien01@gmail.com',//json_decode($arr_data['user_info'], true)['user_email'],
                     'html' => $html,
                     'title' => 'Tin : ' . $arr_data['cont_title'] . ' đã được đăng tại bestquynhon.com',
                 ];
                 $instanceJob = new \My\Job\JobMail();
                 $instanceJob->addJob(SEARCH_PREFIX . 'sendMail', $arrEmail);
+
+                $serviceContent = $this->serviceLocator->get('My\Models\Content');
+                $serviceContent->edit(['is_send' => 1], $arr_data['cont_id']);
+                unset($serviceContent);
+                die();
             }
         }
     }

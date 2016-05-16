@@ -27,7 +27,7 @@ class JobMail extends JobAbstract {
 
         if (!$result) {
             echo General::getColoredString("ERROR: Send Mail error", 'light_cyan', 'red');
-            return false;
+            return;
         }
 
         echo General::getColoredString("SUCCESS : Send mail is success", 'green');
