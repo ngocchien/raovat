@@ -46,9 +46,9 @@ class ToolController extends MyController {
                 $serviceContent = $this->serviceLocator->get('My\Models\Content');
                 $serviceContent->edit(['is_send' => 1], $arr_data['cont_id']);
                 unset($serviceContent);
-                die();
             }
         }
+        die('done');
     }
 
 }
