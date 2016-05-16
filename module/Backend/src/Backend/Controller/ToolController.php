@@ -36,7 +36,7 @@ class ToolController extends MyController {
                 );
                 $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
                 $arrEmail = [
-                    'user_email' => 'ngocchien01@gmail.com',//json_decode($arr_data['user_info'], true)['user_email'],
+                    'user_email' => json_decode($arr_data['user_info'], true)['user_email'],
                     'html' => $html,
                     'title' => 'Tin : ' . $arr_data['cont_title'] . ' đã được đăng tại bestquynhon.com',
                 ];
