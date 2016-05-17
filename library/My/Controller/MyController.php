@@ -58,15 +58,15 @@ class MyController extends AbstractActionController {
         $this->renderer->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
         switch ($this->resource) {
             case 'frontend:index:index':
-                $this->renderer->headTitle(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.');
+                $this->renderer->headTitle(\My\General::SITE_DOMAIN . ' - Diễn đàn rao vặt Bình Định, Rao vặt miễn phí.');
                 $this->renderer->headMeta()->appendName('keywords', 'bestquynhon.com, quy nhon, binh dinh, rao vat quy nhon, rao vat binh dinh, rao vat quy nhon - binh dinh, mua ban laptop, rao vat smartphone - dien thoai - laptop - my tinh pc - nha dat - dich vu - tuyen dung - viec lam ...');
                 $this->renderer->headMeta()->appendName('description', 'bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
-                $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Mạng mua bán - rao vặt Quy Nhơn - Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
-                $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Mạng mua bán - rao vặt Quy Nhơn - Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
+                $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Diễn đàn rao vặt Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
+                $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Diễn đàn rao vặt Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
                 $this->renderer->headMeta()->appendName('social', $metaSocial);
                 $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('home'));
-                $this->renderer->headMeta()->setProperty('og:title', html_entity_decode(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.'));
-                $this->renderer->headMeta()->setProperty('og:description', html_entity_decode(\My\General::SITE_DOMAIN . ' - Mạng rao vặt Quy Nhơn - Bình Định, Rao vặt miễn phí.'));
+                $this->renderer->headMeta()->setProperty('og:title', html_entity_decode(\My\General::SITE_DOMAIN . ' - Diễn đàn rao vặt Bình Định, Rao vặt miễn phí.'));
+                $this->renderer->headMeta()->setProperty('og:description', html_entity_decode(\My\General::SITE_DOMAIN . ' - Diễn đàn rao vặt Bình Định, Rao vặt miễn phí.'));
                 $this->renderer->headMeta()->setProperty('og:image', STATIC_URL . '/f/v1/images/logoct.png');
                 $this->renderer->headMeta()->setProperty('og:image:type', 'image/png');
                 $this->renderer->headMeta()->setProperty('og:image:width', '621');
