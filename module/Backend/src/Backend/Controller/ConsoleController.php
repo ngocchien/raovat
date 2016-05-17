@@ -1838,7 +1838,7 @@ class ConsoleController extends MyController {
                 unset($instanceJob);
             }
         }
-        
+
         include PUBLIC_PATH . '/simple_html_dom.php';
         $page = $page + 1;
 //        $k = $href
@@ -1865,7 +1865,6 @@ class ConsoleController extends MyController {
             }
             unset($html);
             foreach ($arr as $value) {
-
                 $html = file_get_html($domain . $value);
                 $arrData = [];
                 foreach ($html->find('h2') as $element) {
@@ -1876,6 +1875,7 @@ class ConsoleController extends MyController {
                     $arrData['cate_id'] = 79;
                     $arrData['cont_status'] = 1;
                 }
+                $this->flush();
                 foreach ($html->find('#ccr-left-section #ccr-article .ccr-world-news li') as $key => $element) {
                     if ($key == 2) {
                         preg_match('/Người đăng :(.*?) - Điện thoại : (.*?) - Email :(.*?)/', $element->plaintext, $arrRa);
@@ -1888,23 +1888,34 @@ class ConsoleController extends MyController {
                         $arrData['user_info'] = json_encode($arrUser);
                     }
                 }
+                $this->flush();
                 foreach ($html->find('#DetailCommerce div[style=border-bottom: 1px solid #e3e2e2;float:left;width:100%]') as $key => $element) {
                     $arrData['cont_detail'] = $element->plaintext;
                     $arrData['cont_detail_text'] = \My\General::getSlug($element->plaintext);
                     $arrData['created_date'] = time();
                 }
-                $arr_data['from_soucre'] = $domain;
+                $this->flush();
+                $arrData['from_soucre'] = $domain;
+                $arrData['is_send'] = 0;
                 //check in db
                 $instanceSearchContent = new \My\Search\Content();
                 $arr_detail = $instanceSearchContent->getDetail(['cont_slug' => $arrData['cont_slug'], 'not_cont_status' => -1]);
                 if (empty($arr_detail)) {
                     $serviceContent = $this->serviceLocator->get('My\Models\Content');
                     if ($serviceContent->add($arrData)) {
-                        echo \My\General::getColoredString("Crawler success 1 post from Raovatbinhdinh.vn \n", 'green', 'cyan');
+                        $instanceSearchCategory = new \My\Search\Category();
+                        $arrCate = $instanceSearchCategory->getDetail(['cate_id' => 79]);
+
+                        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+                        $serviceCategory->edit(['total_content' => (int) $arrCate['total_content'] + 1], 79);
+                        echo \My\General::getColoredString("Crawler success 1 post from Raovatbinhdinh.vn \n", 'green');
                     } else {
-                        echo \My\General::getColoredString("Error insert from Raovatbinhdinh.vn \n", 'red', 'cyan');
+                        echo \My\General::getColoredString("Error insert from Raovatbinhdinh.vn \n", 'red');
                     }
                 }
+                $this->flush();
+                unset($instanceSearchCategory);
+                unset($arrCate);
                 unset($instanceSearchContent);
                 unset($arr_detail);
                 unset($arrData);
@@ -1912,7 +1923,7 @@ class ConsoleController extends MyController {
             }
         }
 
-        echo \My\General::getColoredString("Crawler Raovatbinhdinh.vn Success \n", 'green', 'cyan');
+        echo \My\General::getColoredString("Crawler Raovatbinhdinh.vn Success \n", 'green');
 
         return true;
     }
