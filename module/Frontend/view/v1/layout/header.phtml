@@ -41,12 +41,12 @@ $action = $paramsRouter['action'];
         <div class="menu-bar">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 col-xs-8">
                         <div class="logo">
                             <a href="<?php echo $this->serverUrl(); ?>"><img src="<?php echo STATIC_URL; ?>/f/v1/images/logoct.png" alt="Best Quy Nhơn"></a>
                         </div>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 col-xs-4">
                         <nav role="navigation" class="navbar navbar-default">
                             <!-- Brand and toggle get grouped for better mobile display -->
                             <div class="navbar-header">
@@ -91,7 +91,7 @@ $action = $paramsRouter['action'];
             <div class="row text-center">
                 <div class="col-md-12">
                     <form method="GET" action="<?php echo $this->serverUrl() . $this->Url('search') ?>">
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-xs-6">
                             <select class="select form-control" name="khu-vuc">
                                 <option value="toan-tinh">Chọn khu vực</option>
                                 <option value="toan-tinh">Toàn tỉnh</option>
@@ -100,7 +100,7 @@ $action = $paramsRouter['action'];
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-xs-6">
                             <select class="select form-control" name="danh-muc">
                                 <option value="tat-ca-danh-muc">Chọn danh mục</option>
                                 <?php foreach (unserialize(ARR_CATEGORY_PARENT) as $value): ?>
@@ -108,12 +108,12 @@ $action = $paramsRouter['action'];
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-6">
                             <div class="label">
                                 <input class="keyword" type="text" name="tu-khoa" placeholder="Nhập từ khóa...">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-xs-6">
                             <button type="submit" class="search-btn"><i class="fa fa-search"></i> Tìm kiếm</button>
                         </div>
                     </form>
