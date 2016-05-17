@@ -117,7 +117,7 @@
                                                                         <?php echo $arrContent['cont_title']; ?>
                                                                     </a>
 
-                                                                    <span class="success">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo $arrContent['total_comment']; ?></i>)</span>
+                                                                    <span class="success">(<i class="fa fa-eye"> <?php echo (int) $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int) $arrContent['total_comment']; ?></i>)</span>
                                                                     <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo \My\General::IMAGE_VIP ?>"><?php elseif ($arrContent['vip_type'] == \My\General::VIP_ALL_PAGE):?><img src="<?php echo \My\General::IMAGE_SVIP ?>"><?php endif;?>
                                                                 </td>
                                                                 <td class="text-center color-location" style="vertical-align: middle">
