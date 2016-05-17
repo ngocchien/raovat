@@ -13,6 +13,7 @@ class IndexController extends MyController {
     }
 
     public function indexAction() {
+        return;
         $url = 'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/';
         $subject = file_get_contents($url);
         preg_match_all('/<table width="100%" cellspacing="0" border="0">(.*?)<\/table>/', $subject, $matches);
