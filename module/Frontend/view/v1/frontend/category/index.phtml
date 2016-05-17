@@ -86,8 +86,8 @@
                                                     <tr>
                                                         <th class="text-center color-title"><i class="fa fa-bookmark-o" aria-hidden="true"></i> Tiêu đề</th>
                                                         <th class="text-center color-location" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
-                                                        <?php if (!empty($this->arrPropertiesList)): ?><th class="text-center color-properties" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th><?php endif; ?>
-                                                        <th class="text-center" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
+                                                        <?php if (!empty($this->arrPropertiesList)): ?><th class="text-center color-properties hidden-xs" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th><?php endif; ?>
+                                                        <th class="text-center hidden-xs" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -105,11 +105,11 @@
                                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                                 <td style="vertical-align: middle">
                                                                     <?php if ($flag == true): ?>
-                                                                        <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                                        <a class="hidden-xs" style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                                             <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                                         </a>
                                                                     <?php else: ?>
-                                                                        <a style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                                        <a class="hidden-xs" style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
                                                                             <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                                         </a>
                                                                     <?php endif; ?>
@@ -124,11 +124,11 @@
                                                                     <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>
                                                                 </td>
                                                                 <?php if (!empty($this->arrPropertiesList)): ?>
-                                                                    <td class="text-center color-properties" style="vertical-align: middle">
+                                                                    <td class="text-center color-properties hidden-xs" style="vertical-align: middle">
                                                                         <?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?>
                                                                     </td>
                                                                 <?php endif; ?>
-                                                                <td class="text-center" style="vertical-align: middle">
+                                                                <td class="text-center hidden-xs" style="vertical-align: middle">
                                                                     <?php echo My\General::formatDateString($arrContent['updated_date']); ?>
                                                                 </td>
                                                             </tr>
