@@ -24,7 +24,7 @@ class ContentController extends MyController {
 
     public function indexAction() {
         $params = array_merge($this->params()->fromQuery(), $this->params()->fromRoute());
-        $intPage = $this->params()->fromQuery('page', 1);
+        $intPage = $this->params()->fromRoute('page', 1);
         $intLimit = 15;
         $arrCondition = array(
             'not_cont_status' => -1
@@ -33,7 +33,7 @@ class ContentController extends MyController {
         $instanceSearchContent = new \My\Search\Content();
         $arrContentList = $instanceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['cont_id' => ['order' => 'desc']]);
 
-        $route = 'backend-user-search';
+        $route = 'backend';
         $intTotal = $instanceSearchContent->getTotal($arrCondition);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, $route, $params);
@@ -41,25 +41,36 @@ class ContentController extends MyController {
         if (!empty($arrContentList)) {
 
             foreach ($arrContentList as $arrContent) {
-                $arrUserIdList[] = $arrContent['user_created'];
-                $arrCategoryIdList[] = $arrContent['cate_id'];
+                if (!empty($arrContent['user_created'])) {
+                    $arrUserIdList[] = $arrContent['user_created'];
+                }
+                if (!empty($arrContent['cate_id'])) {
+                    $arrCategoryIdList[] = $arrContent['cate_id'];
+                }
             }
 
             $arrUserIdList = array_unique($arrUserIdList);
             $arrCategoryIdList = array_unique($arrCategoryIdList);
-            $instanceSearchUser = new \My\Search\User();
-            $instanceSearchCategory = new \My\Search\Category();
-            $arrUserListTemp = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
-            $arrCategoryListTemp = $instanceSearchCategory->getList(['in_cate_id' => $arrCategoryIdList]);
 
-
-            //format lại 2 array
-            foreach ($arrUserListTemp as $arrUser) {
-                $arrUserList[$arrUser['user_id']] = $arrUser;
+            if (!empty($arrUserIdList)) {
+                $instanceSearchUser = new \My\Search\User();
+                $arrUserListTemp = $instanceSearchUser->getList(['in_user_id' => $arrUserIdList]);
+            }
+            if (!empty($arrCategoryIdList)) {
+                $instanceSearchCategory = new \My\Search\Category();
+                $arrCategoryListTemp = $instanceSearchCategory->getList(['in_cate_id' => $arrCategoryIdList]);
             }
 
-            foreach ($arrCategoryListTemp as $arrCategory) {
-                $arrCategoryList[$arrCategory['cate_id']] = $arrCategory;
+            //format lại 2 array
+            if (!empty($arrUserListTemp)) {
+                foreach ($arrUserListTemp as $arrUser) {
+                    $arrUserList[$arrUser['user_id']] = $arrUser;
+                }
+            }
+            if (!empty($arrCategoryListTemp)) {
+                foreach ($arrCategoryListTemp as $arrCategory) {
+                    $arrCategoryList[$arrCategory['cate_id']] = $arrCategory;
+                }
             }
         }
 

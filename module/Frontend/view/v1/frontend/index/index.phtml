@@ -17,9 +17,9 @@
                                     <thead class="cf">
                                         <tr>
                                             <th class="text-center color-title"><i class="fa fa-bookmark-o" aria-hidden="true"></i> Tiêu đề</th>
-                                            <th class="text-center color-location" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
-                                            <th class="text-center color-properties" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
-                                            <th class="text-center" width="93px"><i class="fa fa-calendar-o" aria-hidden="true"></i> Cập nhật</th>
+                                            <th class="text-center color-location hidden-xs" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
+                                            <th class="text-center color-properties hidden-xs" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
+                                            <th class="text-center hidden-xs" width="93px"><i class="fa fa-calendar-o" aria-hidden="true"></i> Cập nhật</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -38,27 +38,27 @@
                                                 <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                     <td style="vertical-align: middle">
                                                         <?php if ($flag == true): ?>
-                                                            <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                            <a class="hidden-xs" style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                                 <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                             </a>
                                                         <?php else: ?>
-                                                            <a style="text-decoration: none" href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                            <a class="hidden-xs" style="text-decoration: none" href="javascript:;" class="red-tooltip" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
                                                                 <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                             </a>
                                                         <?php endif; ?>
                                                         <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip color-red mg-r-5" style="text-decoration: none;">
                                                             <b><?php echo $arrContent['cont_title']; ?></b>
                                                         </a>
-                                                        <span>(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo $arrContent['total_comment']; ?></i>)</span>
+                                                        <span>(<i class="fa fa-eye"> <?php echo (int)$arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int)$arrContent['total_comment']; ?></i>)</span>
                                                         <img src="<?php echo \My\General::IMAGE_SVIP ?>">
                                                     </td>
-                                                    <td class="text-center color-location" style="vertical-align: middle">
+                                                    <td class="text-center color-location hidden-xs" style="vertical-align: middle">
                                                         <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>
                                                     </td>
-                                                    <td class="text-center color-properties" style="vertical-align: middle">
+                                                    <td class="text-center color-properties hidden-xs" style="vertical-align: middle">
                                                         <?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?>
                                                     </td>
-                                                    <td class="text-center" style="vertical-align: middle">
+                                                    <td class="text-center hidden-xs" style="vertical-align: middle">
                                                         <?php echo My\General::formatDateString($arrContent['updated_date']); ?>
                                                     </td>
                                                 </tr>
@@ -89,25 +89,41 @@
         </div>
         <?php if (!empty($this->arrCategoryParentList)): ?>
             <div class="row">
-                <?php foreach ($this->arrCategoryParentList as $value): ?>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="category">
-                            <div class="category-icon">
-                                <i class="fa <?php echo str_replace('icon', 'fa', $value['cate_icon']); ?> fa-2x"></i>
+                <?php
+                $i = 0;
+                $total = count($this->arrCategoryParentList);
+                foreach ($this->arrCategoryParentList as $value):
+                    if ($i == 0 || ($i % 4 == 0)):
+                        ?>
+                        <div class="row">
+                        <?php endif; ?>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="category">
+                                <div class="category-icon">
+                                    <i class="fa <?php echo str_replace('icon', 'fa', $value['cate_icon']); ?> fa-2x"></i>
+                                </div>
+                                <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo mb_strtoupper($value['cate_name']); ?></a></h4>
+                                <?php
+                                if (!empty($arrCategoryByParent[$value['cate_id']])):
+                                    foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
+                                        ?>
+                                        <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int) $valueChildren['total_content']; ?> )</a></p>
+                                        <?php
+                                    endforeach;
+                                endif;
+                                ?>
                             </div>
-                            <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo mb_strtoupper($value['cate_name']); ?></a></h4>
-                            <?php
-                            if (!empty($arrCategoryByParent[$value['cate_id']])):
-                                foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
-                                    ?>
-                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int) $valueChildren['total_content']; ?> )</a></p>
-                                    <?php
-                                endforeach;
-                            endif;
-                            ?>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+
+                        <?php if ($i != 0 && (((($i + 1) % 4 ) == 0) || ($i == $total - 1))): ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                    $i++;
+                endforeach;
+                ?>
             </div>
         <?php endif; ?>
         <div class="row">
@@ -140,9 +156,9 @@
                                     <thead class="cf">
                                         <tr>
                                             <th class="text-center color-title"><i class="fa fa-bookmark-o" aria-hidden="true"></i> Tiêu đề</th>
-                                            <th class="text-center color-location" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
-                                            <th class="text-center color-properties" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
-                                            <th class="text-center" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
+                                            <th class="text-center color-location hidden-xs" width="100px"><i class="fa fa fa-globe" aria-hidden="true"></i> Khu vực</th>
+                                            <th class="text-center color-properties hidden-xs" width="85px"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Nhu cầu</th>
+                                            <th class="text-center hidden-xs" width="93px"><i class="fa fa-calendar" aria-hidden="true"></i> Cập nhật</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -160,11 +176,11 @@
                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                 <td style="vertical-align: middle">
                                                     <?php if ($flag == true): ?>
-                                                        <a style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
+                                                        <a class="hidden-xs" style="text-decoration: none" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?>">
                                                             <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                         </a>
                                                     <?php else: ?>
-                                                        <a style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
+                                                        <a class="hidden-xs" style="text-decoration: none" href="javascript:;" class="red-tooltip mg-r-5" data-toggle="tooltip" title="<?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?>">
                                                             <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                         </a>
                                                     <?php endif; ?>
@@ -172,16 +188,16 @@
                                                         <?php echo $arrContent['cont_title']; ?>
                                                     </a>
 
-                                                    <span class="success">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo $arrContent['total_comment']; ?></i>)</span>
+                                                    <span class="success">(<i class="fa fa-eye"> <?php echo (int)$arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int)$arrContent['total_comment']; ?></i>)</span>
                                                     <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo \My\General::IMAGE_VIP ?>"><?php endif; ?>
                                                 </td>
-                                                <td class="text-center color-location" style="vertical-align: middle">
+                                                <td class="text-center color-location hidden-xs" style="vertical-align: middle">
                                                     <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>
                                                 </td>
-                                                <td class="text-center color-properties" style="vertical-align: middle">
+                                                <td class="text-center color-properties hidden-xs" style="vertical-align: middle">
                                                     <?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?>
                                                 </td>
-                                                <td class="text-center" style="vertical-align: middle">
+                                                <td class="text-center hidden-xs" style="vertical-align: middle">
                                                     <?php echo My\General::formatDateString($arrContent['created_date']); ?>
                                                 </td>
                                             </tr>

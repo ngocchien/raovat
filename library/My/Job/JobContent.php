@@ -18,7 +18,7 @@ class JobContent extends JobAbstract {
             echo General::getColoredString("ERROR: Params is incorrent or empty ", 'light_cyan', 'red');
             return false;
         }
-
+        
         $id = $arrParams['cont_id'];
         $instanceSearch = new \My\Search\Content();
         $arrDocument = new \Elastica\Document($id, $arrParams);

@@ -169,7 +169,7 @@ class Category extends SearchAbstract {
     /**
      * Get List
      */
-    public function getList($params, $arrFields = [], $sort = ['cate_sort' => ['order' => 'asc']]) {
+    public function getList($params, $arrFields = [], $sort = ['cate_id' => ['order' => 'asc']]) {
         $boolQuery = new Bool();
         $boolQuery = $this->__buildWhere($params, $boolQuery);
         $query = new ESQuery();
@@ -184,7 +184,7 @@ class Category extends SearchAbstract {
         if ($arrFields && is_array($arrFields)) {
             $query->setSource($arrFields);
         }
-
+        
         $instanceSearch = new Search(General::getSearchConfig());
         $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
                 ->addType($this->getSearchType())

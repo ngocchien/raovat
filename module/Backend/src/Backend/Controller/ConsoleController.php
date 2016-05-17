@@ -1526,34 +1526,108 @@ class ConsoleController extends MyController {
             $this->__dobd();
             return true;
         }
+        
+        if ($type == 'rvqn') {
+            $this->__rvqn();
+            return true;
+        }
+    }
+
+    public function __rvqn() {
+        $url = 'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/';
+
+        $subject = file_get_contents($url);
+        preg_match_all('/<table width="100%" cellspacing="0" border="0">(.*?)<\/table>/', $subject, $matches);
+        preg_match_all('/http:\/\/www.raovatquynhon.com\/raovat\/(.+?)html/', $matches[1][1], $chil);
+        $arr_href = $chil[0];
+        unset($subject);
+        unset($matches);
+        unset($chil);
+//        <h1 class="titdetail">Tuyển nhân viên kinh doanh phát triển thị trường hàng tiêu dùng</h1>
+        foreach ($arr_href as $value) {
+            $arr_data = [];
+            $content = file_get_contents($value);
+
+            preg_match('/<h1 class="titdetail">(.+?)<\/h1>/', $content, $matches);
+            $arr_data['cont_title'] = $this->coverStr($matches[1]);
+            $arr_data['cont_slug'] = \My\General::getSlug($arr_data['cont_title']);
+
+            //find in DB;
+            $instanceSearchContent = new \My\Search\Content();
+            $arr_detail = $instanceSearchContent->getDetail(['cont_slug' => $arr_data['cont_slug'], 'not_cont_status' => -1]);
+            if ($arr_detail) {
+                unset($arr_detail);
+                unset($instanceSearchContent);
+                unset($content);
+                unset($matches);
+                continue;
+            }
+            preg_match('/<span class="orange">(.+?)<\/span>/', $content, $matches);
+            list($day, $month, $yeah) = explode('/', $matches[1]);
+            if ((int) $month < 3) {
+                unset($arr_detail);
+                unset($instanceSearchContent);
+                unset($content);
+                unset($matches);
+                continue;
+            }
+            $arr_data['created_date'] = time();
+
+            //content
+            preg_match('/<div id="contentview">(.*?)<div class="infobottom titdetailbar">/', $content, $matches);
+            $arr_data['cont_detail'] = $this->coverStr(trim($matches[1]));
+            $arr_data['cont_detail_text'] = strip_tags($arr_data['cont_detail']);
+
+            //info user
+            preg_match_all('/<td class="rv_tdrow4">(.*?)<\/td>/', $content, $info);
+
+            $user_info = [
+                'user_email' => trim(strip_tags($info[1][1])),
+                'user_phone' => trim(strip_tags($info[1][5])),
+            ];
+
+            if ($user_info['user_email'] == 'ctytrio@gmail.com') {
+                continue;
+            }
+
+            $temp = preg_match('/<table width="100%" cellspacing="1" celpadding="0" border="0" class="tablebg_silver">(.*?)<\/table>/', $content, $matches);
+            preg_match('/<b>(.*?)<\/b>/', $matches[1], $name);
+            $user_info['user_fullname'] = trim($name[1]);
+            $user_info['cont_password'] = \My\General::randomDigits();
+
+            $arr_data['user_info'] = json_encode($user_info);
+            $arr_data['updated_date'] = time();
+            $arr_data['dist_id'] = 0;
+            $arr_data['total_comment'] = 0;
+            $arr_data['from_soucre'] = 'raovatquynhon.com';
+            $arr_data['is_send'] = 0;
+            $arr_data['cate_id'] = 79;
+
+            $serviceContent = $this->serviceLocator->get('My\Models\Content');
+            if ($serviceContent->add($arr_data)) {
+                $instanceSearchCategory = new \My\Search\Category();
+                $arrCate = $instanceSearchCategory->getDetail(['cate_id' => 79]);
+
+                $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+                $serviceCategory->edit(['total_content' => (int) $arrCate['total_content'] + 1], 79);
+                echo \My\General::getColoredString("Crawler success 1 post from raovatquynhon.com \n", 'green');
+            } else {
+                echo \My\General::getColoredString("Error insert from raovatquynhon.com \n", 'red');
+            }
+            unset($instanceSearchCategory);
+            unset($instanceSearchContent);
+            unset($arr_detail);
+            unset($arr_data);
+            unset($serviceContent);
+
+            $this->flush();
+        }
+        echo \My\General::getColoredString("Crawler raovatquynhon.com Success \n", 'green');
+
+        return true;
     }
 
     public function __dobd() {
-
-//        $template = 'backend/layout/send-mail-when-crawler';
-//        $viewModel = new ViewModel();
-//        $viewModel->setTerminal(true);
-//        $viewModel->setTemplate($template);
-//        $viewModel->setVariables(
-//                [
-//                    'arrContent' => '$arr_data',
-//                ]
-//        );
-//        echo '<pre>';
-//        print_r('a');
-//        echo '</pre>';
-//        die();
-//        $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
-//        echo '<pre>';
-//        print_r($html);
-//        echo '</pre>';
-//        die();
-//        $arrEmail = [
-//            'user_email' => $arr_user['user_email'],
-//            'html' => $html,
-//            'title' => 'Tin ' . $arr_data['cont_title'] . ' đã được đăng tại bestquynhon.com',
-//        ];
-
 
         include PUBLIC_PATH . '/simple_html_dom.php';
         $domain = 'http://diaocbinhdinh.vn/';
@@ -1707,145 +1781,6 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function __recrawler($href, $key, $dom, $page, $total) {
-
-        if (empty($dom)) {
-            return;
-        }
-
-        $instanceSearchContent = new \My\Search\Content();
-        $prop = [
-            19, 20, 21, 22, 23
-        ];
-        $instanceSearchDistrict = new \My\Search\District();
-        $this->flush();
-
-        foreach ($dom->find('.wraplist_ariticle ul li') as $data) {
-            $arr_data = [];
-            $child_dom = str_get_html($data->outertext);
-            $date = '';
-            foreach ($child_dom->find('.clearfix .clearfix') as $e) {
-                preg_match('/<div style="float:right" class="red">(.+?)<\/div>/', $e->outertext, $tem);
-                if (!empty($tem[1])) {
-                    $date = $tem[1];
-                }
-            }
-            list($day, $moth, $year) = explode('/', $date);
-
-            if ((int) $moth < 3) {
-                continue;
-            }
-
-            foreach ($child_dom->find('.arttitle a') as $title) {
-                $detail = $instanceSearchContent->getDetail(['cont_slug' => \My\General::getSlug(trim($title->plaintext)), 'not_status' => -1]);
-
-                if ($detail) {
-                    continue;
-                }
-
-                $arr_data['cont_title'] = $title->plaintext;
-                $arr_data['cont_slug'] = \My\General::getSlug($arr_data['cont_title']);
-                if ($key == 4) {
-                    $arr_data['cate_id'] = 31;
-                } else {
-                    $arr_data['cate_id'] = 28;
-                }
-                $arr_data['prop_id'] = $prop[$key];
-
-                $detail_post = file_get_html($title->href);
-                foreach ($detail_post->find('fieldset .crust') as $k => $v) {
-                    if ($k == 2) {
-                        $txt = '';
-                        if (trim($v->plaintext) == 'Quy Nhơn') {
-                            $txt = 'Qui Nhơn';
-                        } else {
-                            $txt = $v->plaintext;
-                        }
-                        $arr_dist = $instanceSearchDistrict->getDetail(['like_name' => $txt]);
-                        if ($arr_dist) {
-                            $arr_data['dist_id'] = $arr_dist['dist_id'];
-                        } else {
-                            $arr_data['dist_id'] = 0;
-                        }
-                        break;
-                    }
-                }
-                $arr_user = [];
-                foreach ($detail_post->find('.dtnguoidang span') as $v) {
-                    $arr_user['user_fullname'] = $v->plaintext;
-                }
-                foreach ($detail_post->find('.dtemail a') as $v) {
-                    $arr_user['user_email'] = $v->plaintext;
-                }
-
-                foreach ($detail_post->find('.dphone span') as $v) {
-                    $arr_user['user_phone'] = $v->plaintext;
-                }
-                $arr_user['cont_password'] = \My\General::randomDigits();
-
-                foreach ($detail_post->find('.dnoidung') as $v) {
-//                        '/"(.+?)"/'
-                    preg_match('/<div class="dnoidung">(.+?)<center>/', $v->outertext, $ttp);
-                    $arr_data['cont_detail'] = $ttp[1];
-                    $arr_data['cont_detail_text'] = strip_tags($arr_data['cont_detail']);
-                }
-                $arr_data['created_date'] = time();
-                $arr_data['updated_date'] = time();
-                $arr_data['cont_status'] = 1;
-                $arr_data['user_info'] = json_encode($arr_user);
-                $arr_data['from_soucre'] = $domain;
-                $arr_data['is_send'] = 0;
-                $arr_data['method'] = 'crawler';
-                $serviceContent = $this->serviceLocator->get('My\Models\Content');
-                $intResult = $serviceContent->add($arr_data);
-                if ($intResult) {
-                    echo \My\General::getColoredString("Crawler success 1 post from diaocbinhdinh.vn \n", 'green');
-                    echo \My\General::getColoredString($arr_data['cont_title'] . '\n', 'green');
-                    //begin sendmail to user
-//                        'backend/error/send-mail-when-crawler'
-//                        $arr_data['cont_id'] = $intResult;
-////                        //send mail
-//                        $template = 'backend/layout/send-mail-when-crawler';
-//                        $viewModel = new ViewModel();
-//                        $viewModel->setTerminal(true);
-//                        $viewModel->setTemplate($template);
-//                        $viewModel->setVariables(
-//                                [
-//                                    'arrContent' => $arr_data,
-//                                ]
-//                        );
-//                        $html = $this->serviceLocator->get('viewrenderer')->render($viewModel);
-//                        echo '<pre>';
-//                        print_r($html);
-//                        echo '</pre>';
-//                        die();
-//                        $arrEmail = [
-//                            'user_email' => $arr_user['user_email'],
-//                            'html' => $html,
-//                            'title' => 'Tin ' . $arr_data['cont_title'] . ' đã được đăng tại bestquynhon.com',
-//                        ];
-//                        $instanceJob = new \My\Job\JobMail();
-//                        $instanceJob->addJob(SEARCH_PREFIX . 'sendMail', $arrEmail);
-                } else {
-                    echo \My\General::getColoredString("Error insert from diaocbinhdinh.vn \n", 'red', 'cyan');
-                }
-
-                unset($arr_data);
-                unset($detail);
-                unset($detail_post);
-                unset($serviceContent);
-                unset($viewModel);
-                unset($instanceJob);
-            }
-        }
-        
-        include PUBLIC_PATH . '/simple_html_dom.php';
-        $page = $page + 1;
-//        $k = $href
-//        $dom = file_get_html()
-        $this->flush();
-    }
-
     public function __rvbd() {
         echo \My\General::getColoredString("Begin crawler Raovatbinhdinh.vn Success \n", 'green');
 
@@ -1869,7 +1804,6 @@ class ConsoleController extends MyController {
             }
             unset($html);
             foreach ($arr as $value) {
-
                 $html = file_get_html($domain . $value);
                 $arrData = [];
                 foreach ($html->find('h2') as $element) {
@@ -1880,6 +1814,7 @@ class ConsoleController extends MyController {
                     $arrData['cate_id'] = 79;
                     $arrData['cont_status'] = 1;
                 }
+                $this->flush();
                 foreach ($html->find('#ccr-left-section #ccr-article .ccr-world-news li') as $key => $element) {
                     if ($key == 2) {
                         preg_match('/Người đăng :(.*?) - Điện thoại : (.*?) - Email :(.*?)/', $element->plaintext, $arrRa);
@@ -1892,23 +1827,34 @@ class ConsoleController extends MyController {
                         $arrData['user_info'] = json_encode($arrUser);
                     }
                 }
+                $this->flush();
                 foreach ($html->find('#DetailCommerce div[style=border-bottom: 1px solid #e3e2e2;float:left;width:100%]') as $key => $element) {
                     $arrData['cont_detail'] = $element->plaintext;
                     $arrData['cont_detail_text'] = \My\General::getSlug($element->plaintext);
                     $arrData['created_date'] = time();
                 }
-                $arr_data['from_soucre'] = $domain;
+                $this->flush();
+                $arrData['from_soucre'] = $domain;
+                $arrData['is_send'] = 0;
                 //check in db
                 $instanceSearchContent = new \My\Search\Content();
                 $arr_detail = $instanceSearchContent->getDetail(['cont_slug' => $arrData['cont_slug'], 'not_cont_status' => -1]);
                 if (empty($arr_detail)) {
                     $serviceContent = $this->serviceLocator->get('My\Models\Content');
                     if ($serviceContent->add($arrData)) {
-                        echo \My\General::getColoredString("Crawler success 1 post from Raovatbinhdinh.vn \n", 'green', 'cyan');
+                        $instanceSearchCategory = new \My\Search\Category();
+                        $arrCate = $instanceSearchCategory->getDetail(['cate_id' => 79]);
+
+                        $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+                        $serviceCategory->edit(['total_content' => (int) $arrCate['total_content'] + 1], 79);
+                        echo \My\General::getColoredString("Crawler success 1 post from Raovatbinhdinh.vn \n", 'green');
                     } else {
-                        echo \My\General::getColoredString("Error insert from Raovatbinhdinh.vn \n", 'red', 'cyan');
+                        echo \My\General::getColoredString("Error insert from Raovatbinhdinh.vn \n", 'red');
                     }
                 }
+                $this->flush();
+                unset($instanceSearchCategory);
+                unset($arrCate);
                 unset($instanceSearchContent);
                 unset($arr_detail);
                 unset($arrData);
@@ -1916,9 +1862,69 @@ class ConsoleController extends MyController {
             }
         }
 
-        echo \My\General::getColoredString("Crawler Raovatbinhdinh.vn Success \n", 'green', 'cyan');
+        echo \My\General::getColoredString("Crawler Raovatbinhdinh.vn Success \n", 'green');
 
         return true;
     }
+    
+    
+    public function coverStr($str) {
+        $arrPatent = [
+            'mọi người',
+            'tận nhà',
+            'mobi',
+            'vina',
+            'https://web.facebook.com/',
+            'https://facebook.com/',
+            'Đ/C',
+            'A.',
+            'bạn',
+            'lh',
+            'v/c',
+            'Tôi',
+            'tôi',
+            'nhà mới',
+            'dt',
+            'thue',
+            'nha nguyen can',
+            'QL1A',
+            'Binh Dinh',
+            'DT',
+            'Tiện',
+            'tiện',
+            'ai cần',
+            'LH',
+            'Tuyển nhân viên',
+        ];
+        $arrReplace = [
+            'tất cả mọi người',
+            'tận nơi',
+            'mobiphone',
+            'vinaphone',
+            'http://fb.com/',
+            'http://fb.com/',
+            'địa chỉ',
+            'anh',
+            'anh chị',
+            'liên hệ',
+            'vợ/chồng',
+            'Mình',
+            'mình',
+            'nhà mới xây',
+            'diện tích',
+            'thuê',
+            'nhà nguyên căn',
+            'Quốc lộ 1A',
+            'Bình Định',
+            'diện tích',
+            'Thuận tiện',
+            'thuận tiện',
+            'ai có nhu cầu',
+            'liên hệ',
+            'Cần tuyển nhân viên',
+        ];
 
+        $strRt = str_replace($arrPatent, $arrReplace, $str);
+        return $strRt;
+    }
 }
