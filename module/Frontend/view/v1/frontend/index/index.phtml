@@ -89,25 +89,41 @@
         </div>
         <?php if (!empty($this->arrCategoryParentList)): ?>
             <div class="row">
-                <?php foreach ($this->arrCategoryParentList as $value): ?>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="category">
-                            <div class="category-icon">
-                                <i class="fa <?php echo str_replace('icon', 'fa', $value['cate_icon']); ?> fa-2x"></i>
+                <?php
+                $i = 0;
+                $total = count($this->arrCategoryParentList);
+                foreach ($this->arrCategoryParentList as $value):
+                    if ($i == 0 || ($i % 4 == 0)):
+                        ?>
+                        <div class="row">
+                        <?php endif; ?>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="category">
+                                <div class="category-icon">
+                                    <i class="fa <?php echo str_replace('icon', 'fa', $value['cate_icon']); ?> fa-2x"></i>
+                                </div>
+                                <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo mb_strtoupper($value['cate_name']); ?></a></h4>
+                                <?php
+                                if (!empty($arrCategoryByParent[$value['cate_id']])):
+                                    foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
+                                        ?>
+                                        <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int) $valueChildren['total_content']; ?> )</a></p>
+                                        <?php
+                                    endforeach;
+                                endif;
+                                ?>
                             </div>
-                            <h4><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $value["cate_slug"], 'cateId' => $value["cate_id"])) ?>"><?php echo mb_strtoupper($value['cate_name']); ?></a></h4>
-                            <?php
-                            if (!empty($arrCategoryByParent[$value['cate_id']])):
-                                foreach ($arrCategoryByParent[$value['cate_id']] as $valueChildren):
-                                    ?>
-                                    <p><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $valueChildren["cate_slug"], 'cateId' => $valueChildren["cate_id"])) ?>"><?php echo $valueChildren['cate_name']; ?>  ( <?php echo (int) $valueChildren['total_content']; ?> )</a></p>
-                                    <?php
-                                endforeach;
-                            endif;
-                            ?>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+
+                        <?php if ($i != 0 && (((($i + 1) % 4 ) == 0) || ($i == $total - 1))): ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                    $i++;
+                endforeach;
+                ?>
             </div>
         <?php endif; ?>
         <div class="row">
