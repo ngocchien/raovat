@@ -49,7 +49,7 @@
                                                         <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip color-red mg-r-5" style="text-decoration: none;">
                                                             <b><?php echo $arrContent['cont_title']; ?></b>
                                                         </a>
-                                                        <span>(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo $arrContent['total_comment']; ?></i>)</span>
+                                                        <span>(<i class="fa fa-eye"> <?php echo (int)$arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int)$arrContent['total_comment']; ?></i>)</span>
                                                         <img src="<?php echo \My\General::IMAGE_SVIP ?>">
                                                     </td>
                                                     <td class="text-center color-location hidden-xs" style="vertical-align: middle">
@@ -188,7 +188,7 @@
                                                         <?php echo $arrContent['cont_title']; ?>
                                                     </a>
 
-                                                    <span class="success">(<i class="fa fa-eye"> <?php echo $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo $arrContent['total_comment']; ?></i>)</span>
+                                                    <span class="success">(<i class="fa fa-eye"> <?php echo (int)$arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int)$arrContent['total_comment']; ?></i>)</span>
                                                     <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo \My\General::IMAGE_VIP ?>"><?php endif; ?>
                                                 </td>
                                                 <td class="text-center color-location hidden-xs" style="vertical-align: middle">
