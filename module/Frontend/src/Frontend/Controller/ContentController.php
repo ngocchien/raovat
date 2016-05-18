@@ -126,6 +126,8 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('twitter:description', html_entity_decode($arrContent['cont_title']));
         $this->renderer->headMeta()->setProperty('twitter:creator', General::SITE_AUTH);
         $this->renderer->headMeta()->setProperty('twitter:image:src', $metaImage);
+        
+        $this->renderer->headMeta()->appendName('social', General::SOCIAL_FACEBOOK_URL);
 
         //<meta property="article:tag" content="Tên tag của bài viết, nếu có nhiều tag thì tạo nhiều thẻ" />
 

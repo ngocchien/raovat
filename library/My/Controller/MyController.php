@@ -59,8 +59,8 @@ class MyController extends AbstractActionController {
         switch ($this->resource) {
             case 'frontend:index:index':
                 $this->renderer->headTitle(\My\General::SITE_DOMAIN . ' - Diễn đàn rao vặt Bình Định, Rao vặt miễn phí.');
-                $this->renderer->headMeta()->appendName('keywords', 'bestquynhon.com, quy nhon, binh dinh, rao vat quy nhon, rao vat binh dinh, rao vat quy nhon - binh dinh, mua ban laptop, rao vat smartphone - dien thoai - laptop - my tinh pc - nha dat - dich vu - tuyen dung - viec lam ...');
-                $this->renderer->headMeta()->appendName('description', 'bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
+                $this->renderer->headMeta()->appendName('keywords', 'bestquynhon.com,dien dan rao vạt binh dinh, rao vặt quy nhon, binh dinh, rao vat quy nhon, rao vat binh dinh, rao vat quy nhon - binh dinh, mua ban laptop, rao vat smartphone - dien thoai - laptop - my tinh pc - nha dat - dich vu - tuyen dung - viec lam ...');
+                $this->renderer->headMeta()->appendName('description', 'bestquynhon.com, diễn đàn rao vặt bình định, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
                 $this->renderer->headMeta()->appendName('dc.description', html_entity_decode('Diễn đàn rao vặt Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
                 $this->renderer->headMeta()->appendName('dc.subject', html_entity_decode('Diễn đàn rao vặt Bình Định , Rao vặt miễn phí!') . General::TITLE_META);
                 $this->renderer->headMeta()->appendName('social', $metaSocial);
@@ -76,15 +76,16 @@ class MyController extends AbstractActionController {
 //                $this->renderer->headMeta()->setProperty('fb:pages', '272925143041233');
 
                 $this->renderer->headMeta()->setProperty('itemprop:name', General::SITE_DOMAIN);
-                $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode('bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định'));
+                $this->renderer->headMeta()->setProperty('itemprop:description', html_entity_decode('bestquynhon.com, diễn dàn rao vặt bình định, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định'));
                 $this->renderer->headMeta()->setProperty('itemprop:image', STATIC_URL . '/f/v1/images/logoct.png');
 
                 $this->renderer->headMeta()->setProperty('twitter:card', 'summary');
                 $this->renderer->headMeta()->setProperty('twitter:site', General::SITE_AUTH);
                 $this->renderer->headMeta()->setProperty('twitter:title', General::SITE_AUTH);
-                $this->renderer->headMeta()->setProperty('twitter:description', 'bestquynhon.com, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
+                $this->renderer->headMeta()->setProperty('twitter:description', 'bestquynhon.com, diễn dàn rao vặt bình định, rao vặt quy nhon, rao vặt bình định , mạng rao vặt quy nhơn - bình định, rao vặt mua bán Smartphone - điện thoại di động - laptop - pc - nhà đất - nhân sự - việc làm tại bình định');
                 $this->renderer->headMeta()->setProperty('twitter:creator', General::SITE_AUTH);
                 $this->renderer->headMeta()->setProperty('twitter:image:src', STATIC_URL . '/f/v1/images/logoct.png');
+                $this->renderer->headMeta()->appendName('social', General::SOCIAL_FACEBOOK_URL);
 
                 break;
             default:

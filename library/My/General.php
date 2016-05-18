@@ -4,11 +4,11 @@ namespace My;
 
 class General {
 
-    const TITLE_META = " || Bestquynhon.com";
+    const TITLE_META = " || Bestquynhon.com - Diễn đàn rao vặt Bình Định";
     const SITE_AUTH = "Bestquynhon.com";
     const SITE_DOMAIN = 'Bestquynhon.com';
     const SITE_SLOGAN = 'Diễn đàn rao vặt Bình Định';
-    const SITE_HOTLINE = '097 353 16 18';
+    const SITE_HOTLINE = '0979 57 57 93';
     const SITE_LOCATION = "";
     const CAT_TINTUC = 1;
     const CAT_ADS = 2;
@@ -44,7 +44,7 @@ class General {
     const TRANS_OUTPUT = 2;
     const SEND_MAIL_MESSAGES = 1;
     //define social url
-    const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/quynhon247/';
+    const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/Best-Quy-Nh%C6%A1n-1116653795067333/';
     const VIP_ALL_PAGE = 3;
     const VIP_CATE_PAGE = 2;
     const SVIP = 'svip';

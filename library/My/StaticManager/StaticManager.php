@@ -26,7 +26,7 @@ class StaticManager {
         switch ($strModule) {
             case 'frontend':
                 $this->arrData['css']['defaultCSS'] = STATIC_URL . '/f/' . FRONTEND_TEMPLATE . '/css/??bootstrap.css,font-awesome.css,default.css';
-                $this->arrData['js']['defaultJS'] = STATIC_URL . '/f/' . FRONTEND_TEMPLATE . '/js/library/??jquery.js,bootstrap.js,bootbox.min.js,all.js';
+                $this->arrData['js']['defaultJS'] = STATIC_URL . '/f/' . FRONTEND_TEMPLATE . '/js/library/??jquery.js,bootstrap.js,bootbox.js,all.js';
                 break;
             case 'backend':
                 $this->arrData['css']['defaultCSS'] = STATIC_URL . '/b/css/??bootstrap.min.css,bootstrap-reset.css,font-awesome.css,style.css,style-responsive.css,datepicker.css';
