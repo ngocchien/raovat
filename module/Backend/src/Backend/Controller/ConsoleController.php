@@ -1794,6 +1794,10 @@ class ConsoleController extends MyController {
 
         foreach ($arrURL as $prop => $link) {
             $html = file_get_html($link);
+            echo '<pre>';
+            print_r($html);
+            echo '</pre>';
+            die();
             $arr = [];
             foreach ($html->find('#ccr-left-section .ccr-world-news a') as $element) {
                 if ($element->href != 'javascript:void(0);') {

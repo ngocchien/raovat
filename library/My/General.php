@@ -7,7 +7,7 @@ class General {
     const TITLE_META = " || Bestquynhon.com";
     const SITE_AUTH = "Bestquynhon.com";
     const SITE_DOMAIN = 'Bestquynhon.com';
-    const SITE_SLOGAN = 'Mạng rao vặt - mua bán Quy Nhơn - Bình Định';
+    const SITE_SLOGAN = 'Diễn đàn rao vặt Bình Định';
     const SITE_HOTLINE = '097 353 16 18';
     const SITE_LOCATION = "";
     const CAT_TINTUC = 1;
