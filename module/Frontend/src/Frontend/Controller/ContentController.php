@@ -182,9 +182,9 @@ class ContentController extends MyController {
                 $errors['content_content'] = 'Chưa nhập nội dung cho tin rao vặt !';
             }
 
-            if (empty($params['content_tags'])) {
-                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
-            }
+//            if (empty($params['content_tags'])) {
+//                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
+//            }
 
             if (empty(CUSTOMER_ID)) {
 
@@ -418,9 +418,9 @@ class ContentController extends MyController {
                 $errors['content_content'] = 'Chưa nhập nội dung cho tin rao vặt !';
             }
 
-            if (empty($params['content_tags'])) {
-                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
-            }
+//            if (empty($params['content_tags'])) {
+//                $errors['content_tags'] = 'Chưa chọn tags cho tin rao vặt !';
+//            }
 
             if (empty(CUSTOMER_ID)) {
 

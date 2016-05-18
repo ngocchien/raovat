@@ -1602,7 +1602,9 @@ class ConsoleController extends MyController {
             $arr_data['from_soucre'] = 'raovatquynhon.com';
             $arr_data['is_send'] = 0;
             $arr_data['cate_id'] = 79;
-
+            $arr_data['cont_status'] = 1;
+            $arr_data['method'] = 'crawler';
+            
             $serviceContent = $this->serviceLocator->get('My\Models\Content');
             if ($serviceContent->add($arr_data)) {
                 $instanceSearchCategory = new \My\Search\Category();

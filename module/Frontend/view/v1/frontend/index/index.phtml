@@ -1,3 +1,6 @@
+<?php
+    $categoryList = unserialize(ARR_CATEGORY);
+?>
 <?php if (!empty($this->arrContentList)): ?>
     <section id="premium">
         <div class="container">
@@ -56,7 +59,7 @@
                                                         <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>
                                                     </td>
                                                     <td class="text-center color-properties hidden-xs" style="vertical-align: middle">
-                                                        <?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?>
+                                                        <?php echo !empty($this->arrPropertiesList[$arrContent['prop_id']]['prop_name']) ? $this->arrPropertiesList[$arrContent['prop_id']]['prop_name'] : $categoryList[$arrContent['cate_id']]['cate_name'] ; ?>
                                                     </td>
                                                     <td class="text-center hidden-xs" style="vertical-align: middle">
                                                         <?php echo My\General::formatDateString($arrContent['updated_date']); ?>
@@ -195,7 +198,7 @@
                                                     <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>
                                                 </td>
                                                 <td class="text-center color-properties hidden-xs" style="vertical-align: middle">
-                                                    <?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?>
+                                                    <?php echo !empty($this->arrPropertiesList[$arrContent['prop_id']]['prop_name']) ? $this->arrPropertiesList[$arrContent['prop_id']]['prop_name'] : $categoryList[$arrContent['cate_id']]['cate_name'] ; ?>
                                                 </td>
                                                 <td class="text-center hidden-xs" style="vertical-align: middle">
                                                     <?php echo My\General::formatDateString($arrContent['created_date']); ?>
