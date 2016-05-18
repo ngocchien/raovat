@@ -154,156 +154,158 @@
 
                     <div class="ad-detail-info clearfix">
                         <p>Nội dung :</p>
-                        <?php echo $this->arrContent['cont_detail']; ?>
+                        <?php // echo $this->arrContent['from_soucre'] == 'raovatquynhon.com' ? $this->arrContent['cont_detail_text'] : $this->arrContent['cont_detail']; ?>
+                        <?php echo $this->arrContent['cont_detail'];?>
                     </div>
-                    <div class="tags">
-                        <div class="col-md-6 col-xs-6">
-                            <div class="fb-like" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $this->arrContent['cont_slug'], 'contentId' => $this->arrContent['cont_id']]) ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-                            
-                        </div>
-                                                <div class="col-md-6 col-xs-6">
-                                                    <g:plusone></g:plusone>
-                                                </div>
-                        <!--<script src="https://apis.google.com/js/platform.js" async defer></script>-->
-  
-                    </div>
-                    <div class="tags">
-                        <i class="fa fa-tags"></i>
-                        <span>Tags:</span>
-                        <span> Expensive Cars, Red, Black, WordPress, Classified, Ads</span>
-                    </div>
-                </div><!--end ad-detail-->
-                <!--advertisement-->
-                <div class="advert">
-                    <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/detail-page-ad_03.png" alt="ad"> </a>
                 </div>
+                <div class="tags">
+                    <div class="col-md-6 col-xs-6">
+                        <div class="fb-like" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $this->arrContent['cont_slug'], 'contentId' => $this->arrContent['cont_id']]) ?>" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 
-                <!--form submission-->
-                <div id="form" class="row border-buttom">
-                    <h4 class="inner-heading">PHẢN HỒI</h4>
-                    <form id="post-commet">
-                        <div class="col-sm-6 input-pad">
-                            <span class="fa fa-user form-control-feedback"></span>
-                            <input class="form-control" type="text" name="full_name" placeholder="Ex : Nguyễn Văn A" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_FULLNAME : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
-                            <span class="comment-error-name" style="color: red; display: none"></span>
-                        </div>
-                        <div class="col-sm-6 input-pad">
-                            <span class="fa fa-envelope form-control-feedback"></span>
-                            <input class="form-control" type="text" name="email" placeholder="Ex : abcxyz@gmail.com" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_EMAIL : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
-                            <span class="comment-error-email" style="color: red; display: none"></span>
-                        </div>
-                        <div class="col-sm-12 padding-control">
-                            <textarea class="form-control" name="comment-content"></textarea>
-                            <span class="comment-error-content" style="color: red; display: none"></span>
-                        </div>
-                        <!--<input type="text" name="humantest">-->
-                    </form>
-                    <div class="row">
-                        <div class="col-md-2 col-xs-2 control-label">
-                            <img class="img-captcha form-control" src=""/>
-                        </div>
-                        <div class="col-md-6 col-xs-6">
-                            <input name="captcha" type="text" class="form-control" placeholder="Nhập mã bên cạnh">
-                            <span class="comment-error-captcha" style="color: red; display: none"></span>
-                        </div>
-                        <div class="col-md-2 col-xs-2">
-                            <a class="btn refresh-captcha" data-toggle="tooltip" title="Lấy mã mới"><i class="fa fa-2x fa-refresh"></i></a>
-                        </div>
-                        <div class="col-md-2 col-xs-2"><button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button></div>
                     </div>
+                    <div class="col-md-6 col-xs-6">
+                        <g:plusone></g:plusone>
+                    </div>
+<!--<script src="https://apis.google.com/js/platform.js" async defer></script>-->
+
                 </div>
-                <!--end form submission-->
-                <div class="row" style="margin-top: 10px">
-                    <h4 class="inner-heading">DANH SÁCH PHẢN HỒI</h4>
-                    <section class="comment-list comment-list-post">
-                        <?php
-                        if (!empty($this->arrCommentList)):
-                            foreach ($this->arrCommentList as $comment):
-                                $avatar = empty($comment['user_avatar']) ? STATIC_URL . '/f/v1/images/noavatar.jpg' : $comment['user_avatar'];
-                                ?>
-                                <article class="row">
-                                    <div class="col-md-2 col-sm-2 hidden-xs">
-                                        <figure class="thumbnail">
-                                            <img class="img-responsive" src="<?php echo $avatar; ?>">
-                                            <figcaption class="text-center"></figcaption>
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-10 col-sm-10">
-                                        <div class="panel panel-default arrow left item">
-                                            <div class="panel-body">
-                                                <div class="row">
-                                                    <header class="text-left">
-                                                        <div class="col-md-8"><i class="fa fa-user"></i> <span style="color: #007DFF"><?php echo $comment['full_name'] ?></span></div>
-                                                        <div class="col-md-4 text-right"><i class="fa fa-clock-o"></i> <span style="color: #007DFF"><?php echo My\General::formatDateString($comment['created_date']); ?></span></div>
-                                                    </header>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-11">
-                                                        <i class="fa fa-envelope"></i> <span style="color: #007DFF"><?php echo $comment['email'] ?></span>
-                                                        <div>
-                                                        </div>
-                                                        <div class="comment-post bor-2-r col-md-12">
-                                                            <?php echo $comment['comm_content']; ?>
-                                                        </div>
+                <div class="tags">
+                    <i class="fa fa-tags"></i>
+                    <span>Tags:</span>
+                    <span> Expensive Cars, Red, Black, WordPress, Classified, Ads</span>
+                </div>
+            <!--</div>end ad-detail-->
+            <!--advertisement-->
+            <div class="advert">
+                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/detail-page-ad_03.png" alt="ad"> </a>
+            </div>
+
+            <!--form submission-->
+            <div id="form" class="row border-buttom">
+                <h4 class="inner-heading">PHẢN HỒI</h4>
+                <form id="post-commet">
+                    <div class="col-sm-6 input-pad">
+                        <span class="fa fa-user form-control-feedback"></span>
+                        <input class="form-control" type="text" name="full_name" placeholder="Ex : Nguyễn Văn A" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_FULLNAME : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                        <span class="comment-error-name" style="color: red; display: none"></span>
+                    </div>
+                    <div class="col-sm-6 input-pad">
+                        <span class="fa fa-envelope form-control-feedback"></span>
+                        <input class="form-control" type="text" name="email" placeholder="Ex : abcxyz@gmail.com" value="<?php echo!empty(CUSTOMER_ID) ? CUSTOMER_EMAIL : ''; ?>" <?php if (!empty(CUSTOMER_ID)): ?>readonly<?php endif; ?>>
+                        <span class="comment-error-email" style="color: red; display: none"></span>
+                    </div>
+                    <div class="col-sm-12 padding-control">
+                        <textarea class="form-control" name="comment-content"></textarea>
+                        <span class="comment-error-content" style="color: red; display: none"></span>
+                    </div>
+                    <!--<input type="text" name="humantest">-->
+                </form>
+                <div class="row">
+                    <div class="col-md-2 col-xs-2 control-label">
+                        <img class="img-captcha form-control" src=""/>
+                    </div>
+                    <div class="col-md-6 col-xs-6">
+                        <input name="captcha" type="text" class="form-control" placeholder="Nhập mã bên cạnh">
+                        <span class="comment-error-captcha" style="color: red; display: none"></span>
+                    </div>
+                    <div class="col-md-2 col-xs-2">
+                        <a class="btn refresh-captcha" data-toggle="tooltip" title="Lấy mã mới"><i class="fa fa-2x fa-refresh"></i></a>
+                    </div>
+                    <div class="col-md-2 col-xs-2"><button class="btn btn-primary pull-right add-comment">Gửi phản hồi</button></div>
+                </div>
+            </div>
+            <!--end form submission-->
+            <div class="row" style="margin-top: 10px">
+                <h4 class="inner-heading">DANH SÁCH PHẢN HỒI</h4>
+                <section class="comment-list comment-list-post">
+                    <?php
+                    if (!empty($this->arrCommentList)):
+                        foreach ($this->arrCommentList as $comment):
+                            $avatar = empty($comment['user_avatar']) ? STATIC_URL . '/f/v1/images/noavatar.jpg' : $comment['user_avatar'];
+                            ?>
+                            <article class="row">
+                                <div class="col-md-2 col-sm-2 hidden-xs">
+                                    <figure class="thumbnail">
+                                        <img class="img-responsive" src="<?php echo $avatar; ?>">
+                                        <figcaption class="text-center"></figcaption>
+                                    </figure>
+                                </div>
+                                <div class="col-md-10 col-sm-10">
+                                    <div class="panel panel-default arrow left item">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <header class="text-left">
+                                                    <div class="col-md-8"><i class="fa fa-user"></i> <span style="color: #007DFF"><?php echo $comment['full_name'] ?></span></div>
+                                                    <div class="col-md-4 text-right"><i class="fa fa-clock-o"></i> <span style="color: #007DFF"><?php echo My\General::formatDateString($comment['created_date']); ?></span></div>
+                                                </header>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-11">
+                                                    <i class="fa fa-envelope"></i> <span style="color: #007DFF"><?php echo $comment['email'] ?></span>
+                                                    <div>
+                                                    </div>
+                                                    <div class="comment-post bor-2-r col-md-12">
+                                                        <?php echo $comment['comm_content']; ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </article>
-                                <?php
-                            endforeach;
-                        endif;
-                        ?>
-                    </section>
-                </div>
-                <div class="fb-comments" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', array('contentSlug' => $this->arrContent["cont_slug"], 'cont_id' => $this->arrContent["cont_id"])) ?>" data-width="100%" data-numposts="5"></div>
+                                </div>
+                            </article>
+                            <?php
+                        endforeach;
+                    endif;
+                    ?>
+                </section>
+            </div>
+            <div class="fb-comments" data-href="<?php echo $this->serverUrl() . $this->Url('view-content', array('contentSlug' => $this->arrContent["cont_slug"], 'cont_id' => $this->arrContent["cont_id"])) ?>" data-width="100%" data-numposts="5"></div>
 
-                <!--Related Ads-->
-                <div id="relatedAds">
-                    <h4 class="inner-heading">RELATED ADs</h4>
-                    <div class="row">
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad1_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$1,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad2_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Expensive Car</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$3,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad3_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Antique things for sale</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$5,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
+            <!--Related Ads-->
+            <div id="relatedAds">
+                <h4 class="inner-heading">RELATED ADs</h4>
+                <div class="row">
+                    <div class="col-sm-4 padding-control">
+                        <div class="ads">
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad1_03.png"></a>
+                            <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
+                            <a href="#" class="ads-hover">
+                                <span>$1,000</span>
+                                <i class="fa fa-cab fa-2x"></i>
+                            </a>
                         </div>
                     </div>
-                </div><!--end related ads-->
 
-            </div>
-            <div class="col-md-4">
-                <?php echo $this->render('frontend/nav-ads-right'); ?>
-            </div>
+                    <div class="col-sm-4 padding-control">
+                        <div class="ads">
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad2_03.png"></a>
+                            <div class="ads-title"><p><a href="#">Expensive Car</a></p></div>
+                            <a href="#" class="ads-hover">
+                                <span>$3,000</span>
+                                <i class="fa fa-cab fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 padding-control">
+                        <div class="ads">
+                            <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad3_03.png"></a>
+                            <div class="ads-title"><p><a href="#">Antique things for sale</a></p></div>
+                            <a href="#" class="ads-hover">
+                                <span>$5,000</span>
+                                <i class="fa fa-cab fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end related ads-->
+
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->render('frontend/nav-ads-right'); ?>
         </div>
     </div>
+</div>
 </section><!--end details-->
 <div class="modal fade" id="ModalSendMessages" tabindex="-1" role="dialog" aria-labelledby="ModalSendMessages">
     <div class="modal-dialog" role="document">

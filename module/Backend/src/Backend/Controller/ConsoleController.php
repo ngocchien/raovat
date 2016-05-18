@@ -1526,11 +1526,35 @@ class ConsoleController extends MyController {
             $this->__dobd();
             return true;
         }
-        
+
         if ($type == 'rvqn') {
             $this->__rvqn();
             return true;
         }
+
+        if ($type == 'edit-content') {
+            $this->__editConten();
+            return true;
+        }
+    }
+
+    public function __editConten() {
+        $instanceSearch = new \My\Search\Content();
+        $arrContentList = $instanceSearch->getList(['from_soucre' => 'raovatquynhon.com']);
+        if (empty($arrContentList)) {
+            return false;
+        }
+
+        $serviceContent = $this->serviceLocator->get('My\Models\Content');
+        foreach ($arrContentList as $value) {
+            $arr_update = [
+                'cont_detail' => strip_tags($value['cont_detail'], '<b><p><br><span><a><br /> ')
+            ];
+            $serviceContent->edit($arr_update, $value['cont_id']);
+            $this->flush();
+        }
+        echo \My\General::getColoredString("edit Success \n", 'green');
+        return true;
     }
 
     public function __rvqn() {
@@ -1604,7 +1628,7 @@ class ConsoleController extends MyController {
             $arr_data['cate_id'] = 79;
             $arr_data['cont_status'] = 1;
             $arr_data['method'] = 'crawler';
-            
+
             $serviceContent = $this->serviceLocator->get('My\Models\Content');
             if ($serviceContent->add($arr_data)) {
                 $instanceSearchCategory = new \My\Search\Category();
@@ -1868,8 +1892,7 @@ class ConsoleController extends MyController {
 
         return true;
     }
-    
-    
+
     public function coverStr($str) {
         $arrPatent = [
             'mọi người',
@@ -1929,4 +1952,5 @@ class ConsoleController extends MyController {
         $strRt = str_replace($arrPatent, $arrReplace, $str);
         return $strRt;
     }
+
 }

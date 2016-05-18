@@ -92,7 +92,8 @@ class Content extends SearchAbstract {
             'total_comment' => ['type' => 'integer', 'index' => 'not_analyzed'],
             'method' => ['type' => 'string', 'index' => 'not_analyzed'],
             'from_soucre' => ['type' => 'string', 'index' => 'not_analyzed'],
-            'is_send' => ['type' => 'integer', 'index' => 'not_analyzed']
+            'is_send' => ['type' => 'integer', 'index' => 'not_analyzed'],
+            'crawler' => ['type' => 'string', 'index' => 'not_analyzed']
         ]);
         $mapping->send();
     }
@@ -400,7 +401,13 @@ class Content extends SearchAbstract {
             $addQuery->setTerm('is_send', $params['is_send']);
             $boolQuery->addMust($addQuery);
         }
-
+        
+        if (isset($params['from_soucre'])) {
+             $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('from_soucre', $params['from_soucre']);
+            $boolQuery->addMust($addQuery);
+        }
+        
         return $boolQuery;
     }
 
