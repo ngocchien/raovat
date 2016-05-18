@@ -25,6 +25,8 @@ class ToolController extends MyController {
 
         if (!empty($arrContentList)) {
             foreach ($arrContentList as $arr_data) {
+                $user_info = json_decode($arr_data['user_infor'], true);
+
                 $template = 'backend/layout/send-mail-when-crawler';
                 $viewModel = new ViewModel();
                 $viewModel->setTerminal(true);
