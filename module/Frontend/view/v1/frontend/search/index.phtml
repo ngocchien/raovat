@@ -60,11 +60,11 @@
                                             <tr>
                                                 <th class="text-center">Tiêu đề</th>
                                                 <th class="text-center" width="80px" style="color: #69A467">Danh mục</th>
-                                                <th class="text-center" width="95px">Khu vực</th>
-                                                <th class="text-center" width="70px">Nhu cầu</th>
-                                                <th class="text-center">Xem</th>
-                                                <th class="text-center">Ngày</th>
-                                                <th class="text-center" width="120">Người đăng</th>
+                                                <th class="text-center color-location hidden-xs" width="95px">Khu vực</th>
+                                                <th class="text-center color-properties hidden-xs" width="70px">Nhu cầu</th>
+                                                <th class="text-center color-view hidden-xs">Xem</th>
+                                                <th class="text-center hidden-xs">Ngày</th>
+                                                <th class="text-center hidden-xs" width="120">Người đăng</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -80,12 +80,12 @@
                                                             <p><?php echo strlen(html_entity_decode($arrContent['cont_detail_text'])) > 400 ? substr(strip_tags(html_entity_decode($arrContent['cont_detail_text'])), 0, 400) . '...' : html_entity_decode($arrContent['cont_detail_text']); ?></p>
                                                         </div>
                                                     </td>
-                                                    <td class="text-center"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'cateId' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold;color: #69A467"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
-                                                    <td class="text-center"><?php echo (!empty($arrContent['dist_id'])) ? $arrDistrict[$arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></td>
-                                                    <td class="text-center"><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></td>
-                                                    <td class="text-center"><?php echo $arrContent['cont_views']; ?></td>
-                                                    <td class="text-center"><?php echo date('d.m.y', $arrContent['created_date']); ?></td>
-                                                    <td class="text-center">
+                                                    <td class="text-center hidden-xs"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'cateId' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold;color: #69A467"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
+                                                    <td class="text-center hidden-xs"><?php echo (!empty($arrContent['dist_id'])) ? $arrDistrict[$arrContent['dist_id']]['dist_name'] : 'Toàn tỉnh'; ?></td>
+                                                    <td class="text-center hidden-xs"><?php echo $this->arrPropertiesList[$arrContent['prop_id']]['prop_name']; ?></td>
+                                                    <td class="text-center hidden-xs"><?php echo $arrContent['cont_views']; ?></td>
+                                                    <td class="text-center hidden-xs"><?php echo date('d.m.y', $arrContent['created_date']); ?></td>
+                                                    <td class="text-center hidden-xs">
                                                         <?php if (!empty($arrContent['user_created'])): ?>
                                                             <a style="text-decoration: none; font-size: 11px" href="<?php echo $this->serverUrl() . $this->Url('view-user-info', ['fullname' => \My\General::getSlug($this->arrUserList[$arrContent['user_created']]['user_fullname']), 'userId' => $this->arrUserList[$arrContent['user_created']]['user_id']]); ?>">
                                                                 <b><?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?></b>
