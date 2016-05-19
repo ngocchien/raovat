@@ -148,19 +148,17 @@ class Content extends SearchAbstract {
         try {
             $intFrom = $intLimit * ($intPage - 1);
             $boolQuery = new Bool();
-
-            $wordNameQueryString = new QueryString();
-            $wordNameQueryString->setDefaultField('cont_title')
-                    ->setQuery('*');
-            $boolQuery->addMust($wordNameQueryString);
-            $arrSort = array('_score');
-            if (!empty($params['sort'])) {
-                foreach ($params['sort'] as $key => $value) {
-                    $arrSort = array($key => array('order' => $value));
-                }
-            }
-
-
+//
+//            $wordNameQueryString = new QueryString();
+//            $wordNameQueryString->setDefaultField('cont_title')
+//                    ->setQuery('*');
+//            $boolQuery->addMust($wordNameQueryString);
+//            $arrSort = array('_score');
+//            if (!empty($params['sort'])) {
+//                foreach ($params['sort'] as $key => $value) {
+//                    $arrSort = array($key => array('order' => $value));
+//                }
+//            }
 
             $boolQuery = $this->__buildWhere($params, $boolQuery);
             $query = new ESQuery();
@@ -168,10 +166,6 @@ class Content extends SearchAbstract {
                     ->setSize($intLimit)
                     ->setSort($sort);
             $query->setQuery($boolQuery);
-            echo '<pre>';
-            print_r($query);
-            echo '</pre>';
-            die();
             $instanceSearch = new Search(General::getSearchConfig());
             $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
                     ->addType($this->getSearchType())
