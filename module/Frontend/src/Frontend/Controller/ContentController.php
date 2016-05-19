@@ -269,7 +269,7 @@ class ContentController extends MyController {
 
                 if (empty($errors)) {
                     $arrData = array(
-                        'cont_title' => trim($params['content_title']),
+                        'cont_title' => trim(strip_tags($params['content_title'])),
                         'cont_slug' => General::getSlug(trim($params['content_title'])),
                         'cont_detail' => $params['content_content'],
                         'cont_detail_text' => strip_tags(html_entity_decode(trim($params['content_content']))),
@@ -488,7 +488,7 @@ class ContentController extends MyController {
                 }
                 if (empty($errors)) {
                     $arrData = array(
-                        'cont_title' => trim($params['content_title']),
+                        'cont_title' => trim(strip_tags($params['content_title'])),
                         'cont_slug' => General::getSlug(trim($params['content_title'])),
                         'cont_detail' => $params['content_content'],
                         'cont_detail_text' => strip_tags(html_entity_decode(trim($params['content_content']))),
