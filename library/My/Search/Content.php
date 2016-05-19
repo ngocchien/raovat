@@ -148,18 +148,6 @@ class Content extends SearchAbstract {
         try {
             $intFrom = $intLimit * ($intPage - 1);
             $boolQuery = new Bool();
-//
-//            $wordNameQueryString = new QueryString();
-//            $wordNameQueryString->setDefaultField('cont_title')
-//                    ->setQuery('*');
-//            $boolQuery->addMust($wordNameQueryString);
-//            $arrSort = array('_score');
-//            if (!empty($params['sort'])) {
-//                foreach ($params['sort'] as $key => $value) {
-//                    $arrSort = array($key => array('order' => $value));
-//                }
-//            }
-
             $boolQuery = $this->__buildWhere($params, $boolQuery);
             $query = new ESQuery();
             $query->setFrom($intFrom)
@@ -337,11 +325,8 @@ class Content extends SearchAbstract {
             $addQuery->addField('created_date', array('lte' => $lastSecond, 'gte' => $firstSecond));
             $boolQuery->addMust($addQuery);
         }
-        echo '<pre>';
-        print_r($params);
-        echo '</pre>';
-        die();
-        if (isset($params['key_word'])) {
+
+        if (!empty($params['key_word'])) {
             $bool = new Bool();
             if ((int) $params['key_word'] > 0) {
                 $queryTerm = new ESQuery\Term();
