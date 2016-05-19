@@ -1733,21 +1733,21 @@ class ConsoleController extends MyController {
                     }
                     $arr_user = [];
                     foreach ($detail_post->find('.dtnguoidang span') as $v) {
-                        $arr_user['user_fullname'] = $v->plaintext;
+                        $arr_user['user_fullname'] = trim($v->plaintext);
                     }
                     foreach ($detail_post->find('.dtemail a') as $v) {
-                        $arr_user['user_email'] = $v->plaintext;
+                        $arr_user['user_email'] = trim($v->plaintext);
                     }
 
                     foreach ($detail_post->find('.dphone span') as $v) {
-                        $arr_user['user_phone'] = $v->plaintext;
+                        $arr_user['user_phone'] = trim($v->plaintext);
                     }
                     $arr_user['cont_password'] = \My\General::randomDigits();
 
                     foreach ($detail_post->find('.dnoidung') as $v) {
 //                        '/"(.+?)"/'
                         preg_match('/<div class="dnoidung">(.+?)<center>/', $v->outertext, $ttp);
-                        $arr_data['cont_detail'] = $ttp[1];
+                        $arr_data['cont_detail'] = $this->coverStr(trim($ttp[1]));
                         $arr_data['cont_detail_text'] = strip_tags($arr_data['cont_detail']);
                     }
                     $arr_data['created_date'] = time();
@@ -1818,10 +1818,6 @@ class ConsoleController extends MyController {
 
         foreach ($arrURL as $prop => $link) {
             $html = file_get_html($link);
-            echo '<pre>';
-            print_r($html);
-            echo '</pre>';
-            die();
             $arr = [];
             foreach ($html->find('#ccr-left-section .ccr-world-news a') as $element) {
                 if ($element->href != 'javascript:void(0);') {
@@ -1845,18 +1841,18 @@ class ConsoleController extends MyController {
                     if ($key == 2) {
                         preg_match('/Người đăng :(.*?) - Điện thoại : (.*?) - Email :(.*?)/', $element->plaintext, $arrRa);
                         $arrUser = [
-                            'user_fullname' => $arrRa[1],
-                            'user_phone' => $arrRa[2],
-                            'user_email' => $arrRa[3],
-                            'cont_password' => '123123'
+                            'user_fullname' => trim($arrRa[1]),
+                            'user_phone' => trim($arrRa[2]),
+                            'user_email' => trim($arrRa[3]),
+                            'cont_password' => General::randomDigits()
                         ];
                         $arrData['user_info'] = json_encode($arrUser);
                     }
                 }
                 $this->flush();
                 foreach ($html->find('#DetailCommerce div[style=border-bottom: 1px solid #e3e2e2;float:left;width:100%]') as $key => $element) {
-                    $arrData['cont_detail'] = $element->plaintext;
-                    $arrData['cont_detail_text'] = \My\General::getSlug($element->plaintext);
+                    $arrData['cont_detail'] = $this->coverStr(trim($element->plaintext));
+                    $arrData['cont_detail_text'] = \My\General::getSlug($arrData['cont_detail']);
                     $arrData['created_date'] = time();
                 }
                 $this->flush();
