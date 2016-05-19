@@ -79,11 +79,11 @@ class UserController extends MyController {
                 }
                 if (empty($errors)) {
                     $arrData = [
-                        'user_phone' => $params['user_phone'],
-                        'user_email' => $params['user_email'],
+                        'user_phone' => trim(strip_tags($params['user_phone'])),
+                        'user_email' => trim(strip_tags($params['user_email'])),
                         'user_updated' => CUSTOMER_ID,
                         'updated_date' => time(),
-                        'user_fullname' => $params['user_fullname']
+                        'user_fullname' => trim(strip_tags($params['user_fullname']))
                     ];
 
                     $serviceUser = $this->serviceLocator->get('My\Models\User');
@@ -267,10 +267,10 @@ class UserController extends MyController {
         $intTotal = $instanceSearchTran->getTotal($arrCondition);
         $helper = $this->serviceLocator->get('viewhelpermanager')->get('Paging');
         $paging = $helper($params['module'], $params['__CONTROLLER__'], $params['action'], $intTotal, $intPage, $intLimit, 'user-list-post', $params);
-        
+
         return [
             'arrTranList' => $arrTranList,
-            'paging'=>$paging
+            'paging' => $paging
         ];
     }
 

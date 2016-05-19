@@ -39,7 +39,7 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Họ tên không được để trống !</center>')));
             }
 
-            $strUserFullname = trim($params['user_fullname']);
+            $strUserFullname = trim(strip_tags($params['user_fullname']));
             if (strlen($strUserFullname) < 4 || strlen($strUserFullname) > 50) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Nhập họ và tên chưa đầy đủ !</center>')));
             }
@@ -76,7 +76,7 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không được để trống !</center>')));
             }
 
-            $strUserPhone = trim($params['user_phone']);
+            $strUserPhone = trim(strip_tags($params['user_phone']));
             if (!$validator->Digits($strUserPhone)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không hợp lệ !</center>')));
             }
