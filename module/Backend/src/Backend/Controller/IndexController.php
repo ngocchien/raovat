@@ -13,7 +13,7 @@ class IndexController extends MyController {
     }
 
     public function indexAction() {
-//        echo '<a href="http://dev.st.raovat.vn/f/v1/images/images/sideimg1_03.png" download>nè</a>';
+//        echo '<a href="http://dev.st.raovat.vn/18-05-2016-03_49_18.xlsx" download>nè</a>';
 //        die();
         return;
         $url = 'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/';

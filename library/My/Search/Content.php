@@ -395,19 +395,25 @@ class Content extends SearchAbstract {
             $addQuery->addField('expired_time', array('lte' => $params['less_expired_time']));
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (isset($params['is_send'])) {
-             $addQuery = new ESQuery\Term();
+            $addQuery = new ESQuery\Term();
             $addQuery->setTerm('is_send', $params['is_send']);
             $boolQuery->addMust($addQuery);
         }
-        
+
         if (isset($params['from_soucre'])) {
-             $addQuery = new ESQuery\Term();
+            $addQuery = new ESQuery\Term();
             $addQuery->setTerm('from_soucre', $params['from_soucre']);
             $boolQuery->addMust($addQuery);
         }
-        
+
+        if (isset($params['less_cont_id'])) {
+            $addQuery = new ESQuery\Range();
+            $addQuery->addField('cont_id', array('lt' => $params['less_cont_id']));
+            $boolQuery->addMust($addQuery);
+        }
+
         return $boolQuery;
     }
 

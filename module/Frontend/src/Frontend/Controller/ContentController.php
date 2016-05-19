@@ -26,7 +26,7 @@ class ContentController extends MyController {
 
     public function detailAction() {
         $params = $this->params()->fromRoute();
-        
+
         $cont_id = (int) $params['contentId'];
         $cont_slug = $params['contentSlug'];
 
@@ -126,20 +126,31 @@ class ContentController extends MyController {
         $this->renderer->headMeta()->setProperty('twitter:description', html_entity_decode($arrContent['cont_title']));
         $this->renderer->headMeta()->setProperty('twitter:creator', General::SITE_AUTH);
         $this->renderer->headMeta()->setProperty('twitter:image:src', $metaImage);
-        
+
         $this->renderer->headMeta()->appendName('social', General::SOCIAL_FACEBOOK_URL);
 
         //<meta property="article:tag" content="Tên tag của bài viết, nếu có nhiều tag thì tạo nhiều thẻ" />
-
+        
+        //danh sách comment
         $instanceSearchComment = new \My\Search\Comment();
         $arrCommentList = $instanceSearchComment->getListLimit(['cont_id' => $cont_id], 1, 10);
+
+        //lấy tin cũ hơn cùng chuyên mục
+        $arrConditionLasted = [
+            'cate_id' => $arrContent['cate_id'],
+            'not_cont_status' => -1,
+            'less_cont_id' => $arrContent['cont_id']
+        ];
+
+        $arrContentLastedList = $instanceSearchContent->getListLimit($arrConditionLasted, 1, 5, ['cont_id' => ['order' => 'desc']]);
 
         return array(
             'params' => $params,
             'arrContent' => $arrContent,
             'arrCommentList' => $arrCommentList,
             'arrUser' => $arrUser,
-            'arrProperties' => $arrProperties
+            'arrProperties' => $arrProperties,
+            'arrContentLastedList' => $arrContentLastedList
         );
     }
 

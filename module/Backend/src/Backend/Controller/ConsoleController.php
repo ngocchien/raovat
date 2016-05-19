@@ -1599,7 +1599,7 @@ class ConsoleController extends MyController {
 
             //content
             preg_match('/<div id="contentview">(.*?)<div class="infobottom titdetailbar">/', $content, $matches);
-            $arr_data['cont_detail'] = $this->coverStr(trim($matches[1]));
+            $arr_data['cont_detail'] = strip_tags($this->coverStr(trim($matches[1])), '<b><p><br><span><a><br /><img>');
             $arr_data['cont_detail_text'] = strip_tags($arr_data['cont_detail']);
 
             //info user

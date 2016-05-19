@@ -231,6 +231,12 @@ class MyController extends AbstractActionController {
                 $arrDistrictListFormat[$value['dist_id']] = $value;
             }
             define('ARR_DISTRICT', serialize($arrDistrictListFormat));
+            
+            //lay danh sach tin cho nav right
+//            if($arrData['controller'] == 'category' || $arrData['controller'] == 'content' || $arrData['controller'] == 'user' || $arrData['controller'] == 'tags'){
+//                $instanceSearchContent = new \My\Search\Content();
+//                $arrContentList = $instanceSearchContent->getListLimit(['not_cont_status'=>-1], 1, 5, ['updated_date'=>'crea']);
+//            }
 
             unset($instanceSearchDistrict);
             unset($instaceSearchMessages);
