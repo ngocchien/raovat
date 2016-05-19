@@ -100,7 +100,7 @@
                                                                 $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
                                                                 $flag = true;
                                                             }
-                                                            $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr($arrContent['cont_detail_text'], 0, 400) . '...' : $arrContent['cont_detail_text'];
+                                                            $description = (strlen(html_entity_decode($arrContent['cont_detail_text'])) > 400) ? substr(html_entity_decode($arrContent['cont_detail_text']), 0, 400) . '...' : html_entity_decode($arrContent['cont_detail_text']);
                                                             ?>
                                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                                 <td style="vertical-align: middle">
@@ -113,12 +113,12 @@
                                                                             <img src="<?php echo $avatar_user; ?>" class="thumb-image-avatar">
                                                                         </a>
                                                                     <?php endif; ?>
-                                                                    <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?>vip2<?php elseif ($arrContent['vip_type'] == \My\General::VIP_ALL_PAGE):; ?> color-red<?php endif;?>" style="text-decoration: none;">
+                                                                    <a href="<?php echo $this->serverUrl() . $this->Url('view-content', ['contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id']]); ?>" data-toggle="tooltip" title="<?php echo $description; ?>" class="red-tooltip <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?>vip2<?php elseif ($arrContent['vip_type'] == \My\General::VIP_ALL_PAGE):; ?> color-red<?php endif; ?>" style="text-decoration: none;">
                                                                         <?php echo $arrContent['cont_title']; ?>
                                                                     </a>
 
                                                                     <span class="success">(<i class="fa fa-eye"> <?php echo (int) $arrContent['cont_views']; ?></i> | <i class="fa fa-comment-o" aria-hidden="true"> <?php echo (int) $arrContent['total_comment']; ?></i>)</span>
-                                                                    <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo \My\General::IMAGE_VIP ?>"><?php elseif ($arrContent['vip_type'] == \My\General::VIP_ALL_PAGE):?><img src="<?php echo \My\General::IMAGE_SVIP ?>"><?php endif;?>
+                                                                    <?php if ($arrContent['vip_type'] == \My\General::VIP_CATE_PAGE): ?><img src="<?php echo \My\General::IMAGE_VIP ?>"><?php elseif ($arrContent['vip_type'] == \My\General::VIP_ALL_PAGE): ?><img src="<?php echo \My\General::IMAGE_SVIP ?>"><?php endif; ?>
                                                                 </td>
                                                                 <td class="text-center color-location" style="vertical-align: middle">
                                                                     <?php echo empty($arrContent['dist_id']) ? 'Toàn tỉnh' : $arrLocation[$arrContent['dist_id']]['dist_name']; ?>

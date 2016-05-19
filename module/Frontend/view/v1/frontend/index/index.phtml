@@ -36,7 +36,7 @@
                                                     $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
                                                     $flag = true;
                                                 }
-                                                $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr($arrContent['cont_detail_text'], 0, 400) . '...' : $arrContent['cont_detail_text'];
+                                                $description = (strlen(html_entity_decode($arrContent['cont_detail_text'])) > 400) ? substr(html_entity_decode($arrContent['cont_detail_text']), 0, 400) . '...' : html_entity_decode($arrContent['cont_detail_text']);
                                                 ?>
                                                 <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                     <td style="vertical-align: middle">
@@ -174,7 +174,7 @@
                                                 $avatar_user = json_decode($this->arrUserList[$arrContent['user_created']]['user_avatar'], true)[0]['thumbImage']['30x30'];
                                                 $flag = true;
                                             }
-                                            $description = (strlen($arrContent['cont_detail_text']) > 400) ? substr($arrContent['cont_detail_text'], 0, 400) . '...' : $arrContent['cont_detail_text'];
+                                            $description = (strlen(html_entity_decode($arrContent['cont_detail_text'])) > 400) ? substr(html_entity_decode($arrContent['cont_detail_text']), 0, 400) . '...' : html_entity_decode($arrContent['cont_detail_text']);
                                             ?>
                                             <tr id="item-<?php echo $arrContent['cont_id'] ?>">
                                                 <td style="vertical-align: middle">

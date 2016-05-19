@@ -155,7 +155,7 @@
                     <div class="ad-detail-info clearfix">
                         <p>Nội dung :</p>
                         <?php // echo $this->arrContent['from_soucre'] == 'raovatquynhon.com' ? $this->arrContent['cont_detail_text'] : $this->arrContent['cont_detail']; ?>
-                        <?php echo $this->arrContent['cont_detail']; ?>
+                        <?php echo html_entity_decode($this->arrContent['cont_detail']); ?>
                     </div>
                 </div>
                 <div class="tags">
@@ -276,7 +276,7 @@
                                                 <tbody>
                                                     <?php
                                                     foreach ($this->arrContentLastedList as $content):
-                                                        $description = (strlen($content['cont_detail_text']) > 400) ? substr($content['cont_detail_text'], 0, 400) . '...' : $content['cont_detail_text'];
+                                                        $description = (strlen(html_entity_decode($content['cont_detail_text'])) > 400) ? substr(html_entity_decode($content['cont_detail_text']), 0, 400) . '...' : html_entity_decode($content['cont_detail_text']);
                                                         ?>
                                                         <tr>
                                                             <td style="vertical-align: middle">
@@ -297,45 +297,6 @@
                         </div>
                     </div>
                 <?php endif; ?>
-                <!--Related Ads-->
-                <div id="relatedAds">
-                    <h4 class="inner-heading">RELATED ADs</h4>
-                    <div class="row">
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad1_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Classic Red Bike</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$1,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad2_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Expensive Car</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$3,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4 padding-control">
-                            <div class="ads">
-                                <a href="#"><img src="<?php echo STATIC_URL; ?>/f/v1/images/images/relatedad3_03.png"></a>
-                                <div class="ads-title"><p><a href="#">Antique things for sale</a></p></div>
-                                <a href="#" class="ads-hover">
-                                    <span>$5,000</span>
-                                    <i class="fa fa-cab fa-2x"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div><!--end related ads-->
-
             </div>
             <div class="col-md-4">
                 <?php echo $this->render('frontend/nav-ads-right'); ?>
