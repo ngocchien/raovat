@@ -77,7 +77,7 @@
                                                     <td>
                                                         <div class="hidden-phone">
                                                             <h4><a href="<?php echo $this->serverUrl() . $this->Url('view-content', array('contentSlug' => $arrContent['cont_slug'], 'contentId' => $arrContent['cont_id'])) ?>"><?php echo strlen($arrContent['cont_title']) > 100 ? substr($arrContent['cont_title'], 0, 100) . '...' : $arrContent['cont_title']; ?></a></h4>
-                                                            <p><?php echo strlen($arrContent['cont_detail_text']) > 400 ? substr(strip_tags($arrContent['cont_detail_text']), 0, 400) . '...' : $arrContent['cont_detail_text']; ?></p>
+                                                            <p><?php echo strlen(html_entity_decode($arrContent['cont_detail_text'])) > 400 ? substr(strip_tags(html_entity_decode($arrContent['cont_detail_text'])), 0, 400) . '...' : html_entity_decode($arrContent['cont_detail_text']); ?></p>
                                                         </div>
                                                     </td>
                                                     <td class="text-center"><a href="<?php echo $this->serverUrl() . $this->Url('category', array('cateSlug' => $arrCategorList[$arrContent['cate_id']]['cate_slug'], 'cateId' => $arrContent['cate_id'])) ?>" style="text-decoration: none; font-weight: bold;color: #69A467"><?php echo $arrCategorList[$arrContent['cate_id']]['cate_name']; ?></a></td>
@@ -91,7 +91,7 @@
                                                                 <b><?php echo $this->arrUserList[$arrContent['user_created']]['user_fullname']; ?></b>
                                                             </a>
                                                         <?php else : ?>
-                                                        <a style="text-decoration: none; font-size: 11px" href="javascript:;" ><?php echo json_decode($arrContent['user_info'],true)['user_fullname']; ?></a>
+                                                            <a style="text-decoration: none; font-size: 11px" href="javascript:;" ><?php echo json_decode($arrContent['user_info'], true)['user_fullname']; ?></a>
                                                         <?php endif;
                                                         ?>
                                                         </a>

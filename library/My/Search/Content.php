@@ -154,6 +154,10 @@ class Content extends SearchAbstract {
                     ->setSize($intLimit)
                     ->setSort($sort);
             $query->setQuery($boolQuery);
+//            echo '<pre>';
+//            print_r($query);
+//            echo '</pre>';
+//            die();
             $instanceSearch = new Search(General::getSearchConfig());
             $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
                     ->addType($this->getSearchType())
@@ -328,6 +332,7 @@ class Content extends SearchAbstract {
 
         if (!empty($params['key_word'])) {
             $bool = new Bool();
+            
             if ((int) $params['key_word'] > 0) {
                 $queryTerm = new ESQuery\Term();
                 $queryTerm->setTerm('cont_id', (int) $params['key_word']);

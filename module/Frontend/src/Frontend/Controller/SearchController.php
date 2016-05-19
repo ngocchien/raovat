@@ -104,11 +104,15 @@ class SearchController extends MyController {
             $arrIdList = [];
             $arrPropertiesId = [];
             foreach ($arrContentList as $arrContent) {
-                $arrPropertiesId[] = $arrContent['prop_id'];
+                if (!empty($arrContent['prop_id'])) {
+                    $arrPropertiesId[] = $arrContent['prop_id'];
+                }
+
                 if (!empty($arrContent['user_created'])) {
                     $arrIdList[] = $arrContent['user_created'];
                 }
             }
+
             if (!empty($arrIdList)) {
                 $arrIdList = array_unique($arrIdList);
                 $instaceSearchUser = new \My\Search\User();
@@ -119,12 +123,14 @@ class SearchController extends MyController {
                     }
                 }
             }
-            $arrPropertiesId = array_unique($arrPropertiesId);
-            $instaceSearchProperties = new \My\Search\Properties();
-            $arrPropertiesListTemp = $instaceSearchProperties->getList(['in_prop_id' => $arrPropertiesId]);
-            if (!empty($arrPropertiesListTemp)) {
-                foreach ($arrPropertiesListTemp as $value) {
-                    $arrPropertiesList[$value['prop_id']] = $value;
+            if (!empty($arrPropertiesId)) {
+                $arrPropertiesId = array_unique($arrPropertiesId);
+                $instaceSearchProperties = new \My\Search\Properties();
+                $arrPropertiesListTemp = $instaceSearchProperties->getList(['in_prop_id' => $arrPropertiesId]);
+                if (!empty($arrPropertiesListTemp)) {
+                    foreach ($arrPropertiesListTemp as $value) {
+                        $arrPropertiesList[$value['prop_id']] = $value;
+                    }
                 }
             }
         }
