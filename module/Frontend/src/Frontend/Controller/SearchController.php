@@ -65,7 +65,7 @@ class SearchController extends MyController {
             }
         }
         if (!empty($params['tu-khoa'])) {
-            $arrCondition['key_word'] = trim($params['tu-khoa']);
+            $arrCondition['key_word'] = trim(strip_tags($params['tu-khoa']));
         }
 
         $instaceSearchContent = new \My\Search\Content();
@@ -92,7 +92,7 @@ class SearchController extends MyController {
         $this->renderer = $this->serviceLocator->get('Zend\View\Renderer\PhpRenderer');
         $this->renderer->headMeta()->appendName('dc.description', $description);
         $this->renderer->headTitle($description . General::TITLE_META);
-        $this->renderer->headMeta()->appendName('keywords', 'quynhon247.com, rao vat, tim kiem , tim kiem' . $description);
+        $this->renderer->headMeta()->appendName('keywords', 'bestquynhon.com, dien dan rao vat binh dinh, rao vat, tim kiem , tim kiem' . $description);
         $this->renderer->headMeta()->appendName('description', $description);
         $this->renderer->headMeta()->setProperty('og:url', $this->url()->fromRoute('search', array('khu-vuc' => $params['khu-vuc'], 'danh-muc' => $params['danh-muc'], 'tu-khoa' => $params['tu-khoa'])));
         $this->renderer->headMeta()->setProperty('og:title', $description);
