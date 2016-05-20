@@ -19,7 +19,9 @@ class ToolController extends MyController {
     public function indexAction() {
         $instanceSearchContent = new \My\Search\Content();
         $condition = [
-            'is_send' => 0
+            'is_send' => 0,
+            'method' => 'crawler'
+//            'from_source' => 'http://www.raovatbinhdinh.vn'
         ];
         $arrContentList = $instanceSearchContent->getList($condition);
 

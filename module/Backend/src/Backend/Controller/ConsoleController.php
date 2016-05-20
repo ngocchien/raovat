@@ -1858,6 +1858,7 @@ class ConsoleController extends MyController {
                 $this->flush();
                 $arrData['from_soucre'] = $domain;
                 $arrData['is_send'] = 0;
+                $arrData['method'] = 'crawler';
                 //check in db
                 $instanceSearchContent = new \My\Search\Content();
                 $arr_detail = $instanceSearchContent->getDetail(['cont_slug' => $arrData['cont_slug'], 'not_cont_status' => -1]);
