@@ -65,7 +65,7 @@ class SearchController extends MyController {
             }
         }
         if (!empty($params['tu-khoa'])) {
-            $arrCondition['key_word'] = trim(strip_tags($params['tu-khoa']));
+            $arrCondition['key_word'] = General::clean(trim(strip_tags($params['tu-khoa'])));
         }
 
         $instaceSearchContent = new \My\Search\Content();
