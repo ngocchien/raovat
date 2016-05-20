@@ -789,11 +789,11 @@ class ContentController extends MyController {
                 'status' => 0,
                 'created_date' => time(),
                 'cont_id' => (int) $params['cont_id'],
-                'full_name' => (int) CUSTOMER_ID > 0 ? CUSTOMER_FULLNAME : trim($params['full_name']),
-                'email' => (int) CUSTOMER_ID > 0 ? CUSTOMER_EMAIL : trim($params['email']),
+                'full_name' => (int) CUSTOMER_ID > 0 ? CUSTOMER_FULLNAME : trim(strip_tags($params['full_name'])),
+                'email' => (int) CUSTOMER_ID > 0 ? CUSTOMER_EMAIL : trim(strip_tags($params['email'])),
                 'user_id' => (int) CUSTOMER_ID > 0 ? CUSTOMER_ID : null,
                 'user_avatar' => (int) CUSTOMER_ID > 0 ? CUSTOMER_AVATAR : null,
-                'comm_content' => $params['comment_content']
+                'comm_content' => trim($params['comment_content'])
             ];
 
             $serviceComment = $this->serviceLocator->get('My\Models\Comment');

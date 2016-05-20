@@ -125,11 +125,9 @@ class User extends SearchAbstract {
             $boolQuery = $this->__buildWhere($params, $boolQuery);
             $query = new ESQuery();
             $query->setQuery($boolQuery);
-
             if ($arrFields && is_array($arrFields)) {
                 $query->setSource($arrFields);
             }
-
             $instanceSearch = new Search(General::getSearchConfig());
             $resultSet = $instanceSearch->addIndex($this->getSearchIndex())
                     ->addType($this->getSearchType())
@@ -281,6 +279,13 @@ class User extends SearchAbstract {
             $addQuery->setTerm('user_id', $params['not_user_id']);
             $boolQuery->addMustNot($addQuery);
         }
+        
+        if (!empty($params['random_key'])) {
+            $addQuery = new ESQuery\Term();
+            $addQuery->setTerm('random_key', $params['random_key']);
+            $boolQuery->addMust($addQuery);
+        }
+        
 
         return $boolQuery;
     }

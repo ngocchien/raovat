@@ -53,9 +53,10 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Địa chỉ email không hợp lệ !</center>')));
             }
 
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $intTotalEmail = $serviceUser->getTotal(array('user_email' => $strUserEmail, 'not_user_status' => -1));
-            if ($intTotalEmail > 0) {
+            $instanceSearchUser = new \My\Search\User();
+            $existEmail = $instanceSearchUser->getDetail(array('user_email' => $strUserEmail, 'not_status' => -1));
+
+            if ($existEmail) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email này đã tồn tại trong hệ thống! Vui lòng chọn email khác !<br/> Hoặc thực hiện chức năng lấy lại mật khẩu !</center>')));
             }
 
@@ -85,8 +86,9 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại phải từ 8 -> 11 số !</center>')));
             }
 
-            $intTotalPhone = $serviceUser->getTotal(array('user_phone' => $strUserPhone, 'not_user_status' => -1));
-            if ($intTotalPhone > 0) {
+            $existPhone = $instanceSearchUser->getDetail(array('user_phone' => $strUserPhone, 'not_status' => -1));
+
+            if ($existPhone) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại này đã tồn tại trong hệ thống! Vui lòng chọn số điện thoại khác !</center>')));
             }
 
@@ -102,7 +104,9 @@ class AuthController extends MyController {
                 'group_id' => General::MEMBER
             );
 
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
             $intResutl = $serviceUser->add($arrData);
+
             if ($intResutl > 0) {
                 $arrData['user_id'] = $intResutl;
                 $this->getAuthService()->clearIdentity();
@@ -123,6 +127,7 @@ class AuthController extends MyController {
             if (CUSTOMER_ID) {
                 return $this->redirect()->toRoute('frontend', array('controller' => 'profile', 'action' => 'index'));
             }
+
             $params = $this->params()->fromPost();
             $validator = new Validate();
             $str = strip_tags(trim($params['strUsername']));
@@ -138,7 +143,7 @@ class AuthController extends MyController {
                 if (!$validator->emailAddress($str)) {
                     return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email không hợp lệ ... vui lòng điền lại email hoặc tên tài khoản !</center>')));
                 }
-                $arrCondition = array('user_email' => $str, 'not_user_status' => -1);
+                $arrCondition = array('user_email' => $str, 'not_status' => -1);
             } else {
                 if (!$validator->Digits($str)) {
                     return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không hợp lệ !</center>')));
@@ -148,10 +153,10 @@ class AuthController extends MyController {
                         return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Số điện thoại không hợp lệ !</center>')));
                     }
                 }
-                $arrCondition = array('user_phone' => $str, 'not_user_status' => -1);
+                $arrCondition = array('user_phone' => $str, 'not_status' => -1);
             }
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrUser = $serviceUser->getDetail($arrCondition);
+            $instanceSearchUser = new \My\Search\User();
+            $arrUser = $instanceSearchUser->getDetail($arrCondition);
 
             if (empty($arrUser)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center> Tài khoản hoặc mật khẩu không chính xác! Vui lòng thử lại !</center>')));
@@ -165,6 +170,7 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tài khoản hoặc mật khẩu không đúng! Vui lòng thử lại !</center>')));
             }
 
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
             $login = $serviceUser->edit(array("user_last_login" => time(), "user_login_ip" => $this->getRequest()->getServer('REMOTE_ADDR')), $arrUser["user_id"]);
 
             if ($login) {
@@ -214,19 +220,21 @@ class AuthController extends MyController {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Nhập mã xác nhận chưa chính xác!</center>')));
             }
 
-            $serviceUser = $this->serviceLocator->get('My\Models\User');
-            $arrDetailUser = $serviceUser->getDetail(array('user_email' => $params['user_email'], 'not_status' => -1));
+            $instaceSearchUser = new \My\Search\User();
+            $arrDetailUser = $instaceSearchUser->getDetail(array('user_email' => trim(strip_tags($params['user_email'])), 'not_status' => -1));
 
             if (empty($arrDetailUser)) {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Email này không tồn tại trong hệ thống !</center>')));
             }
 
-            if ($arrDetailUser['user_status'] == -1) {
+            if ($arrDetailUser['user_status'] == 0 || $arrDetailUser['user_status'] == 'null') {
                 return $this->getResponse()->setContent(json_encode(array('st' => -1, 'ms' => '<center>Tài khoản của bạn hiện đang bị tạm khóa! Vui lòng liên hệ quản trị viên !</center>')));
             }
 
             $random_key = md5(rand(5, 1000)) . time();
             $expried = time() + (60 * 60 * 72); //3 ngay
+
+            $serviceUser = $this->serviceLocator->get('My\Models\User');
             $intResult = $serviceUser->edit(['random_key' => $random_key, 'random_key_expried' => $expried], $arrDetailUser['user_id']);
 
             if ($intResult) {
@@ -262,18 +270,14 @@ class AuthController extends MyController {
         }
 
         $arrCondition = [
-            'random_key' => $strRandomkey,
-            'not_user_status' => -1
+            'random_key' => trim(strip_tags($strRandomkey)),
+            'user_status' => 1
         ];
+        $instaceSearchUser = new \My\Search\User();
+        $arrDetailUser = $instaceSearchUser->getDetail($arrCondition);
 
-        $serviceUser = $this->serviceLocator->get('My\Models\User');
-        $arrDetailUser = $serviceUser->getDetail($arrCondition);
         if (!$arrDetailUser) {
             return $this->redirect()->toRoute('home');
-        }
-
-        if ($arrDetailUser['user_status'] == 0) {
-            return $this->redirect()->toRoute('member-block');
         }
 
         if ($arrDetailUser['random_key_expried'] < time()) {
@@ -303,6 +307,7 @@ class AuthController extends MyController {
                     'updated_date' => time(),
                     'user_updated' => $arrDetailUser['user_id']
                 );
+                $serviceUser = $this->serviceLocator->get('My\Models\User');
                 $intResult = $serviceUser->edit($arrData, $arrDetailUser['user_id']);
                 if ($intResult) {
                     return array(

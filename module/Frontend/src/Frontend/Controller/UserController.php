@@ -622,9 +622,9 @@ class UserController extends MyController {
                     $completeSession = new Container('authTemp');
                     $arrData = [
                         'user_email' => $completeSession->email,
-                        'user_phone' => $arrParams['phone'],
+                        'user_phone' => trim(strip_tags($arrParams['phone'])),
                         'user_status' => 1,
-                        'user_fullname' => $arrParams['fullname'],
+                        'user_fullname' => trim(strip_tags($arrParams['fullname'])),
                         'user_password' => md5($arrParams['password']),
                         'created_date' => time(),
                         'user_login_ip' => $this->getRequest()->getServer('REMOTE_ADDR'),
