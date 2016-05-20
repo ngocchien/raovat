@@ -24,12 +24,15 @@ class SearchController extends MyController {
 
     public function indexAction() {
         $params = array_merge($this->params()->fromRoute(), $this->params()->fromQuery());
-
+//        echo '<pre>';
+//        print_r($params);
+//        echo '</pre>';
+//        die();
         if (empty($params['khu-vuc']) && empty($params['danh-muc']) && empty($params['tu-khoa'])) {
             return $this->redirect()->toRoute('home');
         }
 
-        $intPage = (int) $params['trang'] > 0 ? (int) $params['trang'] : 1;
+        $intPage = (int) $params['page'] > 0 ? (int) $params['page'] : 1;
         $intLimit = 15;
         $arrCondition = [
             'not_cont_status' => -1

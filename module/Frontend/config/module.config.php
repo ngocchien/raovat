@@ -86,11 +86,12 @@ return array(
             'search' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/tim-kiem[?[khu-vuc=:khu-vuc][&danh-muc=:danh-muc][&tu-khoa=:tu-khoa][&trang=:trang]]',
+//                    'route' => '/s/[tim-kiem-[:keySlug[.html]]][:brand/][?[s=:s][&price=:price][&sort=:sort][&page=:page]]',
+                    'route' => '/tim-kiem[?[khu-vuc=:khu-vuc][&danh-muc=:danh-muc][&tu-khoa=:tu-khoa][&page=:page]]',
                     'constraints' => array(
                         'controller' => 'search',
                         'action' => 'index',
-                        'trang' => '[0-9]+',
+                        'page' => '[0-9]+',
                         'khu-vuc' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'danh-muc' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'tu-khoa' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -100,10 +101,10 @@ return array(
                         'module' => 'frontend',
                         'controller' => 'search',
                         'action' => 'index',
-                        'trang' => 1,
-                        'khu-vuc' => 'toan-tinh',
-                        'danh-muc' => 'tat-ca-danh-muc',
-                        'tu-khoa' => ''
+//                        'trang' => 1,
+//                        'khu-vuc' => 'toan-tinh',
+//                        'danh-muc' => 'tat-ca-danh-muc',
+//                        'tu-khoa' => ''
                     ),
                 ),
             ),
