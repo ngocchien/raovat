@@ -6,9 +6,11 @@ use My\General,
     My\Controller\MyController,
     Zend\View\Model\ViewModel;
 
-class ConsoleController extends MyController {
+class ConsoleController extends MyController
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         if (PHP_SAPI !== 'cli') {
             die('Only use this controller from command line!');
         }
@@ -21,19 +23,22 @@ class ConsoleController extends MyController {
         ini_set('implicit_flush', 1);
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         die();
     }
 
-    private function flush() {
+    private function flush()
+    {
         ob_end_flush();
         ob_flush();
         flush();
     }
 
-    public function migrateAction() {
+    public function migrateAction()
+    {
         $params = $this->request->getParams();
-        $intIsCreateIndex = (int) $params['createindex'];
+        $intIsCreateIndex = (int)$params['createindex'];
 
         if (empty($params['type'])) {
             return General::getColoredString("Unknown type \n", 'light_cyan', 'red');
@@ -87,19 +92,93 @@ class ConsoleController extends MyController {
             case 'general' :
                 $this->__migrateGeneral($intIsCreateIndex);
                 break;
-
+            case 'keyword' :
+                $this->__migrateKeyword($intIsCreateIndex);
+                break;
             default:
                 echo General::getColoredString("Unknown type \n", 'light_cyan', 'red');
                 break;
         }
     }
 
-    public function __migrateGeneral($intIsCreateIndex) {
+    public function __migrateKeyword($intIsCreateIndex)
+    {
+
+        $arr_key = [
+            'quy nhơn', 'quy nhon', 'qui nhon', 'bình định', 'binh dinh', 'phù mỹ', 'phu my', 'phù cát', 'vân canh', 'vĩnh thạnh', 'hoài nhơn',
+            'tam quan', 'bong son', 'tay son', 'an nhơn', 'viec lam quy nhon', 'viec lam binh dinh', 'quy nhon binh dinh', 'rao vat quy nhon', 'rao vat binh dinh',
+            'tuyen dung binh dinh', 'tuyen dung quy nhon', 'dien dan rao vat binh dinh', 'dien dan rao vat quy nhon', 'vui choi quy nhon', 'vui choi binh dinh',
+            'trung tam viec lam quy nhon', 'nha dat quy nhon', 'dich vu quy nhon', 'dich vu binh dinh', 'o to quy nhon', 'xe may quy nhon', 'cong dong quy nhon',
+            'cong dong binh dinh'
+        ];
+
+        $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
+        foreach ($arr_key as $key) {
+            $arr_data = [
+                'key_name' => $key,
+                'key_slug' => General::getSlug($key),
+                'is_crawler' => 0,
+                'created_date' => time()
+            ];
+           $serviceKeyword->add($arr_data);
+        }
+        die('done');
+        return;
+
+        $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
+        $intLimit = 200;
+        $instanceSearchKeyword = new \My\Search\Keyword();
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
+            $arrList = $serviceKeyword->getListLimit([], $intPage, $intLimit, 'key_id ASC');
+            if (empty($arrList)) {
+                break;
+            }
+
+            if ($intPage == 1) {
+                if ($intIsCreateIndex) {
+                    $instanceSearchKeyword->createIndex();
+                } else {
+                    $result = $instanceSearchKeyword->removeAllDoc();
+                    if (empty($result)) {
+                        $this->flush();
+                        return General::getColoredString("Cannot delete old search index \n", 'light_cyan', 'red');
+                    }
+                }
+            }
+            $arrDocument = [];
+            foreach ($arrList as $arr) {
+                $id = (int)$arr['key_id'];
+                $arrDocument[] = new \Elastica\Document($id, $arr);
+                echo General::getColoredString("Created new document with cont_id = " . $id . " Successfully", 'cyan');
+
+                $this->flush();
+            }
+
+            unset($arrList); //release memory
+            echo General::getColoredString("Migrating " . count($arrDocument) . " documents, please wait...", 'yellow');
+            $this->flush();
+
+            $instanceSearchKeyword->add($arrDocument);
+            echo General::getColoredString("Migrated " . count($arrDocument) . " documents successfully", 'blue', 'cyan');
+
+            unset($arrDocument);
+            $this->flush();
+        }
+
+        die('done');
+
+        $instanceSearchKeyword = new \My\Search\Keyword();
+//        $instanceSearchKeyword->createIndex();
+//        die();
+    }
+
+    public function __migrateGeneral($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\GeneralBqn');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\GeneralBqn();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'gene_id ASC');
 
             if (empty($arrList)) {
@@ -119,7 +198,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['gene_id'];
+                $id = (int)$arr['gene_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -141,12 +220,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateDistrictToSearch($intIsCreateIndex) {
+    public function __migrateDistrictToSearch($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\District');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\District();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'dist_id ASC');
 
             if (empty($arrList)) {
@@ -166,7 +246,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['dist_id'];
+                $id = (int)$arr['dist_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -188,12 +268,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateUser($intIsCreateIndex) {
+    public function __migrateUser($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\User');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\User();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'user_id ASC');
 
             if (empty($arrList)) {
@@ -213,7 +294,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['user_id'];
+                $id = (int)$arr['user_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -235,12 +316,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateProperties($intIsCreateIndex) {
+    public function __migrateProperties($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\Properties');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\Properties();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'prop_id ASC');
 
             if (empty($arrList)) {
@@ -260,7 +342,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['prop_id'];
+                $id = (int)$arr['prop_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -282,12 +364,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateCategory($intIsCreateIndex) {
+    public function __migrateCategory($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\Category');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\Category();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'cate_id ASC');
 
             if (empty($arrList)) {
@@ -307,7 +390,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['cate_id'];
+                $id = (int)$arr['cate_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -333,7 +416,8 @@ class ConsoleController extends MyController {
 //	'TP Qui Nhơn','Huyện Vân Canh','Huyện Tuy Phước','Huyện Tây Sơn','Huyện Phù Mỹ','Huyện Phù Cát','Huyện Hoài Nhơn','Huyện Hoài Ân','Huyện An Nhơn','Huyện An Lão','Huyện Vĩnh Thạnh'
 //];
 
-    public function __migrateDistrict($intIsCreateIndex) {
+    public function __migrateDistrict($intIsCreateIndex)
+    {
         $arr = [
             'TP Qui Nhơn', 'Huyện Vân Canh', 'Huyện Tuy Phước', 'Huyện Tây Sơn', 'Huyện Phù Mỹ', 'Huyện Phù Cát', 'Huyện Hoài Nhơn', 'Huyện Hoài Ân', 'Huyện An Nhơn', 'Huyện An Lão', 'Huyện Vĩnh Thạnh'
         ];
@@ -351,12 +435,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateMessages($intIsCreateIndex) {
+    public function __migrateMessages($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\Messages');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\Messages();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'mess_id ASC');
 
             if (empty($arrList)) {
@@ -376,7 +461,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['mess_id'];
+                $id = (int)$arr['mess_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -398,11 +483,12 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateFavourite($intIsCreateIndex) {
+    public function __migrateFavourite($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\Favourite');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\Favourite();
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'favo_id ASC');
 
             if (empty($arrList)) {
@@ -422,7 +508,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['favo_id'];
+                $id = (int)$arr['favo_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -444,11 +530,12 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateComment($intIsCreateIndex) {
+    public function __migrateComment($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\Comment');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\Comment();
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $service->getListLimit([], $intPage, $intLimit, 'comm_id ASC');
 
             if (empty($arrList)) {
@@ -468,7 +555,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrList as $arr) {
-                $id = (int) $arr['comm_id'];
+                $id = (int)$arr['comm_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arr);
                 echo General::getColoredString("Created new document with id = " . $id . " Successfully", 'cyan');
@@ -490,11 +577,12 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateLogs($intIsCreateIndex) {
+    public function __migrateLogs($intIsCreateIndex)
+    {
         $serviceLogs = $this->serviceLocator->get('My\Models\Logs');
         $intLimit = 1000;
         $instanceSearchLogs = new \My\Search\Logs();
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrLogsList = $serviceLogs->getListLimit([], $intPage, $intLimit, 'log_id ASC');
             if (empty($arrLogsList)) {
                 break;
@@ -513,7 +601,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrLogsList as $arrLogs) {
-                $logId = (int) $arrLogs['log_id'];
+                $logId = (int)$arrLogs['log_id'];
 
                 $arrDocument[] = new \Elastica\Document($logId, $arrLogs);
                 echo General::getColoredString("Created new document with log_id = " . $logId . " Successfully", 'cyan');
@@ -535,12 +623,13 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateContent($intIsCreateIndex) {
+    public function __migrateContent($intIsCreateIndex)
+    {
         $serviceContent = $this->serviceLocator->get('My\Models\Content');
         $intLimit = 1000;
         $instanceSearchContent = new \My\Search\Content();
 
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrContentList = $serviceContent->getListLimit([], $intPage, $intLimit, 'cont_id ASC');
             if (empty($arrContentList)) {
                 break;
@@ -559,7 +648,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrContentList as $arrContent) {
-                $id = (int) $arrContent['cont_id'];
+                $id = (int)$arrContent['cont_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $arrContent);
                 echo General::getColoredString("Created new document with cont_id = " . $id . " Successfully", 'cyan');
@@ -581,11 +670,12 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function __migrateTrans($intIsCreateIndex) {
+    public function __migrateTrans($intIsCreateIndex)
+    {
         $service = $this->serviceLocator->get('My\Models\TransactionHistory');
         $intLimit = 1000;
         $instanceSearch = new \My\Search\TransactionHistory();
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrListLimit = $service->getListLimit([], $intPage, $intLimit, 'tran_id ASC');
             if (empty($arrListLimit)) {
                 break;
@@ -604,7 +694,7 @@ class ConsoleController extends MyController {
             }
             $arrDocument = [];
             foreach ($arrListLimit as $value) {
-                $id = (int) $value['tran_id'];
+                $id = (int)$value['tran_id'];
 
                 $arrDocument[] = new \Elastica\Document($id, $value);
                 echo General::getColoredString("Created new document with tran_id = " . $id . " Successfully", 'cyan');
@@ -626,7 +716,8 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function workerAction() {
+    public function workerAction()
+    {
         $params = $this->request->getParams();
 
         //stop all job
@@ -831,6 +922,37 @@ class ConsoleController extends MyController {
             if ($PID) {
                 shell_exec("kill " . $PID);
                 echo General::getColoredString("Job raovat-general is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job keyword
+        if ($params['stop'] === 'raovat-keyword') {
+            if ($params['type'] || $params['background']) {
+                return General::getColoredString("Invalid params \n", 'light_cyan', 'red');
+            }
+            exec("ps -ef | grep -v grep | grep 'type=raovat-keyword' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job raovat-keyword is stopped running in backgound \n", 'green');
+                return;
+            } else {
+                echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
+                return;
+            }
+        }
+
+        //stop job crawlerkeyword
+        if ($params['stop'] === 'crawlerkeyword') {
+            exec("ps -ef | grep -v grep | grep 'type=crawlerkeyword' | awk '{ print $2 }'", $PID);
+            $PID = current($PID);
+            if ($PID) {
+                shell_exec("kill " . $PID);
+                echo General::getColoredString("Job crawlerkeyword is stopped running in backgound \n", 'green');
                 return;
             } else {
                 echo General::getColoredString("Cannot found PID \n", 'light_cyan', 'red');
@@ -1082,6 +1204,26 @@ class ConsoleController extends MyController {
                 $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
 
                 break;
+            case 'raovat-keyword':
+                //start job in background
+                if ($params['background'] === 'true') {
+                    $PID = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-keyword >/dev/null & echo 2>&1 & echo $!");
+                    if (empty($PID)) {
+                        echo General::getColoredString("Cannot deamon PHP process to run job raovat-keyword in background. \n", 'light_cyan', 'red');
+                        return;
+                    }
+                    echo General::getColoredString("Job raovat-keyword is running in background ... \n", 'green');
+                }
+
+                $funcName1 = SEARCH_PREFIX . 'writeKeyword';
+                $methodHandler1 = '\My\Job\JobKeyword::writeKeyword';
+                $worker->addFunction($funcName1, $methodHandler1, $this->serviceLocator);
+
+                $funcName2 = SEARCH_PREFIX . 'editKeyword';
+                $methodHandler2 = '\My\Job\JobKeyword::editKeyword';
+                $worker->addFunction($funcName2, $methodHandler2, $this->serviceLocator);
+
+                break;
 
             default:
                 return General::getColoredString("Invalid or not found function \n", 'light_cyan', 'red');
@@ -1101,7 +1243,8 @@ class ConsoleController extends MyController {
         }
     }
 
-    public function checkWorkerRunningAction() {
+    public function checkWorkerRunningAction()
+    {
 
         //check content worker
         exec("ps -ef | grep -v grep | grep 'type=raovat-content' | awk '{ print $2 }'", $PID);
@@ -1242,9 +1385,24 @@ class ConsoleController extends MyController {
                 echo General::getColoredString("PHP process run job raovat-general in background with PID : {$PID}. \n", 'light_cyan', 'red');
             }
         }
+
+        //check job user for keyword
+        exec("ps -ef | grep -v grep | grep 'type=raovat-keyword' | awk '{ print $2 }'", $PID);
+        $PID = current($PID);
+        if (empty($PID)) {
+            $command = shell_exec("nohup php " . PUBLIC_PATH . "/index.php worker --type=raovat-keyword >/dev/null & echo 2>&1 & echo $!");
+            $PID = shell_exec($command);
+            if (empty($PID)) {
+                echo General::getColoredString("Cannot deamon PHP process to run job raovat-keyword in background. \n", 'light_cyan', 'red');
+                return;
+            } else {
+                echo General::getColoredString("PHP process run job raovat-keyword in background with PID : {$PID}. \n", 'light_cyan', 'red');
+            }
+        }
     }
 
-    public function crontabAction() {
+    public function crontabAction()
+    {
         $params = $this->request->getParams();
 
         if (empty($params['type'])) {
@@ -1266,7 +1424,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    protected function _jobUpdateVipContent() {
+    protected function _jobUpdateVipContent()
+    {
         $str = '|| test';
         $filename = PUBLIC_PATH . '/test.txt';
         file_put_contents($filename, json_encode($str), FILE_APPEND);
@@ -1287,7 +1446,91 @@ class ConsoleController extends MyController {
         }
     }
 
-    public function sitemapAction() {
+    public function crawlerKeywordAction()
+    {
+        $this->getKeyword();
+        return;
+    }
+
+    public function getKeyword()
+    {
+        $match = [
+            '', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        ];
+        $instanceSearchKeyWord = new \My\Search\Keyword();
+        $arr_keyword = current($instanceSearchKeyWord->getListLimit(['is_crawler' => 0], 1, 1, ['key_id' => ['order' => 'asc']]));
+
+        unset($instanceSearchKeyWord);
+        if (empty($arr_keyword)) {
+            return;
+        }
+
+        $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
+        $serviceKeyword->edit(['is_crawler' => 1, 'updated_date' => time()], $arr_keyword['key_id']);
+        unset($serviceKeyword);
+
+        $keyword = $arr_keyword['key_name'];
+
+        foreach ($match as $key => $value) {
+            if ($key == 0) {
+                $key_match = $keyword . $value;
+                $url = 'http://www.google.com/complete/search?output=search&client=chrome&q=' . rawurlencode($key_match) . '&hl=vi&gl=vn';
+                $return = General::crawler($url);
+                $this->add_keyword(json_decode($return)[1]);
+                continue;
+            } else {
+                for ($i = 0; $i < 2; $i++) {
+                    if ($i == 0) {
+                        $key_match = $keyword . ' ' . $value;
+                    } else {
+                        $key_match = $value . ' ' . $keyword;
+                    }
+                    $url = 'http://www.google.com/complete/search?output=search&client=chrome&q=' . rawurlencode($key_match) . '&hl=vi&gl=vn';
+                    $return = General::crawler($url);
+                    $this->add_keyword(json_decode($return)[1]);
+                    continue;
+                }
+            }
+        };
+        sleep(3);
+        $this->getKeyword();
+    }
+
+    public function add_keyword($arr_key)
+    {
+        if (empty($arr_key)) {
+            return false;
+        }
+
+        $instanceSearchKeyWord = new \My\Search\Keyword();
+        foreach ($arr_key as $key_word) {
+            $is_exsit = $instanceSearchKeyWord->getDetail(['key_slug' => trim(General::getSlug($key_word))]);
+
+            if ($is_exsit) {
+                continue;
+            }
+
+            $arr_data = [
+                'key_name' => $key_word,
+                'key_slug' => trim(General::getSlug($key_word)),
+                'created_date' => time(),
+                'is_crawler' => 0
+            ];
+
+            $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
+            $int_result = $serviceKeyword->add($arr_data);
+            unset($serviceKeyword);
+            if ($int_result) {
+                echo \My\General::getColoredString("Insert success 1 row with id = {$int_result}", 'yellow');
+            }
+            $this->flush();
+        }
+        unset($instanceSearchKeyWord);
+        return true;
+    }
+
+    public function sitemapAction()
+    {
         $this->siteMapCategory();
         $this->siteMapContent();
         $this->sitemapOther();
@@ -1326,7 +1569,8 @@ class ConsoleController extends MyController {
         die('done');
     }
 
-    public function siteMapCategory() {
+    public function siteMapCategory()
+    {
         $doc = '<?xml version="1.0" encoding="UTF-8"?>';
         $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
         $doc .= '</urlset>';
@@ -1448,7 +1692,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function siteMapContent() {
+    public function siteMapContent()
+    {
         $instanceSearchContent = new \My\Search\Content();
         $doc = '<?xml version="1.0" encoding="UTF-8"?>';
         $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
@@ -1456,7 +1701,7 @@ class ConsoleController extends MyController {
         $xml = new \SimpleXMLElement($doc);
         $this->flush();
         $intLimit = 100;
-        for ($intPage = 1; $intPage < 10000; $intPage ++) {
+        for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrContentList = $instanceSearchContent->getListLimit(['not_cont_status' => -1], $intPage, $intLimit, ['cont_id' => ['order' => 'desc']]);
             if (empty($arrContentList)) {
                 break;
@@ -1481,11 +1726,13 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function siteMapSearch() {
-        
+    public function siteMapSearch()
+    {
+
     }
 
-    private function sitemapOther() {
+    private function sitemapOther()
+    {
         $doc = '<?xml version="1.0" encoding="UTF-8"?>';
         $doc .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
         $doc .= '</urlset>';
@@ -1509,7 +1756,8 @@ class ConsoleController extends MyController {
         }
     }
 
-    public function crawlerAction() {
+    public function crawlerAction()
+    {
         $params = $this->request->getParams();
         $type = $params['type'];
         if (empty($type)) {
@@ -1538,7 +1786,8 @@ class ConsoleController extends MyController {
         }
     }
 
-    public function __editConten() {
+    public function __editConten()
+    {
         $instanceSearch = new \My\Search\Content();
         $arrContentList = $instanceSearch->getList(['from_soucre' => 'raovatquynhon.com']);
         if (empty($arrContentList)) {
@@ -1557,7 +1806,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function __rvqn() {
+    public function __rvqn()
+    {
         $url = 'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/';
 
         $subject = file_get_contents($url);
@@ -1588,7 +1838,7 @@ class ConsoleController extends MyController {
             }
             preg_match('/<span class="orange">(.+?)<\/span>/', $content, $matches);
             list($day, $month, $yeah) = explode('/', $matches[1]);
-            if ((int) $month < 3) {
+            if ((int)$month < 3) {
                 unset($arr_detail);
                 unset($instanceSearchContent);
                 unset($content);
@@ -1635,7 +1885,7 @@ class ConsoleController extends MyController {
                 $arrCate = $instanceSearchCategory->getDetail(['cate_id' => 79]);
 
                 $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-                $serviceCategory->edit(['total_content' => (int) $arrCate['total_content'] + 1], 79);
+                $serviceCategory->edit(['total_content' => (int)$arrCate['total_content'] + 1], 79);
                 echo \My\General::getColoredString("Crawler success 1 post from raovatquynhon.com \n", 'green');
             } else {
                 echo \My\General::getColoredString("Error insert from raovatquynhon.com \n", 'red');
@@ -1653,7 +1903,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function __dobd() {
+    public function __dobd()
+    {
 
         include PUBLIC_PATH . '/simple_html_dom.php';
         $domain = 'http://diaocbinhdinh.vn/';
@@ -1693,7 +1944,7 @@ class ConsoleController extends MyController {
                 }
                 list($day, $moth, $year) = explode('/', $date);
 
-                if ((int) $moth < 3) {
+                if ((int)$moth < 3) {
                     continue;
                 }
 
@@ -1807,7 +2058,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function __rvbd() {
+    public function __rvbd()
+    {
         echo \My\General::getColoredString("Begin crawler Raovatbinhdinh.vn Success \n", 'green');
 
         include PUBLIC_PATH . '/simple_html_dom.php';
@@ -1869,7 +2121,7 @@ class ConsoleController extends MyController {
                         $arrCate = $instanceSearchCategory->getDetail(['cate_id' => 79]);
 
                         $serviceCategory = $this->serviceLocator->get('My\Models\Category');
-                        $serviceCategory->edit(['total_content' => (int) $arrCate['total_content'] + 1], 79);
+                        $serviceCategory->edit(['total_content' => (int)$arrCate['total_content'] + 1], 79);
                         echo \My\General::getColoredString("Crawler success 1 post from Raovatbinhdinh.vn \n", 'green');
                     } else {
                         echo \My\General::getColoredString("Error insert from Raovatbinhdinh.vn \n", 'red');
@@ -1890,7 +2142,8 @@ class ConsoleController extends MyController {
         return true;
     }
 
-    public function coverStr($str) {
+    public function coverStr($str)
+    {
         $arrPatent = [
             'mọi người',
             'tận nhà',
