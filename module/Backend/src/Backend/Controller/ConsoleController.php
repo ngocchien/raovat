@@ -104,26 +104,26 @@ class ConsoleController extends MyController
     public function __migrateKeyword($intIsCreateIndex)
     {
 
-        $arr_key = [
-            'quy nhơn', 'quy nhon', 'qui nhon', 'bình định', 'binh dinh', 'phù mỹ', 'phu my', 'phù cát', 'vân canh', 'vĩnh thạnh', 'hoài nhơn',
-            'tam quan', 'bong son', 'tay son', 'an nhơn', 'viec lam quy nhon', 'viec lam binh dinh', 'quy nhon binh dinh', 'rao vat quy nhon', 'rao vat binh dinh',
-            'tuyen dung binh dinh', 'tuyen dung quy nhon', 'dien dan rao vat binh dinh', 'dien dan rao vat quy nhon', 'vui choi quy nhon', 'vui choi binh dinh',
-            'trung tam viec lam quy nhon', 'nha dat quy nhon', 'dich vu quy nhon', 'dich vu binh dinh', 'o to quy nhon', 'xe may quy nhon', 'cong dong quy nhon',
-            'cong dong binh dinh'
-        ];
-
-        $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
-        foreach ($arr_key as $key) {
-            $arr_data = [
-                'key_name' => $key,
-                'key_slug' => General::getSlug($key),
-                'is_crawler' => 0,
-                'created_date' => time()
-            ];
-           $serviceKeyword->add($arr_data);
-        }
-        die('done');
-        return;
+//        $arr_key = [
+//            'quy nhơn', 'quy nhon', 'qui nhon', 'bình định', 'binh dinh', 'phù mỹ', 'phu my', 'phù cát', 'vân canh', 'vĩnh thạnh', 'hoài nhơn',
+//            'tam quan', 'bong son', 'tay son', 'an nhơn', 'viec lam quy nhon', 'viec lam binh dinh', 'quy nhon binh dinh', 'rao vat quy nhon', 'rao vat binh dinh',
+//            'tuyen dung binh dinh', 'tuyen dung quy nhon', 'dien dan rao vat binh dinh', 'dien dan rao vat quy nhon', 'vui choi quy nhon', 'vui choi binh dinh',
+//            'trung tam viec lam quy nhon', 'nha dat quy nhon', 'dich vu quy nhon', 'dich vu binh dinh', 'o to quy nhon', 'xe may quy nhon', 'cong dong quy nhon',
+//            'cong dong binh dinh'
+//        ];
+//
+//        $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
+//        foreach ($arr_key as $key) {
+//            $arr_data = [
+//                'key_name' => $key,
+//                'key_slug' => General::getSlug($key),
+//                'is_crawler' => 0,
+//                'created_date' => time()
+//            ];
+//           $serviceKeyword->add($arr_data);
+//        }
+//        die('done');
+//        return;
 
         $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
         $intLimit = 200;
