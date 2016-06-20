@@ -3,3 +3,9 @@
 /composer.phar
 /composer.lock
 .idea/
+data/json_log.txt
+public/test.txt
+/public/xml/
+/static/f/captcha/
+/static/uploads/
+/static/uploads/
