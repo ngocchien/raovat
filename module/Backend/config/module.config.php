@@ -82,6 +82,16 @@ return array(
                         ),
                     ),
                 ),
+                'crawlerkeyword' => array(
+                    'options' => array(
+                        'route' => 'crawlerkeyword',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Backend\Controller',
+                            'controller' => 'console',
+                            'action' => 'crawler-keyword'
+                        ),
+                    ),
+                ),
                 'sitemap' => array(
                     'options' => array(
                         'route' => 'sitemap',
