@@ -12,6 +12,6 @@ return array(
     'Frontend\Controller\CommentController' => __DIR__ . '/src/Frontend/Controller/CommentController.php',
     'Frontend\Controller\ContentController' => __DIR__ . '/src/Frontend/Controller/ContentController.php',
     'Frontend\Controller\UserController' => __DIR__ . '/src/Frontend/Controller/UserController.php',
-    'Frontend\Controller\SearchController' => __DIR__ . '/src/Frontend/Controller/SearchController.php'
+    'Frontend\Controller\SearchController' => __DIR__ . '/src/Frontend/Controller/SearchController.php',
     'Frontend\Controller\SitemapController' => __DIR__ . '/src/Frontend/Controller/SitemapController.php'
 );
