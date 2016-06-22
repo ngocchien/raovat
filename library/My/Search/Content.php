@@ -419,6 +419,12 @@ class Content extends SearchAbstract {
             $boolQuery->addMust($addQuery);
         }
 
+        if (isset($params['full_text_title'])) {
+            $math = new ESQuery\Match();
+            $math->setParam('cont_title', trim($params['full_text_title']));
+            $boolQuery->addMust($math);
+        }
+
         return $boolQuery;
     }
 
