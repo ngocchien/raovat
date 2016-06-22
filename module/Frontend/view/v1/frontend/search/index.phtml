@@ -106,6 +106,16 @@
                                 <div class="text-center">
                                     <?php echo $this->paging; ?>
                                 </div>
+
+                                <?php if(!empty($this->arr_keyword_list)):?>
+                                <div class="text-center">
+                                    <h3>Từ khóa liên quan</h3>
+                                    <?php foreach ($this->arr_keyword_list as $arr_key):?>
+                                    <a href="#"><?php echo $arr_key['key_name'];?></a> ;
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif;?>
+
                             </div>
                         </section>
                         <!-- page end-->
