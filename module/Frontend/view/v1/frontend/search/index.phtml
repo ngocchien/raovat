@@ -111,7 +111,7 @@
                                 <div class="text-center">
                                     <h3>Từ khóa liên quan</h3>
                                     <?php foreach ($this->arr_keyword_list as $arr_key):?>
-                                    <a href="#"><?php echo $arr_key['key_name'];?></a> ;
+                                    <a href="<?php echo $this->serverUrl() . $this->Url('search',['tu-khoa'=>$arr_key['key_slug']]) ?>"><?php echo $arr_key['key_name'];?></a> ;
                                     <?php endforeach; ?>
                                 </div>
                                 <?php endif;?>
