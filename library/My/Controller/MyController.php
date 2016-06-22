@@ -238,6 +238,12 @@ class MyController extends AbstractActionController {
 //                $arrContentList = $instanceSearchContent->getListLimit(['not_cont_status'=>-1], 1, 5, ['updated_date'=>'crea']);
 //            }
 
+            //xu hướng tìm kiếm
+            $instanceSearchKeyword = new \My\Search\Keyword();
+            $arrKeywordTop = $instanceSearchKeyword->getListLimit(['is_crawler'=>1],1,50,['created_date'=>['order'=>'ASC']]);
+            define('KEY_TOP', serialize($arrKeywordTop));
+
+            unset($arrKeywordTop);
             unset($instanceSearchDistrict);
             unset($instaceSearchMessages);
             unset($instanceSearchCategory);

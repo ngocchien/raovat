@@ -24,10 +24,6 @@ class SearchController extends MyController {
 
     public function indexAction() {
         $params = array_merge($this->params()->fromRoute(), $this->params()->fromQuery());
-//        echo '<pre>';
-//        print_r($params);
-//        echo '</pre>';
-//        die();
         if (empty($params['khu-vuc']) && empty($params['danh-muc']) && empty($params['tu-khoa'])) {
             return $this->redirect()->toRoute('home');
         }
@@ -67,8 +63,19 @@ class SearchController extends MyController {
                 }
             }
         }
+
+        $arr_keyword_list = [];
         if (!empty($params['tu-khoa'])) {
             $arrCondition['key_word'] = General::clean(trim(strip_tags($params['tu-khoa'])));
+            $instanceSearchKeyword = new \My\Search\Keyword();
+            $arr_keyword = $instanceSearchKeyword->getDetail(['key_slug'=>$arrCondition['key_word']]);
+            if(!empty($arr_keyword)){
+                $arr_keyword_less =  $instanceSearchKeyword->getListLimit(['key_id_less' => $arr_keyword['key_id']], 1, 50, ['key_id' => ['order' => 'desc']]);
+                $arr_keyword_greater =  $instanceSearchKeyword->getListLimit(['key_id_greater' => $arr_keyword['key_id']], 1, 50, ['key_id' => ['order' => 'desc']]);
+                $arr_keyword_list = array_merge($arr_keyword_less,$arr_keyword_greater);
+            }else{
+                $arr_keyword_list = $instanceSearchKeyword->getListLimit(['full_text_keyname' => $arrCondition['key_word']], 1, 100, ['_score' => ['order' => 'desc']]);
+            }
         }
 
         $instaceSearchContent = new \My\Search\Content();
@@ -145,7 +152,8 @@ class SearchController extends MyController {
             'intTotal' => $intTotal,
             'arrPropertiesList' => $arrPropertiesList,
             'distName' => $distName,
-            'cateName' => $cateName
+            'cateName' => $cateName,
+            'arr_keyword_list' => $arr_keyword_list
         ];
     }
 
