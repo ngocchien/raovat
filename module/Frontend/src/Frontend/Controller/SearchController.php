@@ -77,6 +77,10 @@ class SearchController extends MyController {
                 $arr_keyword_list = $instanceSearchKeyword->getListLimit(['full_text_keyname' => $arrCondition['key_word']], 1, 100, ['_score' => ['order' => 'desc']]);
             }
         }
+        echo '<pre>';
+        print_r($arrCondition);
+        echo '</pre>';
+        die();
 
         $instaceSearchContent = new \My\Search\Content();
         $arrContentList = $instaceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
