@@ -73,14 +73,12 @@ class SearchController extends MyController {
                 $arr_keyword_less =  $instanceSearchKeyword->getListLimit(['key_id_less' => $arr_keyword['key_id']], 1, 50, ['key_id' => ['order' => 'desc']]);
                 $arr_keyword_greater =  $instanceSearchKeyword->getListLimit(['key_id_greater' => $arr_keyword['key_id']], 1, 50, ['key_id' => ['order' => 'desc']]);
                 $arr_keyword_list = array_merge($arr_keyword_less,$arr_keyword_greater);
+                $arrCondition['full_text_title'] = $arr_keyword['key_name'];
             }else{
+                $arrCondition['full_text_title'] = General::clean(trim(strip_tags($params['tu-khoa'])));
                 $arr_keyword_list = $instanceSearchKeyword->getListLimit(['full_text_keyname' => $arrCondition['key_word']], 1, 100, ['_score' => ['order' => 'desc']]);
             }
         }
-        echo '<pre>';
-        print_r($arrCondition);
-        echo '</pre>';
-        die();
 
         $instaceSearchContent = new \My\Search\Content();
         $arrContentList = $instaceSearchContent->getListLimit($arrCondition, $intPage, $intLimit, ['created_date' => ['order' => 'desc']]);
