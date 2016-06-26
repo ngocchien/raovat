@@ -104,7 +104,7 @@ class ConsoleController extends MyController
     public function __migrateKeyword($intIsCreateIndex)
     {
 
-        $arr_key = [
+        /*$arr_key = [
             'quy nhơn', 'quy nhon', 'qui nhon', 'bình định', 'binh dinh', 'phù mỹ', 'phu my', 'phù cát', 'vân canh', 'vĩnh thạnh', 'hoài nhơn',
             'tam quan', 'bong son', 'tay son', 'an nhơn', 'viec lam quy nhon', 'viec lam binh dinh', 'quy nhon binh dinh', 'rao vat quy nhon', 'rao vat binh dinh',
             'tuyen dung binh dinh', 'tuyen dung quy nhon', 'dien dan rao vat binh dinh', 'dien dan rao vat quy nhon', 'vui choi quy nhon', 'vui choi binh dinh',
@@ -123,7 +123,7 @@ class ConsoleController extends MyController
            $serviceKeyword->add($arr_data);
         }
         die('done');
-        return;
+        return;*/
 
         $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
         $intLimit = 200;
