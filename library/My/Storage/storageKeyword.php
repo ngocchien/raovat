@@ -75,6 +75,10 @@ class storageKeyword extends AbstractTableGateway {
 
     public function getListLimit($arrCondition, $intPage, $intLimit, $strOrder) {
         try {
+            echo '<pre>';
+            print_r('aaaaaaa');
+            echo '</pre>';
+            die();
             $strWhere = $this->_buildWhere($arrCondition);
             $adapter = $this->adapter;
             $sql = new Sql($adapter);

@@ -126,18 +126,10 @@ class ConsoleController extends MyController
         return;*/
 
         $serviceKeyword = $this->serviceLocator->get('My\Models\Keyword');
-        echo '<pre>';
-        print_r('aaaaaaaaa');
-        echo '</pre>';
-        die();
         $intLimit = 200;
         $instanceSearchKeyword = new \My\Search\Keyword();
         for ($intPage = 1; $intPage < 10000; $intPage++) {
             $arrList = $serviceKeyword->getListLimit([], $intPage, $intLimit, 'key_id ASC');
-            echo '<pre>';
-            print_r($arrList);
-            echo '</pre>';
-            die();
             if (empty($arrList)) {
                 break;
             }
