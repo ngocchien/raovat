@@ -1812,6 +1812,8 @@ class ConsoleController extends MyController
 
         //'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/khuvuc-0/loai-0/trang-180.html'
 
+        echo \My\General::getColoredString("Begin \n", 'green');
+
         $url = 'http://www.raovatquynhon.com/raovat/viec-tim-nguoi/khuvuc-0/loai-0/trang-';
 
         $trang = 180; // Biến dùng để lặp
@@ -2029,6 +2031,24 @@ class ConsoleController extends MyController
                     if ($intResult) {
                         echo \My\General::getColoredString("Crawler success 1 post from diaocbinhdinh.vn \n", 'green');
                         echo \My\General::getColoredString($arr_data['cont_title'] . '\n', 'green');
+
+
+                        //add total in category
+
+                        $instanceSearchCategory = new \My\Search\Category();
+                        $arrCate = $instanceSearchCategory->getDetail(['cate_id' => $arr_data['cate_id']]);
+
+                        if(!empty($arrCate)){
+                            $serviceCategory = $this->serviceLocator->get('My\Models\Category');
+                            $serviceCategory->edit(['total_content' => (int)$arrCate['total_content'] + 1], $arrCate['cate_id']);
+                            unset($serviceCategory);
+                        }
+
+                        unset($instanceSearchCategory);
+
+
+                        //echo \My\General::getColoredString("Crawler success 1 post from raovatquynhon.com \n", 'green');
+
                         //begin sendmail to user
 //                        'backend/error/send-mail-when-crawler'
 //                        $arr_data['cont_id'] = $intResult;
