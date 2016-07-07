@@ -1816,7 +1816,12 @@ class ConsoleController extends MyController
 
         $trang = 180; // Biến dùng để lặp
         while ($trang >= 0) { // Nếu $i <= 10 thì mới lặp
+
+            echo \My\General::getColoredString("trang {$trang}\n", 'green');
+
             $url_crw = $url . $trang . 'html';
+
+            echo \My\General::getColoredString("start url {$url_crw}\n", 'green');
 
             $subject = file_get_contents($url_crw);
             preg_match_all('/<table width="100%" cellspacing="0" border="0">(.*?)<\/table>/', $subject, $matches);
