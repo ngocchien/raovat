@@ -44,7 +44,7 @@ class General {
     const TRANS_OUTPUT = 2;
     const SEND_MAIL_MESSAGES = 1;
     //define social url
-    const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/Best-Quy-Nh%C6%A1n-1116653795067333/';
+    const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/bestquynhon/';
     const VIP_ALL_PAGE = 3;
     const VIP_CATE_PAGE = 2;
     const SVIP = 'svip';
