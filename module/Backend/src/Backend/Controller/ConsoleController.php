@@ -1760,30 +1760,27 @@ class ConsoleController extends MyController
     {
         $params = $this->request->getParams();
         $type = $params['type'];
-        if (empty($type)) {
-            $this->__rvbd();
+        
+        switch ($type){
+            case 'rvbd':
+                $this->__rvbd();
+                break;
+            case 'dobd':
+                $this->__dobd();
+                break;
+            case 'rvqn':
+                $this->__rvqn();
+                break;
+            case 'edit-content':
+                $this->__editConten();
+                break;
+            default:
+                $this->__rvbd();
+                $this->__dobd();
+                $this->__rvqn();
+                break;
         }
-
-        if ($type == 'rvbd') {
-            $this->__rvbd();
-
-            return true;
-        }
-
-        if ($type == 'dobd') {
-            $this->__dobd();
-            return true;
-        }
-
-        if ($type == 'rvqn') {
-            $this->__rvqn();
-            return true;
-        }
-
-        if ($type == 'edit-content') {
-            $this->__editConten();
-            return true;
-        }
+        return;
     }
 
     public function __editConten()
