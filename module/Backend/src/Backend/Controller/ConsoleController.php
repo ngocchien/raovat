@@ -1760,7 +1760,7 @@ class ConsoleController extends MyController
     {
         $params = $this->request->getParams();
         $type = $params['type'];
-        
+
         switch ($type){
             case 'rvbd':
                 $this->__rvbd();
@@ -1915,13 +1915,15 @@ class ConsoleController extends MyController
             $trang -= 60;
 
         }
+
+        echo \My\General::getColoredString("Crawler raovatquynhon.com DONE", 'green');
         return true;
     }
 
     public function __dobd()
     {
 
-        include PUBLIC_PATH . '/simple_html_dom.php';
+        include_once PUBLIC_PATH . '/simple_html_dom.php';
         $domain = 'http://diaocbinhdinh.vn/';
         $home = file_get_html($domain);
         $arrtemp = [1, 2, 3, 4, 5];
@@ -2093,9 +2095,9 @@ class ConsoleController extends MyController
 
     public function __rvbd()
     {
-        echo \My\General::getColoredString("Begin crawler Raovatbinhdinh.vn Success \n", 'green');
+        echo \My\General::getColoredString("Begin crawler Raovatbinhdinh.vn \n", 'green');
 
-        include PUBLIC_PATH . '/simple_html_dom.php';
+        include_once PUBLIC_PATH . '/simple_html_dom.php';
         $arrURL = [
             'vl' => 'http://www.raovatbinhdinh.vn/viec-lam-tuyen-dung-1-19.html',
         ];
