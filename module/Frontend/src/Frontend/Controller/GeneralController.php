@@ -9,7 +9,7 @@ class GeneralController extends MyController {
 
     public function __construct() {
         $this->externalJS = [
-            STATIC_URL . '/f/v1/js/my/??general.js'
+            STATIC_URL . '/f/v1/js/my/??general.js',
             STATIC_URL . '/f/v1/js/my/??content.js',
             STATIC_URL . '/f/v1/js/library/tinymce/tinymce.min.js'
         ];
