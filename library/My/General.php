@@ -27,9 +27,9 @@ class General {
     const PREFIX_IN = '';
     //define email admin 
     const EMAIL_SUPPORT = 'support@bestquynhon.com';
-    const EMAIL_BCC = 'no-reply@bestquynhon.com';
-    const EMAIL_SYS = 'no-reply@bestquynhon.com';
-    const EMAIL_SYS_PASSWORD = 'quynhon@best247';
+    const EMAIL_BCC = 'ngocchien01@bestquynhon.com';
+    const EMAIL_SYS = 'ngocchien01@bestquynhon.com';
+    const EMAIL_SYS_PASSWORD = 'chien123';
     //define host mail
     const HOST_MAIL = 'smtp.gmail.com';
     const RECHARGE_VIETTEL = 1;
